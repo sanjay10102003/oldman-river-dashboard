@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Oldman River Environmental Dashboard</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #081b2f;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      .dashboard {
+        display: grid;
+        grid-template-columns: 350px 1fr;
+        height: 100vh;
+      }
+
+      .sidebar {
+        background: linear-gradient(180deg, #0f2742, #102d4d);
+        color: white;
+        padding: 24px;
+        overflow-y: auto;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 28px;
+      }
+
+      .subtitle {
+        color: #c9d8e8;
+        font-size: 14px;
+        line-height: 1.5;
+        margin-top: 10px;
+      }
+
+      .card {
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 22px;
+        padding: 22px;
+        margin-top: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .card h3 {
+        margin-top: 0;
+        font-size: 18px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 15px;
+        font-weight: bold;
+      }
+
+      select,
+      input[type="date"] {
+        width: 100%;
+        padding: 14px;
+        border-radius: 14px;
+        border: none;
+        font-size: 15px;
+        margin-bottom: 18px;
+      }
+
+      .date-display {
+        color: #dcecff;
+        font-size: 15px;
+      }
+
+      .date-display strong {
+        color: white;
+        font-size: 19px;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+
+      .stat-box {
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        padding: 16px;
+        min-height: 78px;
+      }
+
+      .stat-value {
+        font-size: 22px;
+        font-weight: bold;
+        word-break: break-word;
+        min-height: 28px;
+        display: flex;
+        align-items: center;
+      }
+
+      .stat-label {
+        color: #c9d8e8;
+        font-size: 13px;
+        margin-top: 5px;
+      }
+
+      .loader {
+        width: 22px;
+        height: 22px;
+        border: 3px solid rgba(255, 255, 255, 0.25);
+        border-top: 3px solid white;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+        font-size: 14px;
+      }
+
+      .legend-color {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+      }
+
+      .status {
+        color: #d5e7ff;
+        line-height: 1.6;
+        font-size: 14px;
+      }
+
+      .map-area {
+        position: relative;
+        height: 100vh;
+      }
+
+      #map {
+        width: 100%;
+        height: 100%;
+      }
+
+      .badge {
+        position: absolute;
+        top: 18px;
+        right: 18px;
+        z-index: 1000;
+        background: white;
+        padding: 14px 18px;
+        border-radius: 16px;
+        font-weight: bold;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+      }
+
+      @media (max-width: 900px) {
+        .dashboard {
+          grid-template-columns: 1fr;
+        }
+
+        .map-area {
+          height: 70vh;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="dashboard">
+      <aside class="sidebar">
+        <h1>Oldman River Dashboard</h1>
+
+        <p class="subtitle">
+          Visualize historical environmental conditions along the real Oldman
+          River.
+        </p>
+
+        <div class="card">
+          <h3>Layer Control</h3>
+
+          <label>Select Environmental Layer</label>
+          <select id="layerSelect">
+            <option value="temperature">Temperature</option>
+            <option value="precipitation">Precipitation</option>
+            <option value="wind">Wind Speed</option>
+            <option value="humidity">Humidity</option>
+            <option value="pressure">Pressure</option>
+          </select>
+
+          <label>Select Historical Date</label>
+          <input type="date" id="datePicker" />
+
+          <div class="date-display">
+            Selected Date:
+            <br />
+            <strong id="selectedDate">Loading...</strong>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Summary</h3>
+
+          <div class="stats">
+            <div class="stat-box">
+              <div class="stat-value" id="avgValue">--</div>
+              <div class="stat-label">Average</div>
+            </div>
+
+            <div class="stat-box">
+              <div class="stat-value" id="pointCount">--</div>
+              <div class="stat-label">Points</div>
+            </div>
+
+            <div class="stat-box">
+              <div class="stat-value" id="minValue">--</div>
+              <div class="stat-label">Minimum</div>
+            </div>
+
+            <div class="stat-box">
+              <div class="stat-value" id="maxValue">--</div>
+              <div class="stat-label">Maximum</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Legend</h3>
+          <div id="legendBox"></div>
+        </div>
+
+        <div class="card">
+          <h3>Status</h3>
+          <div class="status" id="statusText">Loading river data...</div>
+        </div>
+      </aside>
+
+      <main class="map-area">
+        <div class="badge" id="mapBadge">Oldman River Layer</div>
+        <div id="map"></div>
+      </main>
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <script>
+      const map = L.map("map").setView([49.7, -112.8], 8);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "© OpenStreetMap contributors",
+        maxZoom: 19,
+      }).addTo(map);
+
+      let riverCoordinates = [];
+      let overlayLayers = [];
+
+      const layerSelect = document.getElementById("layerSelect");
+      const datePicker = document.getElementById("datePicker");
+      const selectedDateText = document.getElementById("selectedDate");
+      const statusText = document.getElementById("statusText");
+      const mapBadge = document.getElementById("mapBadge");
+
+      const avgValue = document.getElementById("avgValue");
+      const minValue = document.getElementById("minValue");
+      const maxValue = document.getElementById("maxValue");
+      const pointCount = document.getElementById("pointCount");
+      const legendBox = document.getElementById("legendBox");
+
+      const layerConfig = {
+        temperature: {
+          label: "Temperature",
+          unit: "°C",
+          api: "temperature_2m_mean",
+          type: "daily",
+        },
+        precipitation: {
+          label: "Precipitation",
+          unit: "mm",
+          api: "precipitation_sum",
+          type: "daily",
+        },
+        wind: {
+          label: "Wind Speed",
+          unit: "km/h",
+          api: "wind_speed_10m_max",
+          type: "daily",
+        },
+        humidity: {
+          label: "Humidity",
+          unit: "%",
+          api: "relative_humidity_2m",
+          type: "hourly",
+        },
+        pressure: {
+          label: "Pressure",
+          unit: "hPa",
+          api: "surface_pressure",
+          type: "hourly",
+        },
+      };
+
+      function setupDatePicker() {
+        const today = new Date();
+        const pastDate = new Date();
+
+        pastDate.setFullYear(today.getFullYear() - 20);
+
+        const maxDate = today.toISOString().split("T")[0];
+        const minDate = pastDate.toISOString().split("T")[0];
+
+        datePicker.min = minDate;
+        datePicker.max = maxDate;
+        datePicker.value = maxDate;
+
+        selectedDateText.textContent = maxDate;
+      }
+
+      function clearMapOverlay() {
+        overlayLayers.forEach((layer) => {
+          map.removeLayer(layer);
+        });
+
+        overlayLayers = [];
+      }
+
+      function showSummaryLoader() {
+        avgValue.innerHTML = `<div class="loader"></div>`;
+        minValue.innerHTML = `<div class="loader"></div>`;
+        maxValue.innerHTML = `<div class="loader"></div>`;
+        pointCount.innerHTML = `<div class="loader"></div>`;
+      }
+
+      function average(arr) {
+        if (!arr.length) return 0;
+
+        return arr.reduce((a, b) => a + b, 0) / arr.length;
+      }
+
+      function getEnvironmentalColor(value, layer) {
+        if (layer === "temperature") {
+          if (value < 10) return "#22c55e";
+          if (value < 18) return "#f59e0b";
+          return "#ef4444";
+        }
+
+        if (layer === "precipitation") {
+          if (value < 2) return "#22c55e";
+          if (value < 10) return "#f59e0b";
+          return "#ef4444";
+        }
+
+        if (layer === "wind") {
+          if (value < 15) return "#22c55e";
+          if (value < 30) return "#f59e0b";
+          return "#ef4444";
+        }
+
+        if (layer === "humidity") {
+          if (value < 50) return "#22c55e";
+          if (value < 75) return "#f59e0b";
+          return "#ef4444";
+        }
+
+        if (layer === "pressure") {
+          if (value < 1000) return "#ef4444";
+          if (value < 1020) return "#f59e0b";
+          return "#22c55e";
+        }
+
+        return "#2684ff";
+      }
+
+      function updateLegend(config) {
+        legendBox.innerHTML = `
+        <div class="legend-item">
+          <span class="legend-color" style="background:#22c55e"></span>
+          Low ${config.label}
+        </div>
+
+        <div class="legend-item">
+          <span class="legend-color" style="background:#f59e0b"></span>
+          Medium ${config.label}
+        </div>
+
+        <div class="legend-item">
+          <span class="legend-color" style="background:#ef4444"></span>
+          High ${config.label}
+        </div>
+      `;
+      }
+
+      function updateStats(values, unit) {
+        if (!values.length) {
+          avgValue.textContent = "--";
+          minValue.textContent = "--";
+          maxValue.textContent = "--";
+          pointCount.textContent = "0";
+          return;
+        }
+
+        avgValue.textContent = average(values).toFixed(1) + unit;
+        minValue.textContent = Math.min(...values).toFixed(1) + unit;
+        maxValue.textContent = Math.max(...values).toFixed(1) + unit;
+        pointCount.textContent = values.length;
+      }
+
+      async function fetchEnvironmentalValue(lat, lon, date, layerKey) {
+        const config = layerConfig[layerKey];
+
+        let url =
+          "https://archive-api.open-meteo.com/v1/archive" +
+          `?latitude=${lat}` +
+          `&longitude=${lon}` +
+          `&start_date=${date}` +
+          `&end_date=${date}` +
+          `&timezone=auto`;
+
+        if (config.type === "daily") {
+          url += `&daily=${config.api}`;
+        } else {
+          url += `&hourly=${config.api}`;
+        }
+
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (config.type === "daily") {
+          return data.daily[config.api][0];
+        }
+
+        const values = data.hourly[config.api].filter((v) => v !== null);
+
+        return average(values);
+      }
+
+      async function loadEnvironmentalLayer() {
+        clearMapOverlay();
+        showSummaryLoader();
+
+        const layerKey = layerSelect.value;
+        const config = layerConfig[layerKey];
+        const date = datePicker.value;
+
+        selectedDateText.textContent = date;
+        mapBadge.textContent = `Oldman River ${config.label}`;
+        statusText.textContent = `Loading ${config.label.toLowerCase()} layer...`;
+
+        updateLegend(config);
+
+        const values = [];
+        const step = Math.max(1, Math.floor(riverCoordinates.length / 25));
+
+        for (let i = 0; i < riverCoordinates.length; i += step) {
+          const [lon, lat] = riverCoordinates[i];
+
+          try {
+            const value = await fetchEnvironmentalValue(
+              lat,
+              lon,
+              date,
+              layerKey,
+            );
+
+            if (value === null || value === undefined || isNaN(value)) {
+              continue;
+            }
+
+            values.push(value);
+
+            const color = getEnvironmentalColor(value, layerKey);
+
+            const marker = L.circleMarker([lat, lon], {
+              radius: 8,
+              color: color,
+              fillColor: color,
+              fillOpacity: 0.85,
+              weight: 2,
+            }).addTo(map).bindPopup(`
+            <b>${config.label}</b><br>
+            Date: ${date}<br>
+            Value: <b>${value.toFixed(1)} ${config.unit}</b><br>
+            Latitude: ${lat.toFixed(4)}<br>
+            Longitude: ${lon.toFixed(4)}
+          `);
+
+            overlayLayers.push(marker);
+          } catch (error) {
+            console.error(error);
+          }
+        }
+
+        updateStats(values, config.unit);
+        statusText.textContent = `${config.label} layer loaded successfully.`;
+      }
+
+      function extractRiverCoordinates(data) {
+        riverCoordinates = [];
+
+        data.features.forEach((feature) => {
+          if (!feature.geometry) return;
+
+          if (feature.geometry.type === "LineString") {
+            feature.geometry.coordinates.forEach((coord) => {
+              riverCoordinates.push(coord);
+            });
+          }
+
+          if (feature.geometry.type === "MultiLineString") {
+            feature.geometry.coordinates.forEach((line) => {
+              line.forEach((coord) => {
+                riverCoordinates.push(coord);
+              });
+            });
+          }
+        });
+      }
+
+      setupDatePicker();
+
+      fetch("oldman_river.geojson")
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("GeoJSON not found");
+          }
+
+          return response.json();
+        })
+        .then(async (data) => {
+          const riverLayer = L.geoJSON(data, {
+            style: {
+              color: "#2684ff",
+              weight: 5,
+              opacity: 0.9,
+            },
+          }).addTo(map);
+
+          map.fitBounds(riverLayer.getBounds());
+
+          extractRiverCoordinates(data);
+
+          statusText.textContent = "River loaded successfully.";
+
+          await loadEnvironmentalLayer();
+        })
+        .catch((error) => {
+          console.error(error);
+          statusText.textContent = "Error loading oldman_river.geojson.";
+        });
+
+      layerSelect.addEventListener("change", loadEnvironmentalLayer);
+      datePicker.addEventListener("change", loadEnvironmentalLayer);
+    </script>
+  </body>
+</html>
