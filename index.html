@@ -66,13 +66,18 @@
       }
 
       select,
-      input[type="date"] {
+      input[type="date"],
+      input[type="range"] {
         width: 100%;
         padding: 14px;
         border-radius: 14px;
         border: none;
         font-size: 15px;
         margin-bottom: 18px;
+      }
+
+      input[type="range"] {
+        padding: 0;
       }
 
       .date-display {
@@ -170,6 +175,13 @@
         box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
       }
 
+      .small-text {
+        color: #c9d8e8;
+        font-size: 13px;
+        margin-top: -8px;
+        margin-bottom: 14px;
+      }
+
       @media (max-width: 900px) {
         .dashboard {
           grid-template-columns: 1fr;
@@ -188,24 +200,41 @@
         <h1>Oldman River Dashboard</h1>
 
         <p class="subtitle">
-          Visualize historical environmental conditions along the real Oldman
-          River.
+          Visualize historical environmental conditions and trout habitat
+          suitability along the Oldman River.
         </p>
 
         <div class="card">
           <h3>Layer Control</h3>
 
-          <label>Select Environmental Layer</label>
+          <label>Select Layer</label>
           <select id="layerSelect">
             <option value="temperature">Temperature</option>
             <option value="precipitation">Precipitation</option>
             <option value="wind">Wind Speed</option>
             <option value="humidity">Humidity</option>
             <option value="pressure">Pressure</option>
+            <option value="model">Trout Habitat Suitability Model</option>
           </select>
 
-          <label>Select Historical Date</label>
+          <label>Select Date</label>
           <input type="date" id="datePicker" />
+
+          <label id="modelFilterLabel" style="display: none"
+            >Model Suitability Filter</label
+          >
+          <select id="modelFilter" style="display: none">
+            <option value="All">All</option>
+            <option value="High">High Only</option>
+            <option value="Moderate">Moderate Only</option>
+            <option value="Low">Low Only</option>
+          </select>
+
+          <label>Marker Size</label>
+          <input type="range" id="markerSize" min="2" max="18" value="4" />
+          <div class="small-text">
+            Current size: <span id="markerSizeText">4</span>
+          </div>
 
           <div class="date-display">
             Selected Date:
@@ -220,7 +249,7 @@
           <div class="stats">
             <div class="stat-box">
               <div class="stat-value" id="avgValue">--</div>
-              <div class="stat-label">Average</div>
+              <div class="stat-label" id="avgLabel">Average</div>
             </div>
 
             <div class="stat-box">
@@ -230,12 +259,12 @@
 
             <div class="stat-box">
               <div class="stat-value" id="minValue">--</div>
-              <div class="stat-label">Minimum</div>
+              <div class="stat-label" id="minLabel">Minimum</div>
             </div>
 
             <div class="stat-box">
               <div class="stat-value" id="maxValue">--</div>
-              <div class="stat-label">Maximum</div>
+              <div class="stat-label" id="maxLabel">Maximum</div>
             </div>
           </div>
         </div>
@@ -269,6 +298,9 @@
 
       let riverCoordinates = [];
       let overlayLayers = [];
+      let modelData = null;
+      let modelDates = [];
+      let currentRequestId = 0;
 
       const layerSelect = document.getElementById("layerSelect");
       const datePicker = document.getElementById("datePicker");
@@ -280,7 +312,16 @@
       const minValue = document.getElementById("minValue");
       const maxValue = document.getElementById("maxValue");
       const pointCount = document.getElementById("pointCount");
+
+      const avgLabel = document.getElementById("avgLabel");
+      const minLabel = document.getElementById("minLabel");
+      const maxLabel = document.getElementById("maxLabel");
+
       const legendBox = document.getElementById("legendBox");
+      const markerSize = document.getElementById("markerSize");
+      const markerSizeText = document.getElementById("markerSizeText");
+      const modelFilter = document.getElementById("modelFilter");
+      const modelFilterLabel = document.getElementById("modelFilterLabel");
 
       const layerConfig = {
         temperature: {
@@ -315,7 +356,7 @@
         },
       };
 
-      function setupDatePicker() {
+      function setupDatePickerForEnvironmental() {
         const today = new Date();
         const pastDate = new Date();
 
@@ -326,9 +367,38 @@
 
         datePicker.min = minDate;
         datePicker.max = maxDate;
-        datePicker.value = maxDate;
 
-        selectedDateText.textContent = maxDate;
+        if (
+          !datePicker.value ||
+          datePicker.value < minDate ||
+          datePicker.value > maxDate
+        ) {
+          datePicker.value = maxDate;
+        }
+
+        selectedDateText.textContent = datePicker.value;
+      }
+
+      async function setupDatePickerForModel() {
+        await loadModelData();
+
+        if (!modelDates.length) return;
+
+        const minDate = modelDates[0];
+        const maxDate = modelDates[modelDates.length - 1];
+
+        datePicker.min = minDate;
+        datePicker.max = maxDate;
+
+        if (
+          !datePicker.value ||
+          datePicker.value < minDate ||
+          datePicker.value > maxDate
+        ) {
+          datePicker.value = minDate;
+        }
+
+        selectedDateText.textContent = datePicker.value;
       }
 
       function clearMapOverlay() {
@@ -348,8 +418,18 @@
 
       function average(arr) {
         if (!arr.length) return 0;
-
         return arr.reduce((a, b) => a + b, 0) / arr.length;
+      }
+
+      function getMarkerRadius(score = 0.5) {
+        const base = Number(markerSize.value);
+        const safeScore = Number.isFinite(Number(score)) ? Number(score) : 0.5;
+
+        if (layerSelect.value === "model") {
+          return base + safeScore * 5;
+        }
+
+        return base;
       }
 
       function getEnvironmentalColor(value, layer) {
@@ -386,26 +466,81 @@
         return "#2684ff";
       }
 
-      function updateLegend(config) {
-        legendBox.innerHTML = `
-        <div class="legend-item">
-          <span class="legend-color" style="background:#22c55e"></span>
-          Low ${config.label}
-        </div>
-
-        <div class="legend-item">
-          <span class="legend-color" style="background:#f59e0b"></span>
-          Medium ${config.label}
-        </div>
-
-        <div class="legend-item">
-          <span class="legend-color" style="background:#ef4444"></span>
-          High ${config.label}
-        </div>
-      `;
+      function getSuitabilityColor(level) {
+        if (level === "High") return "#22c55e";
+        if (level === "Moderate") return "#f59e0b";
+        return "#ef4444";
       }
 
-      function updateStats(values, unit) {
+      function updateEnvironmentalLegend(config) {
+        let lowText = "";
+        let mediumText = "";
+        let highText = "";
+
+        if (config.label === "Temperature") {
+          lowText = "< 10°C";
+          mediumText = "10°C - 18°C";
+          highText = "> 18°C";
+        } else if (config.label === "Precipitation") {
+          lowText = "< 2 mm";
+          mediumText = "2 mm - 10 mm";
+          highText = "> 10 mm";
+        } else if (config.label === "Wind Speed") {
+          lowText = "< 15 km/h";
+          mediumText = "15 - 30 km/h";
+          highText = "> 30 km/h";
+        } else if (config.label === "Humidity") {
+          lowText = "< 50%";
+          mediumText = "50% - 75%";
+          highText = "> 75%";
+        } else if (config.label === "Pressure") {
+          lowText = "< 1000 hPa";
+          mediumText = "1000 - 1020 hPa";
+          highText = "> 1020 hPa";
+        }
+
+        legendBox.innerHTML = `
+          <div class="legend-item">
+            <span class="legend-color" style="background:#22c55e"></span>
+            Low ${config.label} (${lowText})
+          </div>
+
+          <div class="legend-item">
+            <span class="legend-color" style="background:#f59e0b"></span>
+            Medium ${config.label} (${mediumText})
+          </div>
+
+          <div class="legend-item">
+            <span class="legend-color" style="background:#ef4444"></span>
+            High ${config.label} (${highText})
+          </div>
+        `;
+      }
+
+      function updateModelLegend() {
+        legendBox.innerHTML = `
+          <div class="legend-item">
+            <span class="legend-color" style="background:#22c55e"></span>
+            High Suitability (score > 0.7)
+          </div>
+
+          <div class="legend-item">
+            <span class="legend-color" style="background:#f59e0b"></span>
+            Moderate Suitability (0.4 - 0.7)
+          </div>
+
+          <div class="legend-item">
+            <span class="legend-color" style="background:#ef4444"></span>
+            Low Suitability (score < 0.4)
+          </div>
+        `;
+      }
+
+      function updateEnvironmentalStats(values, unit) {
+        avgLabel.textContent = "Average";
+        minLabel.textContent = "Minimum";
+        maxLabel.textContent = "Maximum";
+
         if (!values.length) {
           avgValue.textContent = "--";
           minValue.textContent = "--";
@@ -420,7 +555,63 @@
         pointCount.textContent = values.length;
       }
 
-      async function fetchEnvironmentalValue(lat, lon, date, layerKey) {
+      function updateModelStats(features) {
+        const allForDate = modelData.features.filter((feature) => {
+          return feature.properties.date === datePicker.value;
+        });
+
+        const selectedLevel = modelFilter.value;
+
+        avgLabel.textContent = "Avg Score";
+        minLabel.textContent = "High";
+        maxLabel.textContent = "Low";
+
+        if (!features.length) {
+          avgValue.textContent = "--";
+          minValue.textContent = "0";
+          maxValue.textContent = "0";
+          pointCount.textContent = "0";
+          return;
+        }
+
+        const scores = features.map((feature) => {
+          return Number(feature.properties.suitability_score || 0);
+        });
+
+        const highCount = allForDate.filter((feature) => {
+          const level =
+            feature.properties.visual_level ||
+            feature.properties.suitability_level;
+          return level === "High";
+        }).length;
+
+        const lowCount = allForDate.filter((feature) => {
+          const level =
+            feature.properties.visual_level ||
+            feature.properties.suitability_level;
+          return level === "Low";
+        }).length;
+
+        avgValue.textContent = average(scores).toFixed(2);
+        minValue.textContent = highCount;
+        maxValue.textContent = lowCount;
+
+        if (selectedLevel === "All") {
+          pointCount.textContent = features.length;
+        } else {
+          pointCount.textContent = `${features.length} ${selectedLevel}`;
+        }
+      }
+
+      async function fetchEnvironmentalValue(
+        lat,
+        lon,
+        date,
+        layerKey,
+        requestId,
+      ) {
+        if (requestId !== currentRequestId) return null;
+
         const config = layerConfig[layerKey];
 
         let url =
@@ -438,18 +629,24 @@
         }
 
         const response = await fetch(url);
+
+        if (requestId !== currentRequestId) return null;
+
         const data = await response.json();
 
+        if (requestId !== currentRequestId) return null;
+
         if (config.type === "daily") {
-          return data.daily[config.api][0];
+          return data.daily?.[config.api]?.[0] ?? null;
         }
 
-        const values = data.hourly[config.api].filter((v) => v !== null);
-
-        return average(values);
+        const values = (data.hourly?.[config.api] || []).filter(
+          (v) => v !== null,
+        );
+        return values.length ? average(values) : null;
       }
 
-      async function loadEnvironmentalLayer() {
+      async function loadEnvironmentalLayer(requestId) {
         clearMapOverlay();
         showSummaryLoader();
 
@@ -461,12 +658,14 @@
         mapBadge.textContent = `Oldman River ${config.label}`;
         statusText.textContent = `Loading ${config.label.toLowerCase()} layer...`;
 
-        updateLegend(config);
+        updateEnvironmentalLegend(config);
 
         const values = [];
         const step = Math.max(1, Math.floor(riverCoordinates.length / 25));
 
         for (let i = 0; i < riverCoordinates.length; i += step) {
+          if (requestId !== currentRequestId) return;
+
           const [lon, lat] = riverCoordinates[i];
 
           try {
@@ -475,7 +674,10 @@
               lon,
               date,
               layerKey,
+              requestId,
             );
+
+            if (requestId !== currentRequestId) return;
 
             if (value === null || value === undefined || isNaN(value)) {
               continue;
@@ -486,7 +688,7 @@
             const color = getEnvironmentalColor(value, layerKey);
 
             const marker = L.circleMarker([lat, lon], {
-              radius: 8,
+              radius: getMarkerRadius(),
               color: color,
               fillColor: color,
               fillOpacity: 0.85,
@@ -501,12 +703,127 @@
 
             overlayLayers.push(marker);
           } catch (error) {
+            if (requestId !== currentRequestId) return;
             console.error(error);
           }
         }
 
-        updateStats(values, config.unit);
+        if (requestId !== currentRequestId) return;
+
+        updateEnvironmentalStats(values, config.unit);
         statusText.textContent = `${config.label} layer loaded successfully.`;
+      }
+
+      async function loadModelData() {
+        if (modelData) return;
+
+        const response = await fetch("./data/habitat_suitability.geojson");
+
+        if (!response.ok) {
+          throw new Error("habitat_suitability.geojson not found");
+        }
+
+        modelData = await response.json();
+
+        modelDates = [
+          ...new Set(modelData.features.map((f) => f.properties.date)),
+        ].sort();
+      }
+
+      async function loadModelLayer(requestId) {
+        clearMapOverlay();
+        showSummaryLoader();
+
+        try {
+          await setupDatePickerForModel();
+
+          if (requestId !== currentRequestId) return;
+
+          const date = datePicker.value;
+          const selectedLevel = modelFilter.value;
+
+          selectedDateText.textContent = date;
+          mapBadge.textContent = "Trout Habitat Suitability";
+          statusText.textContent = "Loading model output layer...";
+
+          updateModelLegend();
+
+          const selectedFeatures = modelData.features.filter((feature) => {
+            const p = feature.properties;
+            const level = p.visual_level || p.suitability_level || "Low";
+
+            const dateMatch = p.date === date;
+            const levelMatch =
+              selectedLevel === "All" || level === selectedLevel;
+
+            return dateMatch && levelMatch;
+          });
+
+          selectedFeatures.forEach((feature) => {
+            if (requestId !== currentRequestId) return;
+
+            const p = feature.properties;
+            const [lon, lat] = feature.geometry.coordinates;
+
+            const level = p.visual_level || p.suitability_level || "Low";
+            const color = getSuitabilityColor(level);
+            const score = Number(p.suitability_score || 0);
+
+            const marker = L.circleMarker([lat, lon], {
+              radius: getMarkerRadius(score),
+              color: color,
+              fillColor: color,
+              fillOpacity: 0.88,
+              weight: 2,
+            }).addTo(map).bindPopup(`
+            <b>Trout Habitat Suitability</b><br>
+            Date: ${p.date}<br>
+            Suitability: <b>${level}</b><br>
+            Score: <b>${score.toFixed(3)}</b><br>
+            Temperature: ${p.temperature} °C<br>
+            Elevation: ${p.elevation} m<br>
+            Precipitation: ${p.precipitation} mm<br>
+            Latitude: ${lat.toFixed(4)}<br>
+            Longitude: ${lon.toFixed(4)}
+          `);
+
+            overlayLayers.push(marker);
+          });
+
+          if (requestId !== currentRequestId) return;
+
+          updateModelStats(selectedFeatures);
+
+          if (selectedLevel === "All") {
+            statusText.textContent = `Model output loaded for ${date}.`;
+          } else {
+            statusText.textContent = `Model output loaded for ${date}: ${selectedLevel} suitability only.`;
+          }
+        } catch (error) {
+          if (requestId !== currentRequestId) return;
+
+          console.error(error);
+          statusText.textContent =
+            "Error loading habitat_suitability.geojson. Run the model first.";
+        }
+      }
+
+      async function loadSelectedLayer() {
+        const requestId = ++currentRequestId;
+
+        clearMapOverlay();
+
+        const isModel = layerSelect.value === "model";
+
+        modelFilter.style.display = isModel ? "block" : "none";
+        modelFilterLabel.style.display = isModel ? "block" : "none";
+
+        if (isModel) {
+          await loadModelLayer(requestId);
+        } else {
+          setupDatePickerForEnvironmental();
+          await loadEnvironmentalLayer(requestId);
+        }
       }
 
       function extractRiverCoordinates(data) {
@@ -531,7 +848,7 @@
         });
       }
 
-      setupDatePicker();
+      setupDatePickerForEnvironmental();
 
       fetch("oldman_river.geojson")
         .then((response) => {
@@ -556,15 +873,21 @@
 
           statusText.textContent = "River loaded successfully.";
 
-          await loadEnvironmentalLayer();
+          await loadSelectedLayer();
         })
         .catch((error) => {
           console.error(error);
           statusText.textContent = "Error loading oldman_river.geojson.";
         });
 
-      layerSelect.addEventListener("change", loadEnvironmentalLayer);
-      datePicker.addEventListener("change", loadEnvironmentalLayer);
+      layerSelect.addEventListener("change", loadSelectedLayer);
+      datePicker.addEventListener("change", loadSelectedLayer);
+      modelFilter.addEventListener("change", loadSelectedLayer);
+
+      markerSize.addEventListener("input", () => {
+        markerSizeText.textContent = markerSize.value;
+        loadSelectedLayer();
+      });
     </script>
   </body>
 </html>
