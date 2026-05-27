@@ -850,7 +850,7 @@
 
       setupDatePickerForEnvironmental();
 
-      fetch("oldman_river.geojson")
+      fetch("./data/oldman_river.geojson")
         .then((response) => {
           if (!response.ok) {
             throw new Error("GeoJSON not found");
