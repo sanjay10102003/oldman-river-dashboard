@@ -1,0 +1,505 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Oldman River Environmental Dashboard</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #081b2f;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      .dashboard {
+        display: grid;
+        grid-template-columns: 350px 1fr;
+        height: 100vh;
+      }
+
+      .sidebar {
+        background: linear-gradient(180deg, #0f2742, #102d4d);
+        color: white;
+        padding: 24px;
+        overflow-y: auto;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 28px;
+      }
+
+      .subtitle {
+        color: #c9d8e8;
+        font-size: 14px;
+        line-height: 1.5;
+        margin-top: 10px;
+      }
+
+      .card {
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 22px;
+        padding: 22px;
+        margin-top: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .card h3 {
+        margin-top: 0;
+        font-size: 18px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 15px;
+        font-weight: bold;
+      }
+
+      select,
+      input[type="range"] {
+        width: 100%;
+        padding: 14px;
+        border-radius: 14px;
+        border: none;
+        font-size: 15px;
+        margin-bottom: 18px;
+      }
+
+      input[type="range"] {
+        padding: 0;
+      }
+
+      .note {
+        color: #dcecff;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+
+      .note strong {
+        color: white;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+
+      .stat-box {
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        padding: 16px;
+        min-height: 78px;
+      }
+
+      .stat-value {
+        font-size: 22px;
+        font-weight: bold;
+        word-break: break-word;
+        min-height: 28px;
+        display: flex;
+        align-items: center;
+      }
+
+      .stat-label {
+        color: #c9d8e8;
+        font-size: 13px;
+        margin-top: 5px;
+      }
+
+      .loader {
+        width: 22px;
+        height: 22px;
+        border: 3px solid rgba(255, 255, 255, 0.25);
+        border-top: 3px solid white;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+        font-size: 14px;
+      }
+
+      .legend-color {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+      }
+
+      .status {
+        color: #d5e7ff;
+        line-height: 1.6;
+        font-size: 14px;
+      }
+
+      .map-area {
+        position: relative;
+        height: 100vh;
+      }
+
+      #map {
+        width: 100%;
+        height: 100%;
+      }
+
+      .badge {
+        position: absolute;
+        top: 18px;
+        right: 18px;
+        z-index: 1000;
+        background: white;
+        padding: 14px 18px;
+        border-radius: 16px;
+        font-weight: bold;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+      }
+
+      .small-text {
+        color: #c9d8e8;
+        font-size: 13px;
+        margin-top: -8px;
+        margin-bottom: 14px;
+      }
+
+      @media (max-width: 900px) {
+        .dashboard {
+          grid-template-columns: 1fr;
+        }
+
+        .map-area {
+          height: 70vh;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="dashboard">
+      <aside class="sidebar">
+        <h1>Oldman River Dashboard</h1>
+
+        <p class="subtitle">
+          Visualize real Oldman basin water pixels using the reprojected 200 m
+          environmental dataset.
+        </p>
+
+        <div class="card">
+          <h3>Layer Control</h3>
+
+          <label>Select Layer</label>
+          <select id="layerSelect">
+            <option value="air_temperature">Air Temperature</option>
+            <option value="elevation">Elevation</option>
+            <option value="slope">Slope</option>
+            <option value="sediment">Sediment</option>
+            <option value="discharge">Discharge</option>
+            <option value="max_stream_temperature">
+              Max Stream Temperature
+            </option>
+            <option value="disturbance">Human Disturbance</option>
+          </select>
+
+          <label>Marker Size</label>
+          <input type="range" id="markerSize" min="1" max="10" value="1" />
+          <div class="small-text">
+            Current size: <span id="markerSizeText">1</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Summary</h3>
+
+          <div class="stats">
+            <div class="stat-box">
+              <div class="stat-value" id="avgValue">--</div>
+              <div class="stat-label" id="avgLabel">Average</div>
+            </div>
+
+            <div class="stat-box">
+              <div class="stat-value" id="pointCount">--</div>
+              <div class="stat-label">Visible Points</div>
+            </div>
+
+            <div class="stat-box">
+              <div class="stat-value" id="minValue">--</div>
+              <div class="stat-label" id="minLabel">Minimum</div>
+            </div>
+
+            <div class="stat-box">
+              <div class="stat-value" id="maxValue">--</div>
+              <div class="stat-label" id="maxLabel">Maximum</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Legend</h3>
+          <div id="legendBox"></div>
+        </div>
+
+        <div class="card">
+          <h3>Status</h3>
+          <div class="status" id="statusText">Loading water pixels...</div>
+        </div>
+      </aside>
+
+      <main class="map-area">
+        <div class="badge" id="mapBadge">Oldman Water Pixels</div>
+        <div id="map"></div>
+      </main>
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <script>
+      const map = L.map("map", { preferCanvas: true }).setView(
+        [49.7, -112.8],
+        8,
+      );
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "© OpenStreetMap contributors",
+        maxZoom: 19,
+      }).addTo(map);
+
+      let waterData = null;
+      let waterLayer = null;
+
+      const layerSelect = document.getElementById("layerSelect");
+      const statusText = document.getElementById("statusText");
+      const mapBadge = document.getElementById("mapBadge");
+      const avgValue = document.getElementById("avgValue");
+      const minValue = document.getElementById("minValue");
+      const maxValue = document.getElementById("maxValue");
+      const pointCount = document.getElementById("pointCount");
+      const avgLabel = document.getElementById("avgLabel");
+      const minLabel = document.getElementById("minLabel");
+      const maxLabel = document.getElementById("maxLabel");
+      const legendBox = document.getElementById("legendBox");
+      const markerSize = document.getElementById("markerSize");
+      const markerSizeText = document.getElementById("markerSizeText");
+
+      const layerConfig = {
+        air_temperature: {
+          label: "Air Temperature",
+          unit: "°C",
+          low: 15.7,
+          high: 15.9,
+        },
+        elevation: {
+          label: "Elevation",
+          unit: " m",
+          low: 1000,
+          high: 1300,
+        },
+        slope: {
+          label: "Slope",
+          unit: "",
+          low: 1,
+          high: 3,
+        },
+        sediment: {
+          label: "Sediment",
+          unit: "",
+          low: 0.3,
+          high: 0.7,
+        },
+        discharge: {
+          label: "Discharge",
+          unit: "",
+          low: 0.01,
+          high: 0.1,
+        },
+        max_stream_temperature: {
+          label: "Max Stream Temperature",
+          unit: "°C",
+          low: 10,
+          high: 18,
+        },
+        disturbance: {
+          label: "Human Disturbance",
+          unit: "",
+          low: 30,
+          high: 70,
+        },
+      };
+
+      function showSummaryLoader() {
+        avgValue.innerHTML = `<div class="loader"></div>`;
+        minValue.innerHTML = `<div class="loader"></div>`;
+        maxValue.innerHTML = `<div class="loader"></div>`;
+        pointCount.innerHTML = `<div class="loader"></div>`;
+      }
+
+      function average(values) {
+        if (!values.length) return 0;
+        return values.reduce((a, b) => a + b, 0) / values.length;
+      }
+
+      function getValue(feature, key) {
+        const value = feature.properties[key];
+        if (value === null || value === undefined || value === "NA")
+          return null;
+        const numericValue = Number(value);
+        return Number.isFinite(numericValue) ? numericValue : null;
+      }
+
+      function getColor(value, config) {
+        if (value === null) return "#94a3b8";
+        if (value < config.low) return "#22c55e";
+        if (value < config.high) return "#f59e0b";
+        return "#ef4444";
+      }
+
+      function updateLegend(config) {
+        legendBox.innerHTML = `
+          <div class="legend-item">
+            <span class="legend-color" style="background:#22c55e"></span>
+            Low ${config.label} (&lt; ${config.low}${config.unit})
+          </div>
+          <div class="legend-item">
+            <span class="legend-color" style="background:#f59e0b"></span>
+            Medium ${config.label} (${config.low}${config.unit} - ${config.high}${config.unit})
+          </div>
+          <div class="legend-item">
+            <span class="legend-color" style="background:#ef4444"></span>
+            High ${config.label} (&gt;= ${config.high}${config.unit})
+          </div>
+          <div class="legend-item">
+            <span class="legend-color" style="background:#94a3b8"></span>
+            Missing / NA
+          </div>
+        `;
+      }
+
+      function updateStats(values, config, visibleCount) {
+        avgLabel.textContent = "Average";
+        minLabel.textContent = "Minimum";
+        maxLabel.textContent = "Maximum";
+
+        if (!values.length) {
+          avgValue.textContent = "--";
+          minValue.textContent = "--";
+          maxValue.textContent = "--";
+          pointCount.textContent = visibleCount;
+          return;
+        }
+
+        let sum = 0;
+        let min = values[0];
+        let max = values[0];
+
+        values.forEach((value) => {
+          sum += value;
+          if (value < min) min = value;
+          if (value > max) max = value;
+        });
+
+        avgValue.textContent = (sum / values.length).toFixed(2) + config.unit;
+        minValue.textContent = min.toFixed(2) + config.unit;
+        maxValue.textContent = max.toFixed(2) + config.unit;
+        pointCount.textContent = visibleCount;
+      }
+
+      function renderLayer() {
+        if (!waterData) return;
+
+        showSummaryLoader();
+
+        const selectedKey = layerSelect.value;
+        const config = layerConfig[selectedKey];
+        const markerRadius = Number(markerSize.value);
+        const values = [];
+
+        if (waterLayer) {
+          map.removeLayer(waterLayer);
+          waterLayer = null;
+        }
+
+        mapBadge.textContent = `Oldman River ${config.label}`;
+        statusText.textContent = `Rendering ${config.label.toLowerCase()} layer...`;
+        updateLegend(config);
+
+        waterLayer = L.geoJSON(waterData, {
+          pointToLayer: function (feature, latlng) {
+            const value = getValue(feature, selectedKey);
+            if (value !== null) values.push(value);
+
+            const color = getColor(value, config);
+
+            return L.circleMarker(latlng, {
+              radius: markerRadius,
+              color: color,
+              fillColor: color,
+              fillOpacity: 0.78,
+              weight: 0,
+            }).bindPopup(`
+              <b>${config.label}</b><br>
+              Pixel ID: ${feature.properties.pixel_id}<br>
+              Value: <b>${value === null ? "NA" : value.toFixed(3) + config.unit}</b><br>
+              Elevation: ${feature.properties.elevation ?? "NA"} m<br>
+              Slope: ${feature.properties.slope ?? "NA"}<br>
+              Discharge: ${feature.properties.discharge ?? "NA"}
+            `);
+          },
+        }).addTo(map);
+
+        updateStats(values, config, waterData.features.length);
+        statusText.textContent = `${config.label} layer loaded successfully.`;
+      }
+
+      async function loadWaterPixels() {
+        try {
+          showSummaryLoader();
+
+          const response = await fetch("./data/oldman_water_pixels.geojson");
+
+          if (!response.ok) {
+            throw new Error("oldman_water_pixels.geojson not found");
+          }
+
+          waterData = await response.json();
+
+          renderLayer();
+
+          if (waterLayer && waterLayer.getBounds().isValid()) {
+            map.fitBounds(waterLayer.getBounds());
+          }
+        } catch (error) {
+          console.error(error);
+          statusText.textContent =
+            "Error loading data/oldman_water_pixels.geojson. Make sure the file is inside the data folder.";
+        }
+      }
+
+      layerSelect.addEventListener("change", renderLayer);
+
+      markerSize.addEventListener("input", () => {
+        markerSizeText.textContent = markerSize.value;
+        renderLayer();
+      });
+
+      loadWaterPixels();
+    </script>
+  </body>
+</html>
