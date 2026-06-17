@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Alberta Streams Temperature Overlay</title>
+    <title>Alberta Streams Environmental Dashboard</title>
 
     <link
       href="https://unpkg.com/maplibre-gl@5.6.0/dist/maplibre-gl.css"
@@ -13,55 +13,229 @@
     <script src="https://unpkg.com/pmtiles@4.3.0/dist/pmtiles.js"></script>
 
     <style>
+      * {
+        box-sizing: border-box;
+      }
+
       html,
       body {
         margin: 0;
         width: 100%;
         height: 100%;
+        font-family:
+          Inter,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Arial,
+          sans-serif;
+        background: #eef2f7;
       }
 
       #map {
+        position: absolute;
+        inset: 0;
+      }
+
+      #sidebar {
+        position: absolute;
+        top: 18px;
+        left: 18px;
+        width: 350px;
+        max-height: calc(100vh - 36px);
+        overflow-y: auto;
+        z-index: 10;
+        background: rgba(255, 255, 255, 0.96);
+        border: 1px solid rgba(226, 232, 240, 0.95);
+        border-radius: 22px;
+        padding: 20px;
+        box-shadow: 0 20px 50px rgba(15, 23, 42, 0.25);
+        backdrop-filter: blur(12px);
+      }
+
+      .title h1 {
+        margin: 0;
+        font-size: 22px;
+        color: #0f172a;
+        letter-spacing: -0.03em;
+      }
+
+      .title p {
+        margin: 8px 0 18px;
+        font-size: 13px;
+        color: #64748b;
+        line-height: 1.45;
+      }
+
+      .card {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 18px;
+        padding: 15px;
+        margin-bottom: 14px;
+      }
+
+      .card-title {
+        margin: 0 0 12px;
+        font-size: 12px;
+        font-weight: 800;
+        color: #475569;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .stat {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 15px;
+        padding: 12px;
+      }
+
+      .stat-label {
+        display: block;
+        font-size: 12px;
+        color: #64748b;
+        margin-bottom: 6px;
+      }
+
+      .stat-value {
+        font-size: 22px;
+        font-weight: 800;
+        color: #0f172a;
+      }
+
+      select {
         width: 100%;
-        height: 100%;
+        padding: 12px;
+        border-radius: 12px;
+        border: 1px solid #cbd5e1;
+        background: white;
+        color: #0f172a;
+        font-size: 14px;
+        font-weight: 600;
+        outline: none;
+      }
+
+      .btn {
+        width: 100%;
+        border: none;
+        border-radius: 13px;
+        padding: 12px 14px;
+        font-size: 14px;
+        font-weight: 800;
+        cursor: pointer;
+        margin-top: 9px;
+        transition: 0.15s ease;
+      }
+
+      .btn-primary {
+        background: #2563eb;
+        color: white;
+      }
+      .btn-primary:hover {
+        background: #1d4ed8;
+      }
+
+      .btn-dark {
+        background: #0f172a;
+        color: white;
+      }
+      .btn-dark:hover {
+        background: #020617;
+      }
+
+      .btn-danger {
+        background: #ef4444;
+        color: white;
+      }
+      .btn-danger:hover {
+        background: #dc2626;
+      }
+
+      .btn-light {
+        background: #e2e8f0;
+        color: #0f172a;
+      }
+      .btn-light:hover {
+        background: #cbd5e1;
+      }
+
+      .btn:disabled {
+        background: #94a3b8;
+        cursor: not-allowed;
       }
 
       #status {
-        position: absolute;
-        top: 15px;
-        left: 15px;
-        z-index: 10;
+        font-size: 13px;
+        color: #334155;
+        line-height: 1.45;
         background: white;
-        padding: 12px 16px;
-        border-radius: 10px;
-        font-family: Arial, sans-serif;
-        font-size: 14px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        padding: 12px;
+      }
+
+      .help-text {
+        margin-top: 10px;
+        font-size: 12px;
+        color: #64748b;
+        line-height: 1.45;
       }
 
       #legend {
         position: absolute;
-        right: 15px;
-        bottom: 25px;
+        right: 18px;
+        bottom: 24px;
         z-index: 10;
-        background: white;
-        padding: 14px;
-        border-radius: 10px;
-        font-family: Arial, sans-serif;
+        background: rgba(255, 255, 255, 0.96);
+        border: 1px solid #e2e8f0;
+        padding: 15px;
+        border-radius: 16px;
         font-size: 13px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+        box-shadow: 0 12px 35px rgba(15, 23, 42, 0.18);
+        min-width: 230px;
+      }
+
+      #legend strong {
+        display: block;
+        margin-bottom: 8px;
+        color: #0f172a;
+        font-size: 16px;
       }
 
       .legend-row {
         display: flex;
         align-items: center;
-        margin-top: 7px;
+        margin-top: 8px;
+        color: #334155;
       }
 
       .dot {
         width: 14px;
         height: 14px;
         border-radius: 50%;
-        margin-right: 8px;
+        margin-right: 9px;
+        border: 1px solid rgba(15, 23, 42, 0.15);
+      }
+
+      #selectionBox {
+        position: absolute;
+        border: 2px dashed #2563eb;
+        background: rgba(37, 99, 235, 0.16);
+        display: none;
+        z-index: 20;
+        pointer-events: none;
+      }
+
+      .selecting-mode {
+        cursor: crosshair !important;
       }
 
       .maplibregl-ctrl-logo {
@@ -71,27 +245,223 @@
   </head>
 
   <body>
-    <div id="status">Loading map...</div>
+    <div id="sidebar">
+      <div class="title">
+        <h1>Alberta Streams Dashboard</h1>
+        <p>
+          Select an environmental layer, then add points from the visible map
+          area or from a custom selected box.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Layer Selection</div>
+        <select id="layerSelect">
+          <option value="temperature">Temperature</option>
+          <option value="precipitation">Precipitation</option>
+          <option value="wind">Wind Speed</option>
+          <option value="humidity">Humidity</option>
+          <option value="pressure">Pressure</option>
+        </select>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Summary</div>
+        <div class="stats-grid">
+          <div class="stat">
+            <span class="stat-label">Visible Layer Points</span>
+            <span class="stat-value" id="pointCount">0</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Per Action</span>
+            <span class="stat-value">50</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Add Data</div>
+
+        <button class="btn btn-primary" id="addVisibleBtn" disabled>
+          Add 50 Points in Visible Area
+        </button>
+
+        <button class="btn btn-dark" id="selectAreaBtn" disabled>
+          Select Box Area
+        </button>
+
+        <button
+          class="btn btn-danger"
+          id="cancelSelectBtn"
+          style="display: none"
+        >
+          Cancel Selection
+        </button>
+
+        <button class="btn btn-light" id="clearLayerBtn" disabled>
+          Clear Selected Layer
+        </button>
+
+        <div class="help-text">
+          Click “Select Box Area,” then drag a rectangle on the map.
+        </div>
+      </div>
+
+      <div id="status">Loading map...</div>
+    </div>
+
     <div id="map"></div>
+    <div id="selectionBox"></div>
 
     <div id="legend">
-      <strong>Live Temperature</strong>
-      <div class="legend-row">
-        <span class="dot" style="background: #2b83ba"></span>Low / Cold (&lt;
-        5°C)
-      </div>
-      <div class="legend-row">
-        <span class="dot" style="background: #ffffbf"></span>Normal (5°C - 15°C)
-      </div>
-      <div class="legend-row">
-        <span class="dot" style="background: #d7191c"></span>High / Warm (&gt;
-        15°C)
-      </div>
+      <strong id="legendTitle">Temperature</strong>
+      <div id="legendRows"></div>
     </div>
 
     <script>
       const protocol = new pmtiles.Protocol();
       maplibregl.addProtocol("pmtiles", protocol.tile);
+
+      const MAX_POINTS_PER_LAYER = 500;
+
+      const POINTS_PER_ACTION = 50;
+
+      const WEATHER_LAYERS = {
+        temperature: {
+          label: "Temperature",
+          apiName: "temperature_2m",
+          unit: "°C",
+          colorStops: [
+            -15,
+            "#2b83ba",
+            5,
+            "#2b83ba",
+            10,
+            "#ffffbf",
+            15,
+            "#ffffbf",
+            30,
+            "#d7191c",
+          ],
+          legend: [
+            ["#2b83ba", "Low: < 5°C"],
+            ["#ffffbf", "Normal: 5°C - 15°C"],
+            ["#d7191c", "High: > 15°C"],
+          ],
+        },
+
+        precipitation: {
+          label: "Precipitation",
+          apiName: "precipitation",
+          unit: "mm",
+          colorStops: [
+            0,
+            "#2b83ba",
+            1,
+            "#2b83ba",
+            5,
+            "#ffffbf",
+            10,
+            "#ffffbf",
+            20,
+            "#d7191c",
+          ],
+          legend: [
+            ["#2b83ba", "Low: 0 - 1 mm"],
+            ["#ffffbf", "Normal: 1 - 10 mm"],
+            ["#d7191c", "High: > 10 mm"],
+          ],
+        },
+
+        wind: {
+          label: "Wind Speed",
+          apiName: "wind_speed_10m",
+          unit: "km/h",
+          colorStops: [
+            0,
+            "#2b83ba",
+            10,
+            "#2b83ba",
+            20,
+            "#ffffbf",
+            30,
+            "#ffffbf",
+            60,
+            "#d7191c",
+          ],
+          legend: [
+            ["#2b83ba", "Low: 0 - 10 km/h"],
+            ["#ffffbf", "Normal: 10 - 30 km/h"],
+            ["#d7191c", "High: > 30 km/h"],
+          ],
+        },
+
+        humidity: {
+          label: "Humidity",
+          apiName: "relative_humidity_2m",
+          unit: "%",
+          colorStops: [
+            0,
+            "#2b83ba",
+            30,
+            "#2b83ba",
+            70,
+            "#ffffbf",
+            85,
+            "#ffffbf",
+            100,
+            "#d7191c",
+          ],
+          legend: [
+            ["#2b83ba", "Low: < 30%"],
+            ["#ffffbf", "Normal: 30% - 85%"],
+            ["#d7191c", "High: > 85%"],
+          ],
+        },
+
+        pressure: {
+          label: "Pressure",
+          apiName: "surface_pressure",
+          unit: "hPa",
+          colorStops: [
+            850,
+            "#2b83ba",
+            950,
+            "#2b83ba",
+            1015,
+            "#ffffbf",
+            1030,
+            "#ffffbf",
+            1050,
+            "#d7191c",
+          ],
+          legend: [
+            ["#2b83ba", "Low: < 950 hPa"],
+            ["#ffffbf", "Normal: 950 - 1030 hPa"],
+            ["#d7191c", "High: > 1030 hPa"],
+          ],
+        },
+      };
+
+      let allStreamPoints = [];
+      let environmentFeatures = [];
+      let usedPointKeys = new Set();
+      let isFetching = false;
+
+      let isSelectionMode = false;
+      let isDraggingSelection = false;
+      let selectionStart = null;
+
+      const status = document.getElementById("status");
+      const pointCount = document.getElementById("pointCount");
+      const layerSelect = document.getElementById("layerSelect");
+      const addVisibleBtn = document.getElementById("addVisibleBtn");
+      const selectAreaBtn = document.getElementById("selectAreaBtn");
+      const cancelSelectBtn = document.getElementById("cancelSelectBtn");
+      const clearLayerBtn = document.getElementById("clearLayerBtn");
+      const selectionBox = document.getElementById("selectionBox");
+      const legendTitle = document.getElementById("legendTitle");
+      const legendRows = document.getElementById("legendRows");
 
       const map = new maplibregl.Map({
         container: "map",
@@ -121,6 +491,7 @@
               "source-layer": "streams",
               paint: {
                 "line-color": "#0088ff",
+                "line-opacity": 0.75,
                 "line-width": [
                   "interpolate",
                   ["linear"],
@@ -144,6 +515,18 @@
 
       map.addControl(new maplibregl.NavigationControl(), "top-right");
 
+      function getSelectedLayerKey() {
+        return layerSelect.value;
+      }
+
+      function getSelectedLayer() {
+        return WEATHER_LAYERS[getSelectedLayerKey()];
+      }
+
+      function getPointKey(point, layerKey) {
+        return `${layerKey}:${point.lon.toFixed(5)},${point.lat.toFixed(5)}`;
+      }
+
       function randomSample(array, count) {
         const copy = [...array];
 
@@ -155,187 +538,551 @@
         return copy.slice(0, count);
       }
 
-      function getCategory(temp) {
-        if (temp < 5) return "Low / Cold";
-        if (temp <= 15) return "Normal";
-        return "High / Warm";
+      function updatePointCounter() {
+        const selectedLayerKey = getSelectedLayerKey();
+
+        const selectedCount = environmentFeatures.filter(
+          (feature) => feature.properties.layerKey === selectedLayerKey,
+        ).length;
+
+        pointCount.textContent = selectedCount;
       }
 
-      async function loadRandomTemperaturePoints() {
-        const status = document.getElementById("status");
+      function updateLegend() {
+        const layer = getSelectedLayer();
 
-        try {
-          status.textContent = "Reading stream coordinates...";
+        legendTitle.textContent = layer.label;
+        legendRows.innerHTML = "";
 
-          const geojsonResponse = await fetch(
-            "data/alberta_stream_branches.geojson",
+        layer.legend.forEach(([color, text]) => {
+          const row = document.createElement("div");
+          row.className = "legend-row";
+          row.innerHTML = `<span class="dot" style="background:${color}"></span>${text}`;
+          legendRows.appendChild(row);
+        });
+      }
+
+      function getVisibleBoundsObject() {
+        const bounds = map.getBounds();
+
+        return {
+          west: bounds.getWest(),
+          east: bounds.getEast(),
+          south: bounds.getSouth(),
+          north: bounds.getNorth(),
+        };
+      }
+
+      function getUnusedPointsInsideBounds(bounds, layerKey) {
+        return allStreamPoints.filter((point) => {
+          const key = getPointKey(point, layerKey);
+
+          if (usedPointKeys.has(key)) return false;
+
+          return (
+            point.lon >= bounds.west &&
+            point.lon <= bounds.east &&
+            point.lat >= bounds.south &&
+            point.lat <= bounds.north
           );
-          const geojson = await geojsonResponse.json();
+        });
+      }
 
-          let coords = [];
+      async function readStreamCoordinates() {
+        status.textContent = "Reading stream coordinates...";
 
-          geojson.features.forEach((feature) => {
-            const geometry = feature.geometry;
-            if (!geometry) return;
+        const geojsonResponse = await fetch(
+          "data/alberta_stream_branches.geojson",
+        );
+        const geojson = await geojsonResponse.json();
 
-            if (geometry.type === "LineString") {
-              coords.push(...geometry.coordinates);
-            }
+        let coords = [];
 
-            if (geometry.type === "MultiLineString") {
-              geometry.coordinates.forEach((line) => {
-                coords.push(...line);
-              });
-            }
-          });
+        geojson.features.forEach((feature) => {
+          const geometry = feature.geometry;
+          if (!geometry) return;
 
-          const unique = [];
-          const seen = new Set();
-
-          coords.forEach((coord) => {
-            const lon = coord[0];
-            const lat = coord[1];
-
-            if (!lon || !lat) return;
-
-            const key = `${lon.toFixed(5)},${lat.toFixed(5)}`;
-
-            if (!seen.has(key)) {
-              seen.add(key);
-              unique.push({ lon, lat });
-            }
-          });
-
-          const samplePoints = randomSample(unique, 250);
-
-          status.textContent = `Fetching live temperature for ${samplePoints.length} points...`;
-
-          const tempFeatures = [];
-          const chunkSize = 50;
-
-          for (let i = 0; i < samplePoints.length; i += chunkSize) {
-            const chunk = samplePoints.slice(i, i + chunkSize);
-
-            const latitudes = chunk.map((p) => p.lat).join(",");
-            const longitudes = chunk.map((p) => p.lon).join(",");
-
-            const weatherUrl =
-              `https://api.open-meteo.com/v1/forecast` +
-              `?latitude=${latitudes}` +
-              `&longitude=${longitudes}` +
-              `&current=temperature_2m` +
-              `&temperature_unit=celsius`;
-
-            const response = await fetch(weatherUrl);
-            const data = await response.json();
-
-            chunk.forEach((point, index) => {
-              const temp = Array.isArray(data)
-                ? data[index]?.current?.temperature_2m
-                : data.current?.temperature_2m;
-
-              if (temp === undefined || temp === null) return;
-
-              tempFeatures.push({
-                type: "Feature",
-                geometry: {
-                  type: "Point",
-                  coordinates: [point.lon, point.lat],
-                },
-                properties: {
-                  temperature: temp,
-                  category: getCategory(temp),
-                  source: "Open-Meteo",
-                },
-              });
-            });
+          if (geometry.type === "LineString") {
+            coords.push(...geometry.coordinates);
           }
 
-          map.addSource("temperature-points", {
-            type: "geojson",
-            data: {
-              type: "FeatureCollection",
-              features: tempFeatures,
-            },
+          if (geometry.type === "MultiLineString") {
+            geometry.coordinates.forEach((line) => {
+              coords.push(...line);
+            });
+          }
+        });
+
+        const unique = [];
+        const seen = new Set();
+
+        coords.forEach((coord) => {
+          const lon = coord[0];
+          const lat = coord[1];
+
+          if (!lon || !lat) return;
+
+          const key = `${lon.toFixed(5)},${lat.toFixed(5)}`;
+
+          if (!seen.has(key)) {
+            seen.add(key);
+            unique.push({ lon, lat });
+          }
+        });
+
+        allStreamPoints = unique;
+      }
+
+      async function fetchWeatherForPoints(points, layerKey) {
+        const layer = WEATHER_LAYERS[layerKey];
+        const newFeatures = [];
+        const chunkSize = 50;
+
+        for (let i = 0; i < points.length; i += chunkSize) {
+          const chunk = points.slice(i, i + chunkSize);
+
+          const latitudes = chunk.map((p) => p.lat).join(",");
+          const longitudes = chunk.map((p) => p.lon).join(",");
+
+          const weatherUrl =
+            `https://api.open-meteo.com/v1/forecast` +
+            `?latitude=${latitudes}` +
+            `&longitude=${longitudes}` +
+            `&current=${layer.apiName}` +
+            `&temperature_unit=celsius` +
+            `&wind_speed_unit=kmh`;
+
+          const response = await fetch(weatherUrl);
+
+          if (response.status === 429) {
+            status.textContent =
+              "API rate limit reached. Please wait a few seconds before adding more points.";
+            alert(
+              "API rate limit reached. Please wait a few seconds before adding more points.",
+            );
+            break;
+          }
+
+          if (!response.ok) {
+            console.error("API error:", response.status);
+            status.textContent = `API error: ${response.status}`;
+            break;
+          }
+
+          const data = await response.json();
+
+          chunk.forEach((point, index) => {
+            const value = Array.isArray(data)
+              ? data[index]?.current?.[layer.apiName]
+              : data.current?.[layer.apiName];
+
+            if (value === undefined || value === null) return;
+
+            usedPointKeys.add(getPointKey(point, layerKey));
+
+            newFeatures.push({
+              type: "Feature",
+              geometry: {
+                type: "Point",
+                coordinates: [point.lon, point.lat],
+              },
+              properties: {
+                layerKey,
+                layerLabel: layer.label,
+                value,
+                unit: layer.unit,
+                source: "Open-Meteo",
+              },
+            });
           });
 
-          map.addLayer({
-            id: "temperature-circles",
-            type: "circle",
-            source: "temperature-points",
-            paint: {
-              "circle-radius": [
-                "interpolate",
-                ["linear"],
-                ["zoom"],
-                4,
-                8,
-                7,
-                14,
-                10,
-                22,
-              ],
-              "circle-color": [
-                "interpolate",
-                ["linear"],
-                ["get", "temperature"],
-                -15,
-                "#2b83ba",
-                0,
-                "#abdda4",
-                10,
-                "#ffffbf",
-                20,
-                "#fdae61",
-                30,
-                "#d7191c",
-              ],
-              "circle-stroke-color": "#ffffff",
-              "circle-stroke-width": 1,
-            },
-          });
+          await new Promise((resolve) => setTimeout(resolve, 800));
+        }
 
-          map.on("click", "temperature-circles", (e) => {
-            const feature = e.features[0];
-            const coordinates = feature.geometry.coordinates.slice();
-            const temperature = feature.properties.temperature;
-            const category = feature.properties.category;
-            const source = feature.properties.source;
+        return newFeatures;
+      }
 
-            new maplibregl.Popup()
-              .setLngLat(coordinates)
-              .setHTML(
-                `
-          <div style="font-family: Arial; min-width: 180px;">
-            <h3 style="margin:0 0 8px;">Temperature Point</h3>
-            <strong>Temperature:</strong> ${temperature}°C<br>
-            <strong>Category:</strong> ${category}<br>
-            <strong>Latitude:</strong> ${coordinates[1].toFixed(5)}<br>
-            <strong>Longitude:</strong> ${coordinates[0].toFixed(5)}<br>
-          </div>
-        `,
-              )
-              .addTo(map);
-          });
+      function buildCircleColorExpression() {
+        return [
+          "match",
+          ["get", "layerKey"],
 
-          map.on("mouseenter", "temperature-circles", () => {
-            map.getCanvas().style.cursor = "pointer";
-          });
+          "temperature",
+          [
+            "interpolate",
+            ["linear"],
+            ["get", "value"],
+            ...WEATHER_LAYERS.temperature.colorStops,
+          ],
 
-          map.on("mouseleave", "temperature-circles", () => {
-            map.getCanvas().style.cursor = "";
-          });
+          "precipitation",
+          [
+            "interpolate",
+            ["linear"],
+            ["get", "value"],
+            ...WEATHER_LAYERS.precipitation.colorStops,
+          ],
 
-          status.textContent = `Loaded ${tempFeatures.length} live temperature points`;
+          "wind",
+          [
+            "interpolate",
+            ["linear"],
+            ["get", "value"],
+            ...WEATHER_LAYERS.wind.colorStops,
+          ],
+
+          "humidity",
+          [
+            "interpolate",
+            ["linear"],
+            ["get", "value"],
+            ...WEATHER_LAYERS.humidity.colorStops,
+          ],
+
+          "pressure",
+          [
+            "interpolate",
+            ["linear"],
+            ["get", "value"],
+            ...WEATHER_LAYERS.pressure.colorStops,
+          ],
+
+          "#64748b",
+        ];
+      }
+
+      function updateEnvironmentLayer() {
+        const selectedLayerKey = getSelectedLayerKey();
+
+        const visibleFeatures = environmentFeatures.filter(
+          (feature) => feature.properties.layerKey === selectedLayerKey,
+        );
+
+        const data = {
+          type: "FeatureCollection",
+          features: visibleFeatures,
+        };
+
+        if (map.getSource("environment-points")) {
+          map.getSource("environment-points").setData(data);
+          return;
+        }
+
+        map.addSource("environment-points", {
+          type: "geojson",
+          data,
+        });
+
+        map.addLayer({
+          id: "environment-circles",
+          type: "circle",
+          source: "environment-points",
+          paint: {
+            "circle-radius": [
+              "interpolate",
+              ["linear"],
+              ["zoom"],
+              4,
+              4,
+              6,
+              6,
+              8,
+              9,
+              10,
+              13,
+              12,
+              18,
+            ],
+            "circle-color": buildCircleColorExpression(),
+            "circle-opacity": 0.9,
+            "circle-stroke-color": "#ffffff",
+            "circle-stroke-width": 1.2,
+          },
+        });
+
+        addPointInteractions();
+      }
+
+      async function addPointsFromBounds(bounds, label) {
+        if (isFetching) return;
+
+        const layerKey = getSelectedLayerKey();
+        const layer = getSelectedLayer();
+
+        const currentLayerCount = environmentFeatures.filter(
+          (feature) => feature.properties.layerKey === layerKey,
+        ).length;
+
+        if (currentLayerCount >= MAX_POINTS_PER_LAYER) {
+          status.textContent = `Maximum reached for ${layer.label}. Please click "Clear Selected Layer" before adding more points.`;
+          alert(
+            `Maximum of ${MAX_POINTS_PER_LAYER} points reached for ${layer.label}. Please click "Clear Selected Layer" to add again.`,
+          );
+          return;
+        }
+
+        const remainingSlots = MAX_POINTS_PER_LAYER - currentLayerCount;
+        const pointsAllowed = Math.min(POINTS_PER_ACTION, remainingSlots);
+
+        const unusedPoints = getUnusedPointsInsideBounds(bounds, layerKey);
+
+        if (unusedPoints.length === 0) {
+          status.textContent = `No new unused ${layer.label} points found in ${label}.`;
+          return;
+        }
+
+        const pointsToAdd = randomSample(
+          unusedPoints,
+          Math.min(pointsAllowed, unusedPoints.length),
+        );
+
+        isFetching = true;
+        setButtonsDisabled(true);
+
+        try {
+          status.textContent = `Adding ${pointsToAdd.length} ${layer.label} points from ${label}...`;
+
+          const newFeatures = await fetchWeatherForPoints(
+            pointsToAdd,
+            layerKey,
+          );
+
+          environmentFeatures.push(...newFeatures);
+          updateEnvironmentLayer();
+          updatePointCounter();
+
+          const updatedCount = currentLayerCount + newFeatures.length;
+
+          if (updatedCount >= MAX_POINTS_PER_LAYER) {
+            status.textContent = `Added ${newFeatures.length} ${layer.label} points. Maximum reached. Click "Clear Selected Layer" to add again.`;
+            alert(
+              `Maximum of ${MAX_POINTS_PER_LAYER} points reached for ${layer.label}. Click "Clear Selected Layer" to add again.`,
+            );
+          } else {
+            status.textContent = `Added ${newFeatures.length} ${layer.label} points. Visible layer total: ${updatedCount}/${MAX_POINTS_PER_LAYER}`;
+          }
         } catch (error) {
           console.error(error);
-          status.textContent = "Error loading temperature data";
+          status.textContent = "Error adding environmental points.";
+        } finally {
+          isFetching = false;
+          setButtonsDisabled(false);
         }
       }
 
-      map.on("load", () => {
-        status.textContent = "Map loaded. Loading temperature...";
-        loadRandomTemperaturePoints();
+      function setButtonsDisabled(disabled) {
+        addVisibleBtn.disabled = disabled;
+        selectAreaBtn.disabled = disabled;
+        clearLayerBtn.disabled = disabled;
+      }
+
+      function addPointInteractions() {
+        map.on("click", "environment-circles", (e) => {
+          const feature = e.features[0];
+          const coordinates = feature.geometry.coordinates.slice();
+          const props = feature.properties;
+
+          new maplibregl.Popup()
+            .setLngLat(coordinates)
+            .setHTML(
+              `
+            <div style="font-family: Arial; min-width: 210px;">
+              <h3 style="margin:0 0 8px;">${props.layerLabel} Point</h3>
+              <strong>${props.layerLabel}:</strong> ${props.value} ${props.unit}<br>
+              <strong>Latitude:</strong> ${coordinates[1].toFixed(5)}<br>
+              <strong>Longitude:</strong> ${coordinates[0].toFixed(5)}<br>
+              <strong>Source:</strong> ${props.source}<br>
+            </div>
+            `,
+            )
+            .addTo(map);
+        });
+
+        map.on("mouseenter", "environment-circles", () => {
+          if (!isSelectionMode) {
+            map.getCanvas().style.cursor = "pointer";
+          }
+        });
+
+        map.on("mouseleave", "environment-circles", () => {
+          if (!isSelectionMode) {
+            map.getCanvas().style.cursor = "";
+          }
+        });
+      }
+
+      function enableSelectionMode() {
+        isSelectionMode = true;
+        map.dragPan.disable();
+
+        selectAreaBtn.style.display = "none";
+        cancelSelectBtn.style.display = "block";
+
+        status.textContent = "Selection mode active. Drag a box on the map.";
+        map.getCanvas().classList.add("selecting-mode");
+      }
+
+      function disableSelectionMode() {
+        isSelectionMode = false;
+        isDraggingSelection = false;
+        selectionStart = null;
+
+        map.dragPan.enable();
+
+        selectionBox.style.display = "none";
+        selectAreaBtn.style.display = "block";
+        cancelSelectBtn.style.display = "none";
+
+        map.getCanvas().classList.remove("selecting-mode");
+      }
+
+      function updateSelectionBox(start, current) {
+        const left = Math.min(start.x, current.x);
+        const top = Math.min(start.y, current.y);
+        const width = Math.abs(current.x - start.x);
+        const height = Math.abs(current.y - start.y);
+
+        selectionBox.style.left = `${left}px`;
+        selectionBox.style.top = `${top}px`;
+        selectionBox.style.width = `${width}px`;
+        selectionBox.style.height = `${height}px`;
+        selectionBox.style.display = "block";
+      }
+
+      function getBoundsFromPixelBox(start, end) {
+        const minX = Math.min(start.x, end.x);
+        const maxX = Math.max(start.x, end.x);
+        const minY = Math.min(start.y, end.y);
+        const maxY = Math.max(start.y, end.y);
+
+        const sw = map.unproject([minX, maxY]);
+        const ne = map.unproject([maxX, minY]);
+
+        return {
+          west: sw.lng,
+          east: ne.lng,
+          south: sw.lat,
+          north: ne.lat,
+        };
+      }
+
+      function clearSelectedLayer() {
+        const layerKey = getSelectedLayerKey();
+        const layer = getSelectedLayer();
+
+        environmentFeatures = environmentFeatures.filter(
+          (feature) => feature.properties.layerKey !== layerKey,
+        );
+
+        usedPointKeys = new Set(
+          [...usedPointKeys].filter((key) => !key.startsWith(`${layerKey}:`)),
+        );
+
+        updateEnvironmentLayer();
+        updatePointCounter();
+
+        status.textContent = `Cleared ${layer.label} points.`;
+      }
+
+      addVisibleBtn.addEventListener("click", () => {
+        addPointsFromBounds(getVisibleBoundsObject(), "the visible map area");
+      });
+
+      selectAreaBtn.addEventListener("click", enableSelectionMode);
+
+      cancelSelectBtn.addEventListener("click", () => {
+        disableSelectionMode();
+        status.textContent = "Selection cancelled.";
+      });
+
+      clearLayerBtn.addEventListener("click", clearSelectedLayer);
+
+      layerSelect.addEventListener("change", () => {
+        updateLegend();
+        updateEnvironmentLayer();
+        updatePointCounter();
+
+        const layer = getSelectedLayer();
+        status.textContent = `${layer.label} selected. Only this layer is shown now.`;
+      });
+
+      map.getCanvas().addEventListener("mousedown", (e) => {
+        if (!isSelectionMode || isFetching) return;
+
+        isDraggingSelection = true;
+
+        const rect = map.getCanvas().getBoundingClientRect();
+
+        selectionStart = {
+          x: e.clientX - rect.left,
+          y: e.clientY - rect.top,
+        };
+
+        updateSelectionBox(selectionStart, selectionStart);
+      });
+
+      window.addEventListener("mousemove", (e) => {
+        if (!isSelectionMode || !isDraggingSelection || !selectionStart) return;
+
+        const rect = map.getCanvas().getBoundingClientRect();
+
+        const current = {
+          x: e.clientX - rect.left,
+          y: e.clientY - rect.top,
+        };
+
+        updateSelectionBox(selectionStart, current);
+      });
+
+      window.addEventListener("mouseup", async (e) => {
+        if (!isSelectionMode || !isDraggingSelection || !selectionStart) return;
+
+        const rect = map.getCanvas().getBoundingClientRect();
+
+        const selectionEnd = {
+          x: e.clientX - rect.left,
+          y: e.clientY - rect.top,
+        };
+
+        const width = Math.abs(selectionEnd.x - selectionStart.x);
+        const height = Math.abs(selectionEnd.y - selectionStart.y);
+
+        if (width < 10 || height < 10) {
+          disableSelectionMode();
+          status.textContent =
+            "Selection too small. Try dragging a larger box.";
+          return;
+        }
+
+        const selectedBounds = getBoundsFromPixelBox(
+          selectionStart,
+          selectionEnd,
+        );
+
+        disableSelectionMode();
+
+        await addPointsFromBounds(selectedBounds, "the selected box");
+      });
+
+      map.on("load", async () => {
+        try {
+          updateLegend();
+
+          status.textContent = "Map loaded. Loading stream coordinates...";
+
+          await readStreamCoordinates();
+
+          updateEnvironmentLayer();
+          updatePointCounter();
+
+          status.textContent =
+            "Ready. Select a layer, then add points using visible area or box selection.";
+
+          setButtonsDisabled(false);
+        } catch (error) {
+          console.error(error);
+          status.textContent = "Error loading map data.";
+        }
       });
     </script>
   </body>
