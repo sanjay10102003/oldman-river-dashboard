@@ -258,7 +258,7 @@
           <option value="wind">Wind Speed</option>
           <option value="humidity">Humidity</option>
           <option value="pressure">Pressure</option>
-          <option value="elevation">Elevation Grid</option>
+          <option value="elevation">Elevation Tiles</option>
         </select>
       </div>
 
@@ -441,13 +441,13 @@
       };
 
       const ELEVATION_LAYER = {
-        label: "Elevation Grid",
+        label: "Elevation Tiles",
         unit: "m",
         legend: [
-          ["#2b83ba", "Low: < 800 m"],
-          ["#ffffbf", "Medium: 800 - 1500 m"],
-          ["#fdae61", "High: 1500 - 2500 m"],
-          ["#d7191c", "Very High: > 2500 m"],
+          ["#08306b", "Low elevation"],
+          ["#41ab5d", "Medium elevation"],
+          ["#ff9900", "High elevation"],
+          ["#7f0000", "Very high elevation"],
         ],
       };
 
@@ -489,9 +489,13 @@
               type: "vector",
               url: "pmtiles://data/alberta_stream_branches.pmtiles",
             },
-            elevationGrid: {
-              type: "vector",
-              url: "pmtiles://data/alberta_elevation_grid.pmtiles",
+            elevationTiles: {
+              type: "raster",
+              tiles: ["data/elevation_tiles/{z}/{x}/{y}.png"],
+              tileSize: 256,
+              minzoom: 5,
+              maxzoom: 11,
+              scheme: "tms",
             },
           },
           layers: [
@@ -501,53 +505,15 @@
               source: "osm",
             },
             {
-              id: "elevation-grid-layer",
-              type: "fill",
-              source: "elevationGrid",
-              "source-layer": "elevationGrid",
+              id: "elevation-tiles-layer",
+              type: "raster",
+              source: "elevationTiles",
               layout: {
-                visibility: "visible",
+                visibility: "none",
               },
               paint: {
-                "fill-color": [
-                  "interpolate",
-                  ["linear"],
-                  ["get", "elevation"],
-                  200,
-                  "#08306b",
-                  600,
-                  "#2171b5",
-                  1000,
-                  "#41ab5d",
-                  1400,
-                  "#ffff00",
-                  1800,
-                  "#ff9900",
-                  2200,
-                  "#ff0000",
-                  3000,
-                  "#7f0000",
-                ],
-                "fill-opacity": 0.9,
-                "fill-outline-color": [
-                  "interpolate",
-                  ["linear"],
-                  ["get", "elevation"],
-                  200,
-                  "#08306b",
-                  600,
-                  "#2171b5",
-                  1000,
-                  "#41ab5d",
-                  1400,
-                  "#ffff00",
-                  1800,
-                  "#ff9900",
-                  2200,
-                  "#ff0000",
-                  3000,
-                  "#7f0000",
-                ],
+                "raster-opacity": 0.75,
+                "raster-resampling": "nearest",
               },
             },
             {
@@ -630,7 +596,7 @@
 
       function updatePointCounter() {
         if (isElevationSelected()) {
-          pointCount.textContent = "Grid";
+          pointCount.textContent = "Tiles";
           return;
         }
 
@@ -910,9 +876,9 @@
       function updateLayerVisibilityForSelection() {
         const showElevation = isElevationSelected();
 
-        if (map.getLayer("elevation-grid-layer")) {
+        if (map.getLayer("elevation-tiles-layer")) {
           map.setLayoutProperty(
-            "elevation-grid-layer",
+            "elevation-tiles-layer",
             "visibility",
             showElevation ? "visible" : "none",
           );
@@ -939,40 +905,13 @@
 
         if (showElevation) {
           status.textContent =
-            "Elevation Grid selected. Click a grid cell to view elevation value.";
+            "Elevation Tiles selected. Raster elevation overlay is visible.";
         }
       }
 
       function addElevationInteractions() {
-        map.on("click", "elevation-grid-layer", (e) => {
-          const feature = e.features[0];
-          const props = feature.properties;
-
-          new maplibregl.Popup()
-            .setLngLat(e.lngLat)
-            .setHTML(
-              `
-              <div style="font-family: Arial; min-width: 210px;">
-                <h3 style="margin:0 0 8px;">Elevation Grid Cell</h3>
-                <strong>Elevation:</strong> ${Number(props.elevation).toFixed(2)} m<br>
-               
-              </div>
-              `,
-            )
-            .addTo(map);
-        });
-
-        map.on("mouseenter", "elevation-grid-layer", () => {
-          if (!isSelectionMode) {
-            map.getCanvas().style.cursor = "pointer";
-          }
-        });
-
-        map.on("mouseleave", "elevation-grid-layer", () => {
-          if (!isSelectionMode) {
-            map.getCanvas().style.cursor = "";
-          }
-        });
+        // Elevation is loaded as raster tiles, so individual cell values are not clickable.
+        // The colored tile overlay appears when the Elevation Tiles layer is selected.
       }
 
       async function addPointsFromBounds(bounds, label) {
