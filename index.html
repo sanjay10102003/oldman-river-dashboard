@@ -248,10 +248,6 @@
     <div id="sidebar">
       <div class="title">
         <h1>Alberta Streams Dashboard</h1>
-        <p>
-          Select an environmental layer, then add points from the visible map
-          area or from a custom selected box.
-        </p>
       </div>
 
       <div class="card">
@@ -262,6 +258,7 @@
           <option value="wind">Wind Speed</option>
           <option value="humidity">Humidity</option>
           <option value="pressure">Pressure</option>
+          <option value="elevation">Elevation Tiles</option>
         </select>
       </div>
 
@@ -443,6 +440,21 @@
         },
       };
 
+      const ELEVATION_LAYER = {
+        label: "Elevation Tiles",
+        unit: "m",
+        legend: [
+          ["#08306b", "Low elevation"],
+          ["#41ab5d", "Medium elevation"],
+          ["#ff9900", "High elevation"],
+          ["#7f0000", "Very high elevation"],
+        ],
+      };
+
+      function isElevationSelected() {
+        return getSelectedLayerKey() === "elevation";
+      }
+
       let allStreamPoints = [];
       let environmentFeatures = [];
       let usedPointKeys = new Set();
@@ -477,12 +489,32 @@
               type: "vector",
               url: "pmtiles://data/alberta_stream_branches.pmtiles",
             },
+            elevationTiles: {
+              type: "raster",
+              tiles: ["data/elevation_tiles/{z}/{x}/{y}.png"],
+              tileSize: 256,
+              minzoom: 5,
+              maxzoom: 11,
+              scheme: "tms",
+            },
           },
           layers: [
             {
               id: "osm-basemap",
               type: "raster",
               source: "osm",
+            },
+            {
+              id: "elevation-tiles-layer",
+              type: "raster",
+              source: "elevationTiles",
+              layout: {
+                visibility: "none",
+              },
+              paint: {
+                "raster-opacity": 0.75,
+                "raster-resampling": "nearest",
+              },
             },
             {
               id: "streams-line",
@@ -507,6 +539,29 @@
                 ],
               },
             },
+            {
+              id: "streams-points",
+              type: "circle",
+              source: "streams",
+              "source-layer": "streams",
+              paint: {
+                "circle-color": "#0088ff",
+                "circle-opacity": 0.8,
+                "circle-radius": [
+                  "interpolate",
+                  ["linear"],
+                  ["zoom"],
+                  5,
+                  1,
+                  8,
+                  2,
+                  10,
+                  3,
+                  12,
+                  5,
+                ],
+              },
+            },
           ],
         },
         center: [-114.5, 54.5],
@@ -520,6 +575,7 @@
       }
 
       function getSelectedLayer() {
+        if (isElevationSelected()) return ELEVATION_LAYER;
         return WEATHER_LAYERS[getSelectedLayerKey()];
       }
 
@@ -539,6 +595,11 @@
       }
 
       function updatePointCounter() {
+        if (isElevationSelected()) {
+          pointCount.textContent = "Tiles";
+          return;
+        }
+
         const selectedLayerKey = getSelectedLayerKey();
 
         const selectedCount = environmentFeatures.filter(
@@ -691,7 +752,6 @@
                 layerLabel: layer.label,
                 value,
                 unit: layer.unit,
-                source: "Open-Meteo",
               },
             });
           });
@@ -754,6 +814,16 @@
       function updateEnvironmentLayer() {
         const selectedLayerKey = getSelectedLayerKey();
 
+        if (isElevationSelected()) {
+          if (map.getSource("environment-points")) {
+            map.getSource("environment-points").setData({
+              type: "FeatureCollection",
+              features: [],
+            });
+          }
+          return;
+        }
+
         const visibleFeatures = environmentFeatures.filter(
           (feature) => feature.properties.layerKey === selectedLayerKey,
         );
@@ -801,6 +871,47 @@
         });
 
         addPointInteractions();
+      }
+
+      function updateLayerVisibilityForSelection() {
+        const showElevation = isElevationSelected();
+
+        if (map.getLayer("elevation-tiles-layer")) {
+          map.setLayoutProperty(
+            "elevation-tiles-layer",
+            "visibility",
+            showElevation ? "visible" : "none",
+          );
+        }
+        map.setPaintProperty(
+          "streams-line",
+          "line-color",
+          showElevation ? "#000000" : "#3388ff",
+        );
+
+        if (map.getLayer("streams-points")) {
+          map.setLayoutProperty(
+            "streams-points",
+            "visibility",
+            showElevation ? "none" : "visible",
+          );
+        }
+
+        if (!isFetching) {
+          addVisibleBtn.disabled = showElevation;
+          selectAreaBtn.disabled = showElevation;
+          clearLayerBtn.disabled = showElevation;
+        }
+
+        if (showElevation) {
+          status.textContent =
+            "Elevation Tiles selected. Raster elevation overlay is visible.";
+        }
+      }
+
+      function addElevationInteractions() {
+        // Elevation is loaded as raster tiles, so individual cell values are not clickable.
+        // The colored tile overlay appears when the Elevation Tiles layer is selected.
       }
 
       async function addPointsFromBounds(bounds, label) {
@@ -871,9 +982,11 @@
       }
 
       function setButtonsDisabled(disabled) {
-        addVisibleBtn.disabled = disabled;
-        selectAreaBtn.disabled = disabled;
-        clearLayerBtn.disabled = disabled;
+        const forceDisabled = disabled || isElevationSelected();
+
+        addVisibleBtn.disabled = forceDisabled;
+        selectAreaBtn.disabled = forceDisabled;
+        clearLayerBtn.disabled = forceDisabled;
       }
 
       function addPointInteractions() {
@@ -891,7 +1004,6 @@
               <strong>${props.layerLabel}:</strong> ${props.value} ${props.unit}<br>
               <strong>Latitude:</strong> ${coordinates[1].toFixed(5)}<br>
               <strong>Longitude:</strong> ${coordinates[0].toFixed(5)}<br>
-              <strong>Source:</strong> ${props.source}<br>
             </div>
             `,
             )
@@ -999,11 +1111,15 @@
 
       layerSelect.addEventListener("change", () => {
         updateLegend();
+        updateLayerVisibilityForSelection();
         updateEnvironmentLayer();
         updatePointCounter();
 
         const layer = getSelectedLayer();
-        status.textContent = `${layer.label} selected. Only this layer is shown now.`;
+
+        if (!isElevationSelected()) {
+          status.textContent = `${layer.label} selected. Only this layer is shown now.`;
+        }
       });
 
       map.getCanvas().addEventListener("mousedown", (e) => {
@@ -1072,6 +1188,8 @@
 
           await readStreamCoordinates();
 
+          addElevationInteractions();
+          updateLayerVisibilityForSelection();
           updateEnvironmentLayer();
           updatePointCounter();
 
