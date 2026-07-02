@@ -55,7 +55,7 @@
       }
 
       .title h1 {
-        margin: 0;
+        margin: 0 0 18px 0;
         font-size: 22px;
         color: #0f172a;
         letter-spacing: -0.03em;
@@ -262,7 +262,7 @@
         </select>
       </div>
 
-      <div class="card">
+      <div class="card" id="summaryCard">
         <div class="card-title">Summary</div>
         <div class="stats-grid">
           <div class="stat">
@@ -276,7 +276,7 @@
         </div>
       </div>
 
-      <div class="card">
+      <div class="card" id="addDataCard">
         <div class="card-title">Add Data</div>
 
         <button class="btn btn-primary" id="addVisibleBtn" disabled>
@@ -444,11 +444,14 @@
         label: "Elevation Tiles",
         unit: "m",
         legend: [
-          ["#08306b", "Low elevation"],
-          ["#41ab5d", "Medium elevation"],
-          ["#ff9900", "High elevation"],
-          ["#7f0000", "Very high elevation"],
-        ],
+          ["#08306b", "0-200 m"],
+          ["#2171b5", "200-600 m"],
+          ["#41ab5d", "600-1000 m"],
+          ["#ffff00", "1000-1400 m"],
+          ["#ff9900", "1400-1800 m"],
+          ["#ff0000", "1800-2200 m"],
+          ["#7f0000", ">2200 m"],
+        ],  
       };
 
       function isElevationSelected() {
@@ -471,6 +474,9 @@
       const selectAreaBtn = document.getElementById("selectAreaBtn");
       const cancelSelectBtn = document.getElementById("cancelSelectBtn");
       const clearLayerBtn = document.getElementById("clearLayerBtn");
+      const summaryCard = document.getElementById("summaryCard");
+      const addDataCard = document.getElementById("addDataCard");
+      const elevationInfoCard = document.getElementById("elevationInfoCard");
       const selectionBox = document.getElementById("selectionBox");
       const legendTitle = document.getElementById("legendTitle");
       const legendRows = document.getElementById("legendRows");
@@ -951,6 +957,18 @@
       function updateLayerVisibilityForSelection() {
         const showElevation = isElevationSelected();
 
+        if (summaryCard) {
+          summaryCard.style.display = showElevation ? "none" : "block";
+        }
+
+        if (addDataCard) {
+          addDataCard.style.display = showElevation ? "none" : "block";
+        }
+
+        if (elevationInfoCard) {
+          elevationInfoCard.style.display = showElevation ? "block" : "none";
+        }
+
         if (map.getLayer("elevation-tiles-layer")) {
           map.setLayoutProperty(
             "elevation-tiles-layer",
@@ -1002,10 +1020,59 @@
 
         if (showElevation) {
           status.textContent =
-            "Elevation selected. Showing directed stream flow.";
+            "Click a red stream segment to view elevation details.";
         } else {
           status.textContent = "Environmental layer selected.";
         }
+      }
+
+      function addDirectedEdgeInteractions() {
+        map.on("click", "directed-arrow-lines", (e) => {
+          if (!isElevationSelected()) return;
+
+          const feature = e.features[0];
+          const props = feature.properties || {};
+
+          const fromElev = Number(props.from_elev);
+          const toElev = Number(props.to_elev);
+          const drop = Number(props.drop);
+
+          const fromText = Number.isFinite(fromElev)
+            ? `${fromElev.toFixed(2)} m`
+            : "N/A";
+          const toText = Number.isFinite(toElev)
+            ? `${toElev.toFixed(2)} m`
+            : "N/A";
+          const dropText = Number.isFinite(drop)
+            ? `${drop.toFixed(2)} m`
+            : "N/A";
+
+          new maplibregl.Popup()
+            .setLngLat(e.lngLat)
+            .setHTML(
+              `
+              <div style="font-family: Arial; min-width: 230px;">
+                <h3 style="margin:0 0 8px;">Elevation Flow</h3>
+                <strong>From elevation:</strong> ${fromText}<br>
+                <strong>To elevation:</strong> ${toText}<br>
+                <strong>Elevation drop:</strong> ${dropText}<br>
+              </div>
+              `,
+            )
+            .addTo(map);
+        });
+
+        map.on("mouseenter", "directed-arrow-lines", () => {
+          if (isElevationSelected()) {
+            map.getCanvas().style.cursor = "pointer";
+          }
+        });
+
+        map.on("mouseleave", "directed-arrow-lines", () => {
+          if (!isSelectionMode) {
+            map.getCanvas().style.cursor = "";
+          }
+        });
       }
 
       function addElevationInteractions() {
@@ -1286,6 +1353,8 @@
           status.textContent = "Map loaded. Loading stream coordinates...";
 
           await readStreamCoordinates();
+
+          addDirectedEdgeInteractions();
 
           addElevationInteractions();
           updateLayerVisibilityForSelection();
