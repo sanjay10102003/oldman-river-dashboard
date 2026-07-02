@@ -479,6 +479,8 @@
         container: "map",
         style: {
           version: 8,
+          glyphs: "https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf",
+
           sources: {
             osm: {
               type: "raster",
@@ -488,6 +490,14 @@
             streams: {
               type: "vector",
               url: "pmtiles://data/alberta_stream_branches.pmtiles",
+            },
+            directedArrows: {
+              type: "vector",
+              url: "pmtiles://data/alberta_directed_stream_edges.pmtiles",
+            },
+            directedArrowHeads: {
+              type: "vector",
+              url: "pmtiles://data/alberta_directed_arrowheads.pmtiles",
             },
             elevationTiles: {
               type: "raster",
@@ -516,6 +526,7 @@
                 "raster-resampling": "nearest",
               },
             },
+
             {
               id: "streams-line",
               type: "line",
@@ -539,6 +550,58 @@
                 ],
               },
             },
+
+            {
+              id: "directed-arrow-lines",
+              type: "line",
+              source: "directedArrows",
+              "source-layer": "directed_edges",
+              minzoom: 7,
+              layout: {
+                visibility: "none",
+              },
+              paint: {
+                "line-color": "#ef4444",
+                "line-opacity": 0.85,
+                "line-width": [
+                  "interpolate",
+                  ["linear"],
+                  ["zoom"],
+                  7,
+                  1.2,
+                  10,
+                  2.0,
+                  12,
+                  3.0,
+                ],
+              },
+            },
+            {
+              id: "directed-arrowheads",
+              type: "line",
+              source: "directedArrowHeads",
+              "source-layer": "directed_arrowheads",
+              minzoom: 7,
+              layout: {
+                visibility: "none",
+              },
+              paint: {
+                "line-color": "#000000",
+                "line-opacity": 1,
+                "line-width": [
+                  "interpolate",
+                  ["linear"],
+                  ["zoom"],
+                  7,
+                  1.5,
+                  10,
+                  2.5,
+                  12,
+                  4,
+                ],
+              },
+            },
+
             {
               id: "streams-points",
               type: "circle",
@@ -569,6 +632,19 @@
       });
 
       map.addControl(new maplibregl.NavigationControl(), "top-right");
+
+      map.on("error", (e) => {
+        console.error("MapLibre error:", e.error);
+        if (
+          e.error &&
+          String(e.error.message).includes(
+            "alberta_directed_stream_edges.pmtiles",
+          )
+        ) {
+          status.textContent =
+            "Directed stream PMTiles did not load. Check that data/alberta_directed_stream_edges.pmtiles exists.";
+        }
+      });
 
       function getSelectedLayerKey() {
         return layerSelect.value;
@@ -883,17 +959,39 @@
             showElevation ? "visible" : "none",
           );
         }
-        map.setPaintProperty(
-          "streams-line",
-          "line-color",
-          showElevation ? "#000000" : "#3388ff",
-        );
+
+        // Blue stream network
+        if (map.getLayer("streams-line")) {
+          map.setLayoutProperty(
+            "streams-line",
+            "visibility",
+            showElevation ? "none" : "visible",
+          );
+        }
 
         if (map.getLayer("streams-points")) {
           map.setLayoutProperty(
             "streams-points",
             "visibility",
             showElevation ? "none" : "visible",
+          );
+        }
+
+        // Red directed flow lines
+        if (map.getLayer("directed-arrow-lines")) {
+          map.setLayoutProperty(
+            "directed-arrow-lines",
+            "visibility",
+            showElevation ? "visible" : "none",
+          );
+        }
+
+        // Black arrowheads
+        if (map.getLayer("directed-arrowheads")) {
+          map.setLayoutProperty(
+            "directed-arrowheads",
+            "visibility",
+            showElevation ? "visible" : "none",
           );
         }
 
@@ -905,7 +1003,9 @@
 
         if (showElevation) {
           status.textContent =
-            "Elevation Tiles selected. Raster elevation overlay is visible.";
+            "Elevation selected. Showing directed stream flow.";
+        } else {
+          status.textContent = "Environmental layer selected.";
         }
       }
 
@@ -1194,7 +1294,7 @@
           updatePointCounter();
 
           status.textContent =
-            "Ready. Select a layer, then add points using visible area or box selection.";
+            "Ready. Select Elevation Tiles to see directed stream arrows.";
 
           setButtonsDisabled(false);
         } catch (error) {
