@@ -55,7 +55,7 @@
       }
 
       .title h1 {
-        margin: 0 0 18px 0;
+        margin: 0 0 30px 0;
         font-size: 22px;
         color: #0f172a;
         letter-spacing: -0.03em;
@@ -198,7 +198,7 @@
         border: 1px solid #e2e8f0;
         padding: 15px;
         border-radius: 16px;
-        font-size: 13px;
+        font-size: 15px;
         box-shadow: 0 12px 35px rgba(15, 23, 42, 0.18);
         min-width: 230px;
       }
@@ -207,7 +207,7 @@
         display: block;
         margin-bottom: 8px;
         color: #0f172a;
-        font-size: 16px;
+        font-size: 19px;
       }
 
       .legend-row {
@@ -215,6 +215,7 @@
         align-items: center;
         margin-top: 8px;
         color: #334155;
+        font-size: 15px;
       }
 
       .dot {
@@ -376,20 +377,20 @@
           unit: "km/h",
           colorStops: [
             0,
-            "#2b83ba",
+            "#1d4ed8",
             10,
-            "#2b83ba",
+            "#1d4ed8",
             20,
-            "#ffffbf",
+            "#d97706",
             30,
-            "#ffffbf",
+            "#d97706",
             60,
-            "#d7191c",
+            "#b91c1c",
           ],
           legend: [
-            ["#2b83ba", "Low: 0 - 10 km/h"],
-            ["#ffffbf", "Normal: 10 - 30 km/h"],
-            ["#d7191c", "High: > 30 km/h"],
+            ["#1d4ed8", "Low: 0 - 10 km/h"],
+            ["#d97706", "Normal: 10 - 30 km/h"],
+            ["#b91c1c", "High: > 30 km/h"],
           ],
         },
 
@@ -422,20 +423,20 @@
           unit: "hPa",
           colorStops: [
             850,
-            "#2b83ba",
+            "#1d4ed8",
             950,
-            "#2b83ba",
+            "#1d4ed8",
             1015,
-            "#ffffbf",
+            "#6d28d9",
             1030,
-            "#ffffbf",
+            "#6d28d9",
             1050,
-            "#d7191c",
+            "#b91c1c",
           ],
           legend: [
-            ["#2b83ba", "Low: < 950 hPa"],
-            ["#ffffbf", "Normal: 950 - 1030 hPa"],
-            ["#d7191c", "High: > 1030 hPa"],
+            ["#1d4ed8", "Low: < 950 hPa"],
+            ["#6d28d9", "Normal: 950 - 1030 hPa"],
+            ["#b91c1c", "High: > 1030 hPa"],
           ],
         },
       };
@@ -451,7 +452,7 @@
           ["#ff9900", "1400-1800 m"],
           ["#ff0000", "1800-2200 m"],
           ["#7f0000", ">2200 m"],
-        ],  
+        ],
       };
 
       function isElevationSelected() {
@@ -462,6 +463,10 @@
       let environmentFeatures = [];
       let usedPointKeys = new Set();
       let isFetching = false;
+      let selectedEnvironmentPointId = null;
+      let selectedEnvironmentPointIndex = -1;
+      let pointInteractionsAdded = false;
+      let activePopup = null;
 
       let isSelectionMode = false;
       let isDraggingSelection = false;
@@ -598,11 +603,13 @@
                   ["linear"],
                   ["zoom"],
                   7,
-                  1.5,
+                  0.5,
                   10,
-                  2.5,
+                  1.0,
                   12,
-                  4,
+                  1.5,
+                  15,
+                  2.0,
                 ],
               },
             },
@@ -716,18 +723,64 @@
       }
 
       function getUnusedPointsInsideBounds(bounds, layerKey) {
-        return allStreamPoints.filter((point) => {
-          const key = getPointKey(point, layerKey);
+        const canvas = map.getCanvas();
 
-          if (usedPointKeys.has(key)) return false;
+        // Use the stream geometry that is actually rendered on the map.
+        // This keeps the weather points aligned with the visible blue stream lines.
+        const renderedFeatures = map.queryRenderedFeatures(
+          [
+            [0, 0],
+            [canvas.width, canvas.height],
+          ],
+          { layers: ["streams-line"] },
+        );
 
-          return (
-            point.lon >= bounds.west &&
-            point.lon <= bounds.east &&
-            point.lat >= bounds.south &&
-            point.lat <= bounds.north
-          );
+        const points = [];
+        const seen = new Set();
+
+        renderedFeatures.forEach((feature) => {
+          const geometry = feature.geometry;
+          if (!geometry) return;
+
+          let lines = [];
+
+          if (geometry.type === "LineString") {
+            lines = [geometry.coordinates];
+          }
+
+          if (geometry.type === "MultiLineString") {
+            lines = geometry.coordinates;
+          }
+
+          lines.forEach((line) => {
+            line.forEach((coord) => {
+              const lon = coord[0];
+              const lat = coord[1];
+
+              if (
+                lon < bounds.west ||
+                lon > bounds.east ||
+                lat < bounds.south ||
+                lat > bounds.north
+              ) {
+                return;
+              }
+
+              const point = { lon, lat };
+              const key = getPointKey(point, layerKey);
+
+              if (usedPointKeys.has(key)) return;
+
+              const seenKey = `${lon.toFixed(6)},${lat.toFixed(6)}`;
+              if (seen.has(seenKey)) return;
+
+              seen.add(seenKey);
+              points.push(point);
+            });
+          });
         });
+
+        return points;
       }
 
       async function readStreamCoordinates() {
@@ -823,12 +876,15 @@
             usedPointKeys.add(getPointKey(point, layerKey));
 
             newFeatures.push({
+              id: getPointKey(point, layerKey),
               type: "Feature",
               geometry: {
                 type: "Point",
                 coordinates: [point.lon, point.lat],
               },
               properties: {
+                pointId: getPointKey(point, layerKey),
+                selected: false,
                 layerKey,
                 layerLabel: layer.label,
                 value,
@@ -933,21 +989,23 @@
               "interpolate",
               ["linear"],
               ["zoom"],
-              4,
-              4,
-              6,
-              6,
+              5,
+              2.5,
               8,
-              9,
+              3.5,
               10,
-              13,
+              4.5,
               12,
-              18,
+              6,
             ],
-            "circle-color": buildCircleColorExpression(),
-            "circle-opacity": 0.9,
-            "circle-stroke-color": "#ffffff",
-            "circle-stroke-width": 1.2,
+            "circle-color": [
+              "case",
+              ["==", ["get", "selected"], true],
+              "#0f172a",
+              buildCircleColorExpression(),
+            ],
+            "circle-opacity": 1,
+            "circle-stroke-width": 0,
           },
         });
 
@@ -987,11 +1045,9 @@
         }
 
         if (map.getLayer("streams-points")) {
-          map.setLayoutProperty(
-            "streams-points",
-            "visibility",
-            showElevation ? "none" : "visible",
-          );
+          // Hide original blue stream point markers. The weather points use the
+          // same stream geometry, so this avoids a second dot/overlay effect.
+          map.setLayoutProperty("streams-points", "visibility", "none");
         }
 
         // Red directed flow lines
@@ -1155,16 +1211,56 @@
         clearLayerBtn.disabled = forceDisabled;
       }
 
-      function addPointInteractions() {
-        map.on("click", "environment-circles", (e) => {
-          const feature = e.features[0];
-          const coordinates = feature.geometry.coordinates.slice();
-          const props = feature.properties;
+      function getOrderedLayerFeatures() {
+        const layerKey = getSelectedLayerKey();
 
-          new maplibregl.Popup()
-            .setLngLat(coordinates)
-            .setHTML(
-              `
+        // Use the saved GeoJSON order, not MapLibre's rendered feature order.
+        // This makes keyboard navigation predictable:
+        // Right = next, Left = exact previous point.
+        return environmentFeatures.filter(
+          (feature) => feature.properties.layerKey === layerKey,
+        );
+      }
+
+      function refreshEnvironmentSource() {
+        const selectedLayerKey = getSelectedLayerKey();
+        const visibleFeatures = environmentFeatures.filter(
+          (feature) => feature.properties.layerKey === selectedLayerKey,
+        );
+
+        if (map.getSource("environment-points")) {
+          map.getSource("environment-points").setData({
+            type: "FeatureCollection",
+            features: visibleFeatures,
+          });
+        }
+      }
+
+      function clearSelectedPoint() {
+        if (selectedEnvironmentPointId === null) return;
+
+        environmentFeatures.forEach((feature) => {
+          if (feature.properties.pointId === selectedEnvironmentPointId) {
+            feature.properties.selected = false;
+          }
+        });
+
+        refreshEnvironmentSource();
+        selectedEnvironmentPointId = null;
+      }
+
+      function openPointPopup(feature) {
+        const coordinates = feature.geometry.coordinates.slice();
+        const props = feature.properties;
+
+        if (activePopup) {
+          activePopup.remove();
+        }
+
+        activePopup = new maplibregl.Popup()
+          .setLngLat(coordinates)
+          .setHTML(
+            `
             <div style="font-family: Arial; min-width: 210px;">
               <h3 style="margin:0 0 8px;">${props.layerLabel} Point</h3>
               <strong>${props.layerLabel}:</strong> ${props.value} ${props.unit}<br>
@@ -1172,9 +1268,87 @@
               <strong>Longitude:</strong> ${coordinates[0].toFixed(5)}<br>
             </div>
             `,
-            )
-            .addTo(map);
+          )
+          .addTo(map);
+      }
+
+      function selectEnvironmentPointById(pointId, shouldFly = false) {
+        if (!pointId) return;
+
+        const orderedFeatures = getOrderedLayerFeatures();
+        const index = orderedFeatures.findIndex(
+          (feature) => feature.properties.pointId === pointId,
+        );
+
+        if (index === -1) return;
+
+        selectedEnvironmentPointIndex = index;
+        selectedEnvironmentPointId = pointId;
+
+        environmentFeatures.forEach((feature) => {
+          feature.properties.selected = feature.properties.pointId === pointId;
         });
+
+        refreshEnvironmentSource();
+
+        const selectedFeature = orderedFeatures[index];
+        const coordinates = selectedFeature.geometry.coordinates.slice();
+
+        if (shouldFly) {
+          map.easeTo({
+            center: coordinates,
+            duration: 350,
+          });
+        }
+
+        openPointPopup(selectedFeature);
+      }
+
+      function selectPointFromClick(e) {
+        if (!map.getLayer("environment-circles")) return;
+
+        // Larger invisible hit area, while keeping the visible dot small.
+        const features = map.queryRenderedFeatures(
+          [
+            [e.point.x - 10, e.point.y - 10],
+            [e.point.x + 10, e.point.y + 10],
+          ],
+          { layers: ["environment-circles"] },
+        );
+
+        if (!features.length) return;
+
+        const clickedPointId = features[0].properties.pointId || features[0].id;
+        selectEnvironmentPointById(clickedPointId, false);
+      }
+
+      function movePointSelection(direction) {
+        if (isElevationSelected()) return;
+        if (!map.getLayer("environment-circles")) return;
+
+        const orderedFeatures = getOrderedLayerFeatures();
+        if (!orderedFeatures.length) return;
+
+        if (selectedEnvironmentPointIndex < 0) {
+          selectedEnvironmentPointIndex =
+            direction > 0 ? 0 : orderedFeatures.length - 1;
+        } else {
+          selectedEnvironmentPointIndex =
+            (selectedEnvironmentPointIndex +
+              direction +
+              orderedFeatures.length) %
+            orderedFeatures.length;
+        }
+
+        const selectedFeature = orderedFeatures[selectedEnvironmentPointIndex];
+        selectEnvironmentPointById(selectedFeature.properties.pointId, true);
+      }
+
+      function addPointInteractions() {
+        if (pointInteractionsAdded) return;
+        pointInteractionsAdded = true;
+
+        map.on("click", selectPointFromClick);
 
         map.on("mouseenter", "environment-circles", () => {
           if (!isSelectionMode) {
@@ -1185,6 +1359,18 @@
         map.on("mouseleave", "environment-circles", () => {
           if (!isSelectionMode) {
             map.getCanvas().style.cursor = "";
+          }
+        });
+
+        window.addEventListener("keydown", (e) => {
+          if (e.key === "ArrowRight") {
+            e.preventDefault();
+            movePointSelection(1);
+          }
+
+          if (e.key === "ArrowLeft") {
+            e.preventDefault();
+            movePointSelection(-1);
           }
         });
       }
@@ -1256,6 +1442,14 @@
           [...usedPointKeys].filter((key) => !key.startsWith(`${layerKey}:`)),
         );
 
+        clearSelectedPoint();
+        selectedEnvironmentPointId = null;
+        selectedEnvironmentPointIndex = -1;
+        if (activePopup) {
+          activePopup.remove();
+          activePopup = null;
+        }
+
         updateEnvironmentLayer();
         updatePointCounter();
 
@@ -1277,6 +1471,13 @@
 
       layerSelect.addEventListener("change", () => {
         updateLegend();
+        clearSelectedPoint();
+        selectedEnvironmentPointId = null;
+        selectedEnvironmentPointIndex = -1;
+        if (activePopup) {
+          activePopup.remove();
+          activePopup = null;
+        }
         updateLayerVisibilityForSelection();
         updateEnvironmentLayer();
         updatePointCounter();
@@ -1350,9 +1551,7 @@
         try {
           updateLegend();
 
-          status.textContent = "Map loaded. Loading stream coordinates...";
-
-          await readStreamCoordinates();
+          status.textContent = "Map loaded. Preparing stream layers...";
 
           addDirectedEdgeInteractions();
 
