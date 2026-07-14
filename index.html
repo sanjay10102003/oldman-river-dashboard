@@ -111,7 +111,9 @@
         color: #0f172a;
       }
 
-      select {
+      select,
+      input[type="date"],
+      input[type="text"] {
         width: 100%;
         padding: 12px;
         border-radius: 12px;
@@ -121,6 +123,14 @@
         font-size: 14px;
         font-weight: 600;
         outline: none;
+      }
+
+      .field-label {
+        display: block;
+        margin: 12px 0 6px;
+        font-size: 12px;
+        font-weight: 800;
+        color: #475569;
       }
 
       .btn {
@@ -200,7 +210,7 @@
         border-radius: 16px;
         font-size: 15px;
         box-shadow: 0 12px 35px rgba(15, 23, 42, 0.18);
-        min-width: 230px;
+        min-width: 300px;
       }
 
       #legend strong {
@@ -211,19 +221,210 @@
       }
 
       .legend-row {
-        display: flex;
+        display: grid;
+        grid-template-columns: 18px minmax(0, 1fr);
         align-items: center;
-        margin-top: 8px;
+        column-gap: 12px;
+        margin-top: 10px;
         color: #334155;
         font-size: 15px;
+        line-height: 1.3;
       }
 
-      .dot {
-        width: 14px;
-        height: 14px;
+      .legend-dot {
+        display: block;
+        width: 18px;
+        height: 18px;
         border-radius: 50%;
-        margin-right: 9px;
-        border: 1px solid rgba(15, 23, 42, 0.15);
+        border: 1px solid rgba(15, 23, 42, 0.2);
+      }
+
+      .legend-label {
+        display: block;
+        min-width: 0;
+        white-space: nowrap;
+      }
+
+      .searchable-select {
+        position: relative;
+      }
+
+      .searchable-select-input {
+        width: 100%;
+        padding: 12px 42px 12px 12px;
+        border-radius: 12px;
+        border: 1px solid #cbd5e1;
+        background: #ffffff;
+        color: #0f172a;
+        font-size: 14px;
+        font-weight: 600;
+        outline: none;
+      }
+
+      .searchable-select-input:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+      }
+
+      .searchable-select-toggle {
+        position: absolute;
+        top: 50%;
+        right: 12px;
+        transform: translateY(-50%);
+        border: none;
+        background: transparent;
+        color: #475569;
+        font-size: 18px;
+        cursor: pointer;
+        padding: 2px 4px;
+      }
+
+      .searchable-select-menu {
+        position: absolute;
+        top: calc(100% + 6px);
+        left: 0;
+        right: 0;
+        z-index: 50;
+        max-height: 240px;
+        overflow-y: auto;
+        display: none;
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        border-radius: 12px;
+        box-shadow: 0 16px 35px rgba(15, 23, 42, 0.2);
+      }
+
+      .searchable-select-menu.open {
+        display: block;
+      }
+
+      .searchable-select-option {
+        width: 100%;
+        border: none;
+        background: #ffffff;
+        color: #0f172a;
+        padding: 10px 12px;
+        text-align: left;
+        font-size: 14px;
+        cursor: pointer;
+      }
+
+      .searchable-select-option:hover,
+      .searchable-select-option.active {
+        background: #eff6ff;
+      }
+
+      .searchable-select-empty {
+        padding: 12px;
+        font-size: 13px;
+        color: #64748b;
+      }
+
+      .fish-stats {
+        display: none;
+        margin-top: 14px;
+        padding-top: 14px;
+        border-top: 1px solid #e2e8f0;
+      }
+
+      .fish-stats.visible {
+        display: block;
+      }
+
+      .fish-stats-title {
+        margin: 0 0 10px;
+        font-size: 13px;
+        font-weight: 800;
+        color: #0f172a;
+      }
+
+      .fish-stats-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 9px;
+      }
+
+      .fish-stat-box {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 10px;
+      }
+
+      .fish-stat-label {
+        display: block;
+        margin-bottom: 4px;
+        font-size: 11px;
+        color: #64748b;
+      }
+
+      .fish-stat-value {
+        display: block;
+        font-size: 14px;
+        font-weight: 800;
+        color: #0f172a;
+        overflow-wrap: anywhere;
+      }
+
+      .sources-card {
+        background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+      }
+
+      .sources-intro {
+        margin: 0 0 12px;
+        font-size: 12px;
+        color: #64748b;
+        line-height: 1.5;
+      }
+
+      .source-list {
+        display: grid;
+        gap: 9px;
+      }
+
+      .source-item {
+        display: block;
+        padding: 10px 11px;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        background: #ffffff;
+        text-decoration: none;
+        transition: 0.15s ease;
+      }
+
+      .source-item:hover {
+        border-color: #93c5fd;
+        background: #eff6ff;
+        transform: translateY(-1px);
+      }
+
+      .source-name {
+        display: block;
+        color: #0f172a;
+        font-size: 12px;
+        font-weight: 800;
+        line-height: 1.35;
+      }
+
+      .source-purpose {
+        display: block;
+        margin-top: 3px;
+        color: #64748b;
+        font-size: 11px;
+        line-height: 1.4;
+      }
+
+      .citation-note {
+        margin-top: 12px;
+        padding-top: 10px;
+        border-top: 1px solid #e2e8f0;
+        color: #64748b;
+        font-size: 10.5px;
+        line-height: 1.5;
+      }
+
+      .citation-note strong {
+        color: #334155;
       }
 
       #selectionBox {
@@ -259,20 +460,146 @@
           <option value="wind">Wind Speed</option>
           <option value="humidity">Humidity</option>
           <option value="pressure">Pressure</option>
+          <option value="history">Historical Environment</option>
+          <option value="fish">Fish Distribution</option>
           <option value="elevation">Elevation Tiles</option>
         </select>
+      </div>
+
+      <div class="card" id="historyControlCard" style="display: none">
+        <div class="card-title">Historical Environment</div>
+
+        <label class="field-label" for="historyYear">Year</label>
+        <select id="historyYear">
+          <option value="2020">2020</option>
+          <option value="2021">2021</option>
+          <option value="2022">2022</option>
+          <option value="2023">2023</option>
+          <option value="2024">2024</option>
+          <option value="2025">2025</option>
+        </select>
+
+        <label class="field-label" for="historyMonth">Month</label>
+        <select id="historyMonth">
+          <option value="1">January</option>
+          <option value="2">February</option>
+          <option value="3">March</option>
+          <option value="4">April</option>
+          <option value="5">May</option>
+          <option value="6">June</option>
+          <option value="7">July</option>
+          <option value="8">August</option>
+          <option value="9">September</option>
+          <option value="10">October</option>
+          <option value="11">November</option>
+          <option value="12">December</option>
+        </select>
+
+        <label class="field-label" for="historyVariable">Variable</label>
+        <select id="historyVariable">
+          <option value="temperature_c">Temperature</option>
+          <option value="precipitation_mm_month">Monthly Precipitation</option>
+          <option value="wind_speed_ms">Monthly Mean Wind Vector</option>
+          <option value="relative_humidity_percent">Humidity</option>
+          <option value="surface_pressure_hpa">Surface Pressure</option>
+        </select>
+
+        <div class="help-text">
+          Monthly ERA5-Land values from 2020 to 2025 are applied directly to the
+          Alberta river network. Select a period and variable, then click a
+          coloured river segment to view its value.
+        </div>
+      </div>
+
+      <div class="card" id="fishControlCard" style="display: none">
+        <div class="card-title">Fish Distribution</div>
+
+        <label class="field-label" for="fishSpeciesInput">Species</label>
+
+        <div class="searchable-select" id="fishSpeciesSelector">
+          <input
+            id="fishSpeciesInput"
+            class="searchable-select-input"
+            type="text"
+            value="All species"
+            placeholder="Search species..."
+            autocomplete="off"
+            role="combobox"
+            aria-expanded="false"
+            aria-controls="fishSpeciesMenu"
+          />
+
+          <button
+            id="fishSpeciesToggle"
+            class="searchable-select-toggle"
+            type="button"
+            aria-label="Open species list"
+          >
+            ▾
+          </button>
+
+          <div
+            id="fishSpeciesMenu"
+            class="searchable-select-menu"
+            role="listbox"
+          ></div>
+        </div>
+
+        <div class="fish-stats" id="fishStats">
+          <div class="fish-stats-title" id="fishStatsTitle">
+            Species Statistics
+          </div>
+
+          <div class="fish-stats-grid">
+            <div class="fish-stat-box">
+              <span class="fish-stat-label">Observations</span>
+              <span class="fish-stat-value" id="fishObservationCount">0</span>
+            </div>
+
+            <div class="fish-stat-box">
+              <span class="fish-stat-label">Unique localities</span>
+              <span class="fish-stat-value" id="fishLocalityCount">0</span>
+            </div>
+
+            <div class="fish-stat-box">
+              <span class="fish-stat-label">First observation</span>
+              <span class="fish-stat-value" id="fishFirstObservation">N/A</span>
+            </div>
+
+            <div class="fish-stat-box">
+              <span class="fish-stat-label">Latest observation</span>
+              <span class="fish-stat-value" id="fishLatestObservation"
+                >N/A</span
+              >
+            </div>
+
+            <div class="fish-stat-box" style="grid-column: 1 / -1">
+              <span class="fish-stat-label">Family</span>
+              <span class="fish-stat-value" id="fishFamily">N/A</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="help-text">
+          Search or select a species, then click a point to view observation
+          details.
+        </div>
       </div>
 
       <div class="card" id="summaryCard">
         <div class="card-title">Summary</div>
         <div class="stats-grid">
           <div class="stat">
-            <span class="stat-label">Visible Layer Points</span>
+            <span class="stat-label" id="summaryPrimaryLabel"
+              >Visible Layer</span
+            >
             <span class="stat-value" id="pointCount">0</span>
           </div>
           <div class="stat">
-            <span class="stat-label">Per Action</span>
-            <span class="stat-value">50</span>
+            <span class="stat-label" id="summarySecondaryLabel"
+              >Per Action</span
+            >
+            <span class="stat-value" id="summarySecondaryValue">50</span>
           </div>
         </div>
       </div>
@@ -305,6 +632,123 @@
         </div>
       </div>
 
+      <div class="card sources-card" id="sourcesCard">
+        <div class="card-title">Data Sources &amp; Credits</div>
+        <p class="sources-intro">
+          This dashboard integrates authoritative open data and open-source
+          mapping technologies. Select a source below to view its official
+          website or documentation.
+        </p>
+
+        <div class="source-list">
+          <a
+            class="source-item"
+            href="https://open.alberta.ca/opendata/gda-87c2f32f-cd0b-4250-8142-e49391512c64"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span class="source-name"
+              >Government of Alberta - Base Watersheds</span
+            >
+            <span class="source-purpose"
+              >Provincial stream and watershed network data</span
+            >
+          </a>
+
+          <a
+            class="source-item"
+            href="https://open.alberta.ca/opendata/gda-c16469a2-5541-455c-bba0-63a24c0ff08a"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span class="source-name"
+              >Government of Alberta - Provincial DEM</span
+            >
+            <span class="source-purpose"
+              >Elevation data used for terrain visualization and flow
+              analysis</span
+            >
+          </a>
+
+          <a
+            class="source-item"
+            href="https://open-meteo.com/en/docs"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span class="source-name">Open-Meteo Weather API</span>
+            <span class="source-purpose"
+              >Current temperature, precipitation, wind, humidity and
+              pressure</span
+            >
+          </a>
+
+          <a
+            class="source-item"
+            href="https://cds.climate.copernicus.eu/datasets/reanalysis-era5-land-monthly-means"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span class="source-name"
+              >Copernicus Climate Data Store - ERA5-Land</span
+            >
+            <span class="source-purpose"
+              >Monthly historical land-climate reanalysis for 2020–2025</span
+            >
+          </a>
+
+          <a
+            class="source-item"
+            href="https://www.gbif.org/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span class="source-name"
+              >Global Biodiversity Information Facility (GBIF)</span
+            >
+            <span class="source-purpose"
+              >Fish species occurrence and observation records</span
+            >
+          </a>
+
+          <a
+            class="source-item"
+            href="https://www.openstreetmap.org/copyright"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span class="source-name">OpenStreetMap Contributors</span>
+            <span class="source-purpose"
+              >Reference basemap and geographic context</span
+            >
+          </a>
+
+          <a
+            class="source-item"
+            href="https://www.maplibre.org/maplibre-gl-js/docs/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span class="source-name">MapLibre GL JS</span>
+            <span class="source-purpose"
+              >Interactive WebGL map rendering library</span
+            >
+          </a>
+
+          <a
+            class="source-item"
+            href="https://docs.protomaps.com/pmtiles/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span class="source-name">PMTiles / Protomaps</span>
+            <span class="source-purpose"
+              >Efficient single-file vector-tile storage and delivery</span
+            >
+          </a>
+        </div>
+      </div>
+
       <div id="status">Loading map...</div>
     </div>
 
@@ -323,6 +767,18 @@
       const MAX_POINTS_PER_LAYER = 500;
 
       const POINTS_PER_ACTION = 50;
+
+      const HISTORY_CSV_PATH =
+        "data/environment_history/era5_stream_grid_monthly_2020_2025.csv";
+
+      const HISTORY_STREAM_PM_TILES_PATH =
+        "pmtiles://data/environment_history/historical_stream_segments.pmtiles";
+
+      const HISTORY_STREAM_SOURCE_LAYER = "historical_stream_segments";
+
+      const FISH_GEOJSON_PATH = "data/fish/alberta_fish_occurrences.geojson";
+
+      const FISH_SPECIES_PATH = "data/fish/alberta_fish_species.txt";
 
       const WEATHER_LAYERS = {
         temperature: {
@@ -441,6 +897,147 @@
         },
       };
 
+      const HISTORY_VARIABLES = {
+        temperature_c: {
+          label: "Temperature",
+          unit: "°C",
+          colorStops: [
+            -27.1,
+            "#08306b",
+            -14.346,
+            "#2171b5",
+            -6.382,
+            "#6baed6",
+            2.898,
+            "#fdae6b",
+            12.395,
+            "#cb181d",
+            24.9,
+            "#7f0000",
+          ],
+          legend: [
+            ["#08306b", "Very cold: ≤ -14.3°C"],
+            ["#2171b5", "Cold: -14.3°C to -6.4°C"],
+            ["#6baed6", "Cool: -6.4°C to 2.9°C"],
+            ["#fdae6b", "Mild: 2.9°C to 12.4°C"],
+            ["#cb181d", "Warm: > 12.4°C"],
+          ],
+        },
+
+        precipitation_mm_month: {
+          label: "Monthly Precipitation",
+          unit: "mm/month",
+          colorStops: [
+            0.9,
+            "#eff6ff",
+            9.173,
+            "#bfdbfe",
+            18.671,
+            "#60a5fa",
+            29.571,
+            "#2563eb",
+            45.907,
+            "#1e40af",
+            246.5,
+            "#172554",
+          ],
+          legend: [
+            ["#eff6ff", "Very low: ≤ 9.2 mm"],
+            ["#bfdbfe", "Low: 9.2 to 18.7 mm"],
+            ["#60a5fa", "Moderate: 18.7 to 29.6 mm"],
+            ["#2563eb", "High: 29.6 to 45.9 mm"],
+            ["#172554", "Very high: > 45.9 mm"],
+          ],
+        },
+
+        wind_speed_ms: {
+          label: "Monthly Mean Wind Vector",
+          unit: "m/s",
+          colorStops: [
+            0,
+            "#dbeafe",
+            0.304,
+            "#93c5fd",
+            0.582,
+            "#60a5fa",
+            0.824,
+            "#2563eb",
+            1.103,
+            "#d97706",
+            4.5,
+            "#b91c1c",
+          ],
+          legend: [
+            ["#dbeafe", "Very low: ≤ 0.30 m/s"],
+            ["#93c5fd", "Low: 0.30 to 0.58 m/s"],
+            ["#60a5fa", "Moderate: 0.58 to 0.82 m/s"],
+            ["#2563eb", "Elevated: 0.82 to 1.10 m/s"],
+            ["#b91c1c", "High: > 1.10 m/s"],
+          ],
+        },
+
+        relative_humidity_percent: {
+          label: "Relative Humidity",
+          unit: "%",
+          colorStops: [
+            34.7,
+            "#fef3c7",
+            54.11,
+            "#fde68a",
+            62.26,
+            "#5eead4",
+            68.023,
+            "#2dd4bf",
+            73.264,
+            "#0891b2",
+            91.7,
+            "#164e63",
+          ],
+          legend: [
+            ["#fef3c7", "Very dry: ≤ 54.1%"],
+            ["#fde68a", "Dry: 54.1% to 62.3%"],
+            ["#5eead4", "Moderate: 62.3% to 68.0%"],
+            ["#2dd4bf", "Humid: 68.0% to 73.3%"],
+            ["#164e63", "Very humid: > 73.3%"],
+          ],
+        },
+
+        surface_pressure_hpa: {
+          label: "Surface Pressure",
+          unit: "hPa",
+          colorStops: [
+            739,
+            "#1d4ed8",
+            870.986,
+            "#2563eb",
+            918.997,
+            "#6d28d9",
+            933.519,
+            "#a21caf",
+            944.432,
+            "#be123c",
+            999,
+            "#7f1d1d",
+          ],
+          legend: [
+            ["#1d4ed8", "Very low: ≤ 871.0 hPa"],
+            ["#2563eb", "Low: 871.0 to 919.0 hPa"],
+            ["#6d28d9", "Moderate: 919.0 to 933.5 hPa"],
+            ["#a21caf", "High: 933.5 to 944.4 hPa"],
+            ["#7f1d1d", "Very high: > 944.4 hPa"],
+          ],
+        },
+      };
+
+      const HISTORY_LAYER = {
+        label: "Historical Environment",
+      };
+
+      const FISH_LAYER = {
+        label: "Fish Distribution",
+        legend: [["#f97316", "Fish occurrence location"]],
+      };
+
       const ELEVATION_LAYER = {
         label: "Elevation Tiles",
         unit: "m",
@@ -459,6 +1056,14 @@
         return getSelectedLayerKey() === "elevation";
       }
 
+      function isHistorySelected() {
+        return getSelectedLayerKey() === "history";
+      }
+
+      function isFishSelected() {
+        return getSelectedLayerKey() === "fish";
+      }
+
       let allStreamPoints = [];
       let environmentFeatures = [];
       let usedPointKeys = new Set();
@@ -466,7 +1071,23 @@
       let selectedEnvironmentPointId = null;
       let selectedEnvironmentPointIndex = -1;
       let pointInteractionsAdded = false;
+      let historyInteractionsAdded = false;
+      let fishInteractionsAdded = false;
       let activePopup = null;
+
+      let historyRows = [];
+      let historyLoaded = false;
+      let historyIsLoading = false;
+      let historySelectedYear = 2020;
+      let historySelectedMonth = 1;
+      let historySelectedVariable = "temperature_c";
+      let activeHistoryValueLookup = new Map();
+      let activeHistoryColorLookup = new Map();
+
+      let fishSpeciesLoaded = false;
+      let selectedFishSpecies = "";
+      let fishSpeciesNames = [];
+      let fishGeojsonData = null;
 
       let isSelectionMode = false;
       let isDraggingSelection = false;
@@ -474,6 +1095,15 @@
 
       const status = document.getElementById("status");
       const pointCount = document.getElementById("pointCount");
+      const summaryPrimaryLabel = document.getElementById(
+        "summaryPrimaryLabel",
+      );
+      const summarySecondaryLabel = document.getElementById(
+        "summarySecondaryLabel",
+      );
+      const summarySecondaryValue = document.getElementById(
+        "summarySecondaryValue",
+      );
       const layerSelect = document.getElementById("layerSelect");
       const addVisibleBtn = document.getElementById("addVisibleBtn");
       const selectAreaBtn = document.getElementById("selectAreaBtn");
@@ -481,6 +1111,30 @@
       const clearLayerBtn = document.getElementById("clearLayerBtn");
       const summaryCard = document.getElementById("summaryCard");
       const addDataCard = document.getElementById("addDataCard");
+      const historyControlCard = document.getElementById("historyControlCard");
+      const fishControlCard = document.getElementById("fishControlCard");
+      const historyYear = document.getElementById("historyYear");
+      const historyMonth = document.getElementById("historyMonth");
+      const historyVariable = document.getElementById("historyVariable");
+      const fishSpeciesSelector = document.getElementById(
+        "fishSpeciesSelector",
+      );
+      const fishSpeciesInput = document.getElementById("fishSpeciesInput");
+      const fishSpeciesToggle = document.getElementById("fishSpeciesToggle");
+      const fishSpeciesMenu = document.getElementById("fishSpeciesMenu");
+      const fishStats = document.getElementById("fishStats");
+      const fishStatsTitle = document.getElementById("fishStatsTitle");
+      const fishObservationCount = document.getElementById(
+        "fishObservationCount",
+      );
+      const fishLocalityCount = document.getElementById("fishLocalityCount");
+      const fishFirstObservation = document.getElementById(
+        "fishFirstObservation",
+      );
+      const fishLatestObservation = document.getElementById(
+        "fishLatestObservation",
+      );
+      const fishFamily = document.getElementById("fishFamily");
       const elevationInfoCard = document.getElementById("elevationInfoCard");
       const selectionBox = document.getElementById("selectionBox");
       const legendTitle = document.getElementById("legendTitle");
@@ -497,10 +1151,12 @@
               type: "raster",
               tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],
               tileSize: 256,
+              attribution:
+                '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a>',
             },
             streams: {
               type: "vector",
-              url: "pmtiles://data/alberta_stream_branches.pmtiles",
+              url: "pmtiles://data/alberta_stream.pmtiles",
             },
             directedArrows: {
               type: "vector",
@@ -517,6 +1173,11 @@
               minzoom: 5,
               maxzoom: 11,
               scheme: "tms",
+            },
+            historicalStreamSegments: {
+              type: "vector",
+              url: HISTORY_STREAM_PM_TILES_PATH,
+              promoteId: "segment_id",
             },
           },
           layers: [
@@ -541,22 +1202,22 @@
               id: "streams-line",
               type: "line",
               source: "streams",
-              "source-layer": "streams",
+              "source-layer": "alberta_stream",
               paint: {
-                "line-color": "#0088ff",
-                "line-opacity": 0.75,
+                "line-color": "#0057ff",
+                "line-opacity": 0.95,
                 "line-width": [
                   "interpolate",
                   ["linear"],
                   ["zoom"],
                   5,
-                  0.3,
-                  8,
                   0.8,
+                  8,
+                  1.4,
                   10,
-                  1.5,
+                  2.2,
                   12,
-                  3,
+                  3.5,
                 ],
               },
             },
@@ -664,7 +1325,13 @@
 
       function getSelectedLayer() {
         if (isElevationSelected()) return ELEVATION_LAYER;
+        if (isHistorySelected()) return HISTORY_LAYER;
+        if (isFishSelected()) return FISH_LAYER;
         return WEATHER_LAYERS[getSelectedLayerKey()];
+      }
+
+      function getSelectedHistoryVariableConfig() {
+        return HISTORY_VARIABLES[historySelectedVariable];
       }
 
       function getPointKey(point, layerKey) {
@@ -688,25 +1355,79 @@
           return;
         }
 
+        if (isHistorySelected()) {
+          summaryPrimaryLabel.textContent = "River Network";
+          summarySecondaryLabel.textContent = "Time Period";
+          summarySecondaryValue.textContent = `${historySelectedMonth}/${historySelectedYear}`;
+          pointCount.textContent = "Alberta";
+          return;
+        }
+
+        if (isFishSelected()) {
+          summaryPrimaryLabel.textContent = selectedFishSpecies
+            ? "Matching Records"
+            : "Fish Records";
+          summarySecondaryLabel.textContent = selectedFishSpecies
+            ? "Species Selected"
+            : "Species in Dataset";
+
+          if (fishGeojsonData) {
+            const recordCount = selectedFishSpecies
+              ? fishGeojsonData.features.filter(
+                  (feature) =>
+                    String(feature.properties?.species || "") ===
+                    selectedFishSpecies,
+                ).length
+              : fishGeojsonData.features.length;
+
+            pointCount.textContent = recordCount.toLocaleString();
+            summarySecondaryValue.textContent = selectedFishSpecies
+              ? "1"
+              : fishSpeciesNames.length.toLocaleString();
+          } else {
+            pointCount.textContent = "0";
+            summarySecondaryValue.textContent = "0";
+          }
+          return;
+        }
+
+        summaryPrimaryLabel.textContent = "Visible Layer";
+        summarySecondaryLabel.textContent = "Per Action";
+        summarySecondaryValue.textContent = POINTS_PER_ACTION.toLocaleString();
+
         const selectedLayerKey = getSelectedLayerKey();
 
         const selectedCount = environmentFeatures.filter(
           (feature) => feature.properties.layerKey === selectedLayerKey,
         ).length;
 
-        pointCount.textContent = selectedCount;
+        pointCount.textContent = selectedCount.toLocaleString();
       }
 
       function updateLegend() {
-        const layer = getSelectedLayer();
+        const layer = isHistorySelected()
+          ? getSelectedHistoryVariableConfig()
+          : getSelectedLayer();
 
-        legendTitle.textContent = layer.label;
+        legendTitle.textContent = isHistorySelected()
+          ? `Historical: ${layer.label}`
+          : layer.label;
         legendRows.innerHTML = "";
 
         layer.legend.forEach(([color, text]) => {
           const row = document.createElement("div");
           row.className = "legend-row";
-          row.innerHTML = `<span class="dot" style="background:${color}"></span>${text}`;
+
+          const dot = document.createElement("span");
+          dot.className = "legend-dot";
+          dot.style.backgroundColor = color;
+
+          const label = document.createElement("span");
+          label.className = "legend-label";
+          label.textContent = text;
+
+          row.appendChild(dot);
+          row.appendChild(label);
           legendRows.appendChild(row);
         });
       }
@@ -826,6 +1547,651 @@
         });
 
         allStreamPoints = unique;
+      }
+
+      function parseCsvLine(line) {
+        return line.split(",");
+      }
+
+      async function loadHistoryCsv() {
+        if (historyLoaded || historyIsLoading) return;
+
+        historyIsLoading = true;
+        status.textContent = "Loading monthly ERA5-Land climate values...";
+
+        try {
+          const response = await fetch(HISTORY_CSV_PATH);
+
+          if (!response.ok) {
+            throw new Error(`Could not load history CSV: ${response.status}`);
+          }
+
+          const text = await response.text();
+          const lines = text.trim().split(/\r?\n/);
+          const headers = parseCsvLine(lines[0]);
+          const index = Object.fromEntries(
+            headers.map((header, position) => [header, position]),
+          );
+
+          const requiredColumns = [
+            "era5_grid_id",
+            "latitude",
+            "longitude",
+            "year",
+            "month",
+            "temperature_c",
+            "precipitation_mm_month",
+            "wind_speed_ms",
+            "relative_humidity_percent",
+            "surface_pressure_hpa",
+          ];
+
+          const missingColumns = requiredColumns.filter(
+            (column) => index[column] === undefined,
+          );
+
+          if (missingColumns.length > 0) {
+            throw new Error(
+              `Historical CSV is missing columns: ${missingColumns.join(", ")}`,
+            );
+          }
+
+          historyRows = [];
+
+          for (let i = 1; i < lines.length; i++) {
+            if (!lines[i]) continue;
+            const values = parseCsvLine(lines[i]);
+
+            const row = {
+              era5_grid_id: Number(values[index.era5_grid_id]),
+              latitude: Number(values[index.latitude]),
+              longitude: Number(values[index.longitude]),
+              year: Number(values[index.year]),
+              month: Number(values[index.month]),
+              temperature_c: Number(values[index.temperature_c]),
+              precipitation_mm_month: Number(
+                values[index.precipitation_mm_month],
+              ),
+              wind_speed_ms: Number(values[index.wind_speed_ms]),
+              relative_humidity_percent: Number(
+                values[index.relative_humidity_percent],
+              ),
+              surface_pressure_hpa: Number(values[index.surface_pressure_hpa]),
+            };
+
+            if (
+              Number.isFinite(row.latitude) &&
+              Number.isFinite(row.longitude) &&
+              Number.isFinite(row.era5_grid_id)
+            ) {
+              historyRows.push(row);
+            }
+          }
+
+          historyLoaded = true;
+        } finally {
+          historyIsLoading = false;
+        }
+      }
+
+      function getHistoryColor(value) {
+        if (historySelectedVariable === "temperature_c") {
+          if (value <= -14.346) return "#08306b";
+          if (value <= -6.382) return "#2171b5";
+          if (value <= 2.898) return "#6baed6";
+          if (value <= 12.395) return "#fdae6b";
+          return "#cb181d";
+        }
+
+        if (historySelectedVariable === "precipitation_mm_month") {
+          if (value <= 9.173) return "#eff6ff";
+          if (value <= 18.671) return "#bfdbfe";
+          if (value <= 29.571) return "#60a5fa";
+          if (value <= 45.907) return "#2563eb";
+          return "#172554";
+        }
+
+        if (historySelectedVariable === "wind_speed_ms") {
+          if (value <= 0.304) return "#dbeafe";
+          if (value <= 0.582) return "#93c5fd";
+          if (value <= 0.824) return "#60a5fa";
+          if (value <= 1.103) return "#2563eb";
+          return "#b91c1c";
+        }
+
+        if (historySelectedVariable === "relative_humidity_percent") {
+          if (value <= 54.11) return "#fef3c7";
+          if (value <= 62.26) return "#fde68a";
+          if (value <= 68.023) return "#5eead4";
+          if (value <= 73.264) return "#2dd4bf";
+          return "#164e63";
+        }
+
+        if (historySelectedVariable === "surface_pressure_hpa") {
+          if (value <= 870.986) return "#1d4ed8";
+          if (value <= 918.997) return "#2563eb";
+          if (value <= 933.519) return "#6d28d9";
+          if (value <= 944.432) return "#a21caf";
+          return "#7f1d1d";
+        }
+
+        return "#94a3b8";
+      }
+
+      function prepareActiveHistoryLookup() {
+        activeHistoryValueLookup = new Map();
+        activeHistoryColorLookup = new Map();
+
+        for (const row of historyRows) {
+          if (
+            row.year !== historySelectedYear ||
+            row.month !== historySelectedMonth
+          ) {
+            continue;
+          }
+
+          const gridId = String(row.era5_grid_id);
+          const value = Number(row[historySelectedVariable]);
+
+          if (!Number.isFinite(value)) continue;
+
+          activeHistoryValueLookup.set(gridId, value);
+          activeHistoryColorLookup.set(gridId, getHistoryColor(value));
+        }
+
+        console.log(
+          "Historical ERA5 cells loaded:",
+          activeHistoryColorLookup.size,
+        );
+      }
+
+      function buildHistoryColorExpression() {
+        const expression = ["match", ["to-string", ["get", "era5_grid_id"]]];
+
+        activeHistoryColorLookup.forEach((color, gridId) => {
+          expression.push(gridId, color);
+        });
+
+        expression.push("#94a3b8");
+        return expression;
+      }
+
+      function addHistoryLayer() {
+        if (map.getLayer("history-stream-lines")) return;
+
+        map.addLayer({
+          id: "history-stream-lines",
+          type: "line",
+          source: "historicalStreamSegments",
+          "source-layer": HISTORY_STREAM_SOURCE_LAYER,
+          minzoom: 5,
+          layout: {
+            visibility: "none",
+            "line-cap": "round",
+            "line-join": "round",
+          },
+          paint: {
+            "line-color": "#94a3b8",
+            "line-opacity": 0.95,
+            "line-width": [
+              "interpolate",
+              ["linear"],
+              ["zoom"],
+              5,
+              1.2,
+              7,
+              1.8,
+              9,
+              2.6,
+              11,
+              4.0,
+              13,
+              6.0,
+            ],
+          },
+        });
+
+        addHistoryInteractions();
+      }
+
+      async function updateHistoryLayer() {
+        if (!map.getLayer("history-stream-lines")) return;
+
+        if (!isHistorySelected()) {
+          map.setLayoutProperty("history-stream-lines", "visibility", "none");
+          updatePointCounter();
+          return;
+        }
+
+        try {
+          await loadHistoryCsv();
+          prepareActiveHistoryLookup();
+
+          if (activeHistoryColorLookup.size === 0) {
+            throw new Error(
+              "No historical values were found for the selected period.",
+            );
+          }
+
+          map.setPaintProperty(
+            "history-stream-lines",
+            "line-color",
+            buildHistoryColorExpression(),
+          );
+
+          map.setPaintProperty("history-stream-lines", "line-opacity", 0.95);
+
+          map.setLayoutProperty(
+            "history-stream-lines",
+            "visibility",
+            "visible",
+          );
+
+          updatePointCounter();
+
+          const monthName =
+            historyMonth.options[historyMonth.selectedIndex].text;
+
+          status.textContent =
+            `Showing ${getSelectedHistoryVariableConfig().label} directly on ` +
+            `the Alberta river network for ${monthName} ${historySelectedYear}.`;
+        } catch (error) {
+          console.error(error);
+          status.textContent =
+            "Could not load historical river data. Check the CSV and historical_stream_segments.pmtiles paths.";
+        }
+      }
+
+      function addHistoryInteractions() {
+        if (historyInteractionsAdded) return;
+        historyInteractionsAdded = true;
+
+        map.on("click", "history-stream-lines", (e) => {
+          if (!isHistorySelected() || !e.features.length) return;
+
+          const feature = e.features[0];
+          const props = feature.properties || {};
+          const gridId = String(props.era5_grid_id);
+          const value = activeHistoryValueLookup.get(gridId);
+          const config = getSelectedHistoryVariableConfig();
+          const monthName =
+            historyMonth.options[historyMonth.selectedIndex].text;
+
+          if (activePopup) activePopup.remove();
+
+          activePopup = new maplibregl.Popup()
+            .setLngLat(e.lngLat)
+            .setHTML(
+              `
+              <div style="font-family: Arial; min-width: 240px;">
+                <h3 style="margin:0 0 8px;">Historical River Environment</h3>
+                <strong>Period:</strong> ${monthName} ${historySelectedYear}<br>
+                <strong>${config.label}:</strong>
+                ${Number.isFinite(value) ? value.toFixed(2) : "N/A"} ${config.unit}<br>
+                <strong>Latitude:</strong> ${e.lngLat.lat.toFixed(5)}<br>
+                <strong>Longitude:</strong> ${e.lngLat.lng.toFixed(5)}<br>
+              </div>
+              `,
+            )
+            .addTo(map);
+        });
+
+        map.on("mouseenter", "history-stream-lines", () => {
+          if (!isSelectionMode) {
+            map.getCanvas().style.cursor = "pointer";
+          }
+        });
+
+        map.on("mouseleave", "history-stream-lines", () => {
+          if (!isSelectionMode) {
+            map.getCanvas().style.cursor = "";
+          }
+        });
+      }
+
+      async function loadFishGeojson() {
+        if (fishGeojsonData) return fishGeojsonData;
+
+        const response = await fetch(FISH_GEOJSON_PATH);
+
+        if (!response.ok) {
+          throw new Error(`Could not load fish GeoJSON: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (
+          !data ||
+          data.type !== "FeatureCollection" ||
+          !Array.isArray(data.features)
+        ) {
+          throw new Error("Fish GeoJSON is not a valid FeatureCollection.");
+        }
+
+        fishGeojsonData = data;
+        return fishGeojsonData;
+      }
+
+      async function addFishLayer() {
+        if (map.getSource("fishOccurrences")) return;
+
+        try {
+          const data = await loadFishGeojson();
+
+          map.addSource("fishOccurrences", {
+            type: "geojson",
+            data,
+          });
+
+          map.addLayer({
+            id: "fish-occurrences",
+            type: "circle",
+            source: "fishOccurrences",
+            minzoom: 0,
+            layout: {
+              visibility: "none",
+            },
+            paint: {
+              "circle-color": "#f97316",
+              "circle-radius": [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                0,
+                2.8,
+                3,
+                3.4,
+                5,
+                4.2,
+                8,
+                5.2,
+                11,
+                6.2,
+                14,
+                8,
+              ],
+              "circle-opacity": [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                0,
+                0.82,
+                5,
+                0.9,
+                10,
+                0.96,
+              ],
+              "circle-stroke-color": "#ffffff",
+              "circle-stroke-width": [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                0,
+                0.7,
+                5,
+                1,
+                10,
+                1.4,
+              ],
+            },
+          });
+
+          addFishInteractions();
+        } catch (error) {
+          console.error("Could not add fish layer:", error);
+          status.textContent =
+            "Map loaded, but the fish GeoJSON could not be loaded. Check data/fish/alberta_fish_occurrences.geojson.";
+        }
+      }
+
+      function escapeHtml(value) {
+        return String(value ?? "")
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
+      }
+
+      async function loadFishSpecies() {
+        if (fishSpeciesLoaded) return;
+
+        try {
+          const data = await loadFishGeojson();
+
+          fishSpeciesNames = [
+            ...new Set(
+              data.features
+                .map((feature) =>
+                  String(feature.properties?.species || "").trim(),
+                )
+                .filter(Boolean),
+            ),
+          ].sort((a, b) => a.localeCompare(b));
+
+          renderFishSpeciesOptions("");
+          fishSpeciesLoaded = true;
+
+          if (isFishSelected()) {
+            updatePointCounter();
+          }
+        } catch (error) {
+          console.error(error);
+          status.textContent =
+            "Fish species list could not be loaded from the GeoJSON.";
+        }
+      }
+
+      function openFishSpeciesMenu() {
+        fishSpeciesMenu.classList.add("open");
+        fishSpeciesInput.setAttribute("aria-expanded", "true");
+      }
+
+      function closeFishSpeciesMenu() {
+        fishSpeciesMenu.classList.remove("open");
+        fishSpeciesInput.setAttribute("aria-expanded", "false");
+      }
+
+      function selectFishSpecies(speciesName) {
+        selectedFishSpecies = speciesName;
+        fishSpeciesInput.value = speciesName || "All species";
+        closeFishSpeciesMenu();
+
+        updateFishFilter();
+        updateLegend();
+
+        status.textContent = selectedFishSpecies
+          ? `Showing ${selectedFishSpecies} occurrence locations across Alberta.`
+          : "Showing all Alberta fish occurrence locations.";
+      }
+
+      function renderFishSpeciesOptions(searchText) {
+        const query = String(searchText || "")
+          .trim()
+          .toLowerCase();
+        fishSpeciesMenu.innerHTML = "";
+
+        const allButton = document.createElement("button");
+        allButton.type = "button";
+        allButton.className = "searchable-select-option";
+        allButton.textContent = "All species";
+        allButton.addEventListener("click", () => selectFishSpecies(""));
+        fishSpeciesMenu.appendChild(allButton);
+
+        const matchingSpecies = fishSpeciesNames.filter((speciesName) =>
+          speciesName.toLowerCase().includes(query),
+        );
+
+        matchingSpecies.forEach((speciesName) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "searchable-select-option";
+          button.textContent = speciesName;
+          button.addEventListener("click", () =>
+            selectFishSpecies(speciesName),
+          );
+          fishSpeciesMenu.appendChild(button);
+        });
+
+        if (matchingSpecies.length === 0 && query) {
+          const empty = document.createElement("div");
+          empty.className = "searchable-select-empty";
+          empty.textContent = "No matching species found.";
+          fishSpeciesMenu.appendChild(empty);
+        }
+      }
+
+      function parseObservationDate(feature) {
+        const properties = feature.properties || {};
+        const eventDate = String(properties.eventDate || "").trim();
+
+        if (eventDate) {
+          const date = new Date(eventDate);
+
+          if (!Number.isNaN(date.getTime())) {
+            return {
+              timestamp: date.getTime(),
+              label: eventDate.slice(0, 10),
+            };
+          }
+        }
+
+        const year = Number(properties.year);
+
+        if (Number.isFinite(year) && year > 0) {
+          return {
+            timestamp: new Date(`${year}-01-01T00:00:00Z`).getTime(),
+            label: String(year),
+          };
+        }
+
+        return null;
+      }
+
+      function updateFishStatistics() {
+        if (!fishGeojsonData) return;
+
+        if (!selectedFishSpecies) {
+          fishStats.classList.remove("visible");
+          return;
+        }
+
+        const matchingFeatures = fishGeojsonData.features.filter(
+          (feature) =>
+            String(feature.properties?.species || "") === selectedFishSpecies,
+        );
+
+        const localities = new Set();
+        const families = new Set();
+        const observationDates = [];
+
+        matchingFeatures.forEach((feature) => {
+          const properties = feature.properties || {};
+          const locality = String(properties.locality || "").trim();
+          const family = String(properties.family || "").trim();
+          const observationDate = parseObservationDate(feature);
+
+          if (locality) localities.add(locality);
+          if (family) families.add(family);
+          if (observationDate) observationDates.push(observationDate);
+        });
+
+        observationDates.sort((a, b) => a.timestamp - b.timestamp);
+
+        fishStatsTitle.textContent = selectedFishSpecies;
+        fishObservationCount.textContent =
+          matchingFeatures.length.toLocaleString();
+        fishLocalityCount.textContent = localities.size.toLocaleString();
+        fishFirstObservation.textContent =
+          observationDates.length > 0 ? observationDates[0].label : "N/A";
+        fishLatestObservation.textContent =
+          observationDates.length > 0
+            ? observationDates[observationDates.length - 1].label
+            : "N/A";
+        fishFamily.textContent =
+          families.size > 0 ? [...families].sort().join(", ") : "N/A";
+
+        fishStats.classList.add("visible");
+      }
+
+      function updateFishFilter() {
+        const source = map.getSource("fishOccurrences");
+        if (!source || !fishGeojsonData) return;
+
+        if (!selectedFishSpecies) {
+          source.setData(fishGeojsonData);
+          updatePointCounter();
+          updateFishStatistics();
+          return;
+        }
+
+        const filteredFeatures = fishGeojsonData.features.filter(
+          (feature) =>
+            String(feature.properties?.species || "") === selectedFishSpecies,
+        );
+
+        source.setData({
+          type: "FeatureCollection",
+          features: filteredFeatures,
+        });
+
+        updatePointCounter();
+        updateFishStatistics();
+      }
+
+      function addFishInteractions() {
+        if (fishInteractionsAdded) return;
+        fishInteractionsAdded = true;
+
+        map.on("click", "fish-occurrences", (event) => {
+          if (!isFishSelected() || !event.features?.length) return;
+
+          const feature = event.features[0];
+          const properties = feature.properties || {};
+
+          if (activePopup) activePopup.remove();
+
+          const species =
+            properties.species || properties.scientificName || "Unknown fish";
+          const locality = properties.locality || "Not recorded";
+          const eventDate = properties.eventDate || "Not recorded";
+          const family = properties.family || "Not recorded";
+          const basis =
+            properties.basisOfRecord || properties.basis || "Not recorded";
+          const institution = properties.institutionCode || "Not recorded";
+          const recordedBy = properties.recordedBy || "Not recorded";
+
+          activePopup = new maplibregl.Popup()
+            .setLngLat(event.lngLat)
+            .setHTML(
+              `
+              <div style="font-family: Arial; min-width: 250px; line-height: 1.45;">
+                <h3 style="margin:0 0 8px;">${escapeHtml(species)}</h3>
+                <strong>Family:</strong> ${escapeHtml(family)}<br>
+                <strong>Locality:</strong> ${escapeHtml(locality)}<br>
+                <strong>Observation date:</strong> ${escapeHtml(eventDate)}<br>
+                <strong>Record type:</strong> ${escapeHtml(basis)}<br>
+                <strong>Institution:</strong> ${escapeHtml(institution)}<br>
+                <strong>Recorded by:</strong> ${escapeHtml(recordedBy)}<br>
+                <strong>Latitude:</strong> ${event.lngLat.lat.toFixed(5)}<br>
+                <strong>Longitude:</strong> ${event.lngLat.lng.toFixed(5)}
+              </div>
+            `,
+            )
+            .addTo(map);
+        });
+
+        map.on("mouseenter", "fish-occurrences", () => {
+          if (!isSelectionMode) {
+            map.getCanvas().style.cursor = "pointer";
+          }
+        });
+
+        map.on("mouseleave", "fish-occurrences", () => {
+          if (!isSelectionMode) {
+            map.getCanvas().style.cursor = "";
+          }
+        });
       }
 
       async function fetchWeatherForPoints(points, layerKey) {
@@ -951,7 +2317,7 @@
       function updateEnvironmentLayer() {
         const selectedLayerKey = getSelectedLayerKey();
 
-        if (isElevationSelected()) {
+        if (isElevationSelected() || isHistorySelected() || isFishSelected()) {
           if (map.getSource("environment-points")) {
             map.getSource("environment-points").setData({
               type: "FeatureCollection",
@@ -1014,13 +2380,24 @@
 
       function updateLayerVisibilityForSelection() {
         const showElevation = isElevationSelected();
+        const showHistory = isHistorySelected();
+        const showFish = isFishSelected();
 
         if (summaryCard) {
           summaryCard.style.display = showElevation ? "none" : "block";
         }
 
         if (addDataCard) {
-          addDataCard.style.display = showElevation ? "none" : "block";
+          addDataCard.style.display =
+            showElevation || showHistory || showFish ? "none" : "block";
+        }
+
+        if (historyControlCard) {
+          historyControlCard.style.display = showHistory ? "block" : "none";
+        }
+
+        if (fishControlCard) {
+          fishControlCard.style.display = showFish ? "block" : "none";
         }
 
         if (elevationInfoCard) {
@@ -1035,12 +2412,13 @@
           );
         }
 
-        // Blue stream network
+        // Blue stream network should stay visible for all layers,
+        // including Elevation Tiles, so the arrows have visible river lines behind them.
         if (map.getLayer("streams-line")) {
           map.setLayoutProperty(
             "streams-line",
             "visibility",
-            showElevation ? "none" : "visible",
+            showElevation || showHistory ? "none" : "visible",
           );
         }
 
@@ -1050,35 +2428,77 @@
           map.setLayoutProperty("streams-points", "visibility", "none");
         }
 
-        // Red directed flow lines
+        // Hide the default blue flow lines and arrowheads for Historical Environment.
+        // Weather layers use blue flow lines; Elevation uses red flow lines.
         if (map.getLayer("directed-arrow-lines")) {
           map.setLayoutProperty(
             "directed-arrow-lines",
             "visibility",
-            showElevation ? "visible" : "none",
+            showHistory ? "none" : "visible",
+          );
+
+          map.setPaintProperty(
+            "directed-arrow-lines",
+            "line-color",
+            showElevation ? "#ef4444" : "#0057ff",
+          );
+
+          map.setPaintProperty(
+            "directed-arrow-lines",
+            "line-opacity",
+            showElevation ? 0.85 : 0.95,
           );
         }
 
-        // Black arrowheads
         if (map.getLayer("directed-arrowheads")) {
           map.setLayoutProperty(
             "directed-arrowheads",
             "visibility",
-            showElevation ? "visible" : "none",
+            showHistory ? "none" : "visible",
+          );
+
+          map.setPaintProperty(
+            "directed-arrowheads",
+            "line-color",
+            showElevation ? "#000000" : "#0f172a",
+          );
+        }
+
+        if (map.getLayer("history-stream-lines")) {
+          map.setLayoutProperty(
+            "history-stream-lines",
+            "visibility",
+            showHistory ? "visible" : "none",
+          );
+        }
+
+        if (map.getLayer("fish-occurrences")) {
+          map.setLayoutProperty(
+            "fish-occurrences",
+            "visibility",
+            showFish ? "visible" : "none",
           );
         }
 
         if (!isFetching) {
-          addVisibleBtn.disabled = showElevation;
-          selectAreaBtn.disabled = showElevation;
-          clearLayerBtn.disabled = showElevation;
+          addVisibleBtn.disabled = showElevation || showHistory || showFish;
+          selectAreaBtn.disabled = showElevation || showHistory || showFish;
+          clearLayerBtn.disabled = showElevation || showHistory || showFish;
         }
 
-        if (showElevation) {
+        if (showHistory) {
+          status.textContent =
+            "Historical environment selected. Climate values are shown directly on the river network.";
+        } else if (showFish) {
+          status.textContent = selectedFishSpecies
+            ? `Showing ${selectedFishSpecies} occurrence locations across Alberta.`
+            : "Showing all cleaned Alberta fish occurrence locations.";
+        } else if (showElevation) {
           status.textContent =
             "Click a red stream segment to view elevation details.";
         } else {
-          status.textContent = "Environmental layer selected.";
+          status.textContent =
+            "Environmental layer selected. Blue arrows show stream-flow direction.";
         }
       }
 
@@ -1204,7 +2624,11 @@
       }
 
       function setButtonsDisabled(disabled) {
-        const forceDisabled = disabled || isElevationSelected();
+        const forceDisabled =
+          disabled ||
+          isElevationSelected() ||
+          isHistorySelected() ||
+          isFishSelected();
 
         addVisibleBtn.disabled = forceDisabled;
         selectAreaBtn.disabled = forceDisabled;
@@ -1469,7 +2893,72 @@
 
       clearLayerBtn.addEventListener("click", clearSelectedLayer);
 
-      layerSelect.addEventListener("change", () => {
+      historyYear.addEventListener("change", async (e) => {
+        historySelectedYear = Number(e.target.value);
+        await updateHistoryLayer();
+      });
+
+      historyMonth.addEventListener("change", async (e) => {
+        historySelectedMonth = Number(e.target.value);
+        await updateHistoryLayer();
+      });
+
+      historyVariable.addEventListener("change", async (e) => {
+        historySelectedVariable = e.target.value;
+        updateLegend();
+        await updateHistoryLayer();
+      });
+
+      fishSpeciesInput.addEventListener("focus", () => {
+        fishSpeciesInput.select();
+        renderFishSpeciesOptions(
+          selectedFishSpecies ? selectedFishSpecies : "",
+        );
+        openFishSpeciesMenu();
+      });
+
+      fishSpeciesInput.addEventListener("input", (event) => {
+        renderFishSpeciesOptions(event.target.value);
+        openFishSpeciesMenu();
+      });
+
+      fishSpeciesInput.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          closeFishSpeciesMenu();
+          fishSpeciesInput.value = selectedFishSpecies || "All species";
+          return;
+        }
+
+        if (event.key === "Enter") {
+          const firstOption = fishSpeciesMenu.querySelector(
+            ".searchable-select-option",
+          );
+
+          if (firstOption) {
+            event.preventDefault();
+            firstOption.click();
+          }
+        }
+      });
+
+      fishSpeciesToggle.addEventListener("click", () => {
+        if (fishSpeciesMenu.classList.contains("open")) {
+          closeFishSpeciesMenu();
+        } else {
+          renderFishSpeciesOptions("");
+          openFishSpeciesMenu();
+          fishSpeciesInput.focus();
+        }
+      });
+
+      document.addEventListener("click", (event) => {
+        if (!fishSpeciesSelector.contains(event.target)) {
+          closeFishSpeciesMenu();
+          fishSpeciesInput.value = selectedFishSpecies || "All species";
+        }
+      });
+
+      layerSelect.addEventListener("change", async () => {
         updateLegend();
         clearSelectedPoint();
         selectedEnvironmentPointId = null;
@@ -1480,11 +2969,26 @@
         }
         updateLayerVisibilityForSelection();
         updateEnvironmentLayer();
-        updatePointCounter();
+
+        if (isHistorySelected()) {
+          await updateHistoryLayer();
+        } else {
+          await updateHistoryLayer();
+          updatePointCounter();
+        }
 
         const layer = getSelectedLayer();
 
-        if (!isElevationSelected()) {
+        if (isFishSelected()) {
+          await loadFishSpecies();
+          await addFishLayer();
+          updateLayerVisibilityForSelection();
+          updateFishFilter();
+          updateFishStatistics();
+          status.textContent = selectedFishSpecies
+            ? `Showing ${selectedFishSpecies} occurrence locations across Alberta.`
+            : "Showing all cleaned Alberta fish occurrence locations.";
+        } else if (!isElevationSelected() && !isHistorySelected()) {
           status.textContent = `${layer.label} selected. Only this layer is shown now.`;
         }
       });
@@ -1554,14 +3058,15 @@
           status.textContent = "Map loaded. Preparing stream layers...";
 
           addDirectedEdgeInteractions();
+          addHistoryLayer();
+          await addFishLayer();
 
           addElevationInteractions();
           updateLayerVisibilityForSelection();
           updateEnvironmentLayer();
           updatePointCounter();
 
-          status.textContent =
-            "Ready. Select Elevation Tiles to see directed stream arrows.";
+          status.textContent = "Ready.";
 
           setButtonsDisabled(false);
         } catch (error) {
