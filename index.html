@@ -771,10 +771,14 @@
       const HISTORY_CSV_PATH =
         "data/environment_history/era5_stream_grid_monthly_2020_2025.csv";
 
-      const HISTORY_STREAM_PM_TILES_PATH =
-        "pmtiles://data/environment_history/historical_stream_segments.pmtiles";
+      const HISTORY_STREAM_SHARD_COUNT = 6;
+
+      const HISTORY_STREAM_SHARD_DIRECTORY =
+        "data/environment_history/historical_segments_shards";
 
       const HISTORY_STREAM_SOURCE_LAYER = "historical_stream_segments";
+
+      const HISTORY_STREAM_LAYER_IDS = [];
 
       const FISH_GEOJSON_PATH = "data/fish/alberta_fish_occurrences.geojson";
 
@@ -903,24 +907,24 @@
           unit: "°C",
           colorStops: [
             -27.1,
-            "#08306b",
+            "#eff6ff",
             -14.346,
-            "#2171b5",
+            "#bfdbfe",
             -6.382,
-            "#6baed6",
+            "#60a5fa",
             2.898,
-            "#fdae6b",
+            "#2563eb",
             12.395,
-            "#cb181d",
+            "#172554",
             24.9,
-            "#7f0000",
+            "#172554",
           ],
           legend: [
-            ["#08306b", "Very cold: ≤ -14.3°C"],
-            ["#2171b5", "Cold: -14.3°C to -6.4°C"],
-            ["#6baed6", "Cool: -6.4°C to 2.9°C"],
-            ["#fdae6b", "Mild: 2.9°C to 12.4°C"],
-            ["#cb181d", "Warm: > 12.4°C"],
+            ["#eff6ff", "Very cold: ≤ -14.3°C"],
+            ["#bfdbfe", "Cold: -14.3°C to -6.4°C"],
+            ["#60a5fa", "Cool: -6.4°C to 2.9°C"],
+            ["#2563eb", "Mild: 2.9°C to 12.4°C"],
+            ["#172554", "Warm: > 12.4°C"],
           ],
         },
 
@@ -937,7 +941,7 @@
             29.571,
             "#2563eb",
             45.907,
-            "#1e40af",
+            "#172554",
             246.5,
             "#172554",
           ],
@@ -955,24 +959,24 @@
           unit: "m/s",
           colorStops: [
             0,
-            "#dbeafe",
+            "#eff6ff",
             0.304,
-            "#93c5fd",
+            "#bfdbfe",
             0.582,
             "#60a5fa",
             0.824,
             "#2563eb",
             1.103,
-            "#d97706",
+            "#172554",
             4.5,
-            "#b91c1c",
+            "#172554",
           ],
           legend: [
-            ["#dbeafe", "Very low: ≤ 0.30 m/s"],
-            ["#93c5fd", "Low: 0.30 to 0.58 m/s"],
+            ["#eff6ff", "Very low: ≤ 0.30 m/s"],
+            ["#bfdbfe", "Low: 0.30 to 0.58 m/s"],
             ["#60a5fa", "Moderate: 0.58 to 0.82 m/s"],
             ["#2563eb", "Elevated: 0.82 to 1.10 m/s"],
-            ["#b91c1c", "High: > 1.10 m/s"],
+            ["#172554", "High: > 1.10 m/s"],
           ],
         },
 
@@ -981,24 +985,24 @@
           unit: "%",
           colorStops: [
             34.7,
-            "#fef3c7",
+            "#eff6ff",
             54.11,
-            "#fde68a",
+            "#bfdbfe",
             62.26,
-            "#5eead4",
+            "#60a5fa",
             68.023,
-            "#2dd4bf",
+            "#2563eb",
             73.264,
-            "#0891b2",
+            "#172554",
             91.7,
-            "#164e63",
+            "#172554",
           ],
           legend: [
-            ["#fef3c7", "Very dry: ≤ 54.1%"],
-            ["#fde68a", "Dry: 54.1% to 62.3%"],
-            ["#5eead4", "Moderate: 62.3% to 68.0%"],
-            ["#2dd4bf", "Humid: 68.0% to 73.3%"],
-            ["#164e63", "Very humid: > 73.3%"],
+            ["#eff6ff", "Very dry: ≤ 54.1%"],
+            ["#bfdbfe", "Dry: 54.1% to 62.3%"],
+            ["#60a5fa", "Moderate: 62.3% to 68.0%"],
+            ["#2563eb", "Humid: 68.0% to 73.3%"],
+            ["#172554", "Very humid: > 73.3%"],
           ],
         },
 
@@ -1007,24 +1011,24 @@
           unit: "hPa",
           colorStops: [
             739,
-            "#1d4ed8",
+            "#eff6ff",
             870.986,
-            "#2563eb",
+            "#bfdbfe",
             918.997,
-            "#6d28d9",
+            "#60a5fa",
             933.519,
-            "#a21caf",
+            "#2563eb",
             944.432,
-            "#be123c",
+            "#172554",
             999,
-            "#7f1d1d",
+            "#172554",
           ],
           legend: [
-            ["#1d4ed8", "Very low: ≤ 871.0 hPa"],
-            ["#2563eb", "Low: 871.0 to 919.0 hPa"],
-            ["#6d28d9", "Moderate: 919.0 to 933.5 hPa"],
-            ["#a21caf", "High: 933.5 to 944.4 hPa"],
-            ["#7f1d1d", "Very high: > 944.4 hPa"],
+            ["#eff6ff", "Very low: ≤ 871.0 hPa"],
+            ["#bfdbfe", "Low: 871.0 to 919.0 hPa"],
+            ["#60a5fa", "Moderate: 919.0 to 933.5 hPa"],
+            ["#2563eb", "High: 933.5 to 944.4 hPa"],
+            ["#172554", "Very high: > 944.4 hPa"],
           ],
         },
       };
@@ -1173,11 +1177,6 @@
               minzoom: 5,
               maxzoom: 11,
               scheme: "tms",
-            },
-            historicalStreamSegments: {
-              type: "vector",
-              url: HISTORY_STREAM_PM_TILES_PATH,
-              promoteId: "segment_id",
             },
           },
           layers: [
@@ -1636,11 +1635,11 @@
 
       function getHistoryColor(value) {
         if (historySelectedVariable === "temperature_c") {
-          if (value <= -14.346) return "#08306b";
-          if (value <= -6.382) return "#2171b5";
-          if (value <= 2.898) return "#6baed6";
-          if (value <= 12.395) return "#fdae6b";
-          return "#cb181d";
+          if (value <= -14.346) return "#eff6ff";
+          if (value <= -6.382) return "#bfdbfe";
+          if (value <= 2.898) return "#60a5fa";
+          if (value <= 12.395) return "#2563eb";
+          return "#172554";
         }
 
         if (historySelectedVariable === "precipitation_mm_month") {
@@ -1652,27 +1651,27 @@
         }
 
         if (historySelectedVariable === "wind_speed_ms") {
-          if (value <= 0.304) return "#dbeafe";
-          if (value <= 0.582) return "#93c5fd";
+          if (value <= 0.304) return "#eff6ff";
+          if (value <= 0.582) return "#bfdbfe";
           if (value <= 0.824) return "#60a5fa";
           if (value <= 1.103) return "#2563eb";
-          return "#b91c1c";
+          return "#172554";
         }
 
         if (historySelectedVariable === "relative_humidity_percent") {
-          if (value <= 54.11) return "#fef3c7";
-          if (value <= 62.26) return "#fde68a";
-          if (value <= 68.023) return "#5eead4";
-          if (value <= 73.264) return "#2dd4bf";
-          return "#164e63";
+          if (value <= 54.11) return "#eff6ff";
+          if (value <= 62.26) return "#bfdbfe";
+          if (value <= 68.023) return "#60a5fa";
+          if (value <= 73.264) return "#2563eb";
+          return "#172554";
         }
 
         if (historySelectedVariable === "surface_pressure_hpa") {
-          if (value <= 870.986) return "#1d4ed8";
-          if (value <= 918.997) return "#2563eb";
-          if (value <= 933.519) return "#6d28d9";
-          if (value <= 944.432) return "#a21caf";
-          return "#7f1d1d";
+          if (value <= 870.986) return "#eff6ff";
+          if (value <= 918.997) return "#bfdbfe";
+          if (value <= 933.519) return "#60a5fa";
+          if (value <= 944.432) return "#2563eb";
+          return "#172554";
         }
 
         return "#94a3b8";
@@ -1716,49 +1715,99 @@
         return expression;
       }
 
-      function addHistoryLayer() {
-        if (map.getLayer("history-stream-lines")) return;
+      function getHistoryShardPart(shardNumber) {
+        return String(shardNumber).padStart(2, "0");
+      }
 
-        map.addLayer({
-          id: "history-stream-lines",
-          type: "line",
-          source: "historicalStreamSegments",
-          "source-layer": HISTORY_STREAM_SOURCE_LAYER,
-          minzoom: 5,
-          layout: {
-            visibility: "none",
-            "line-cap": "round",
-            "line-join": "round",
-          },
-          paint: {
-            "line-color": "#94a3b8",
-            "line-opacity": 0.95,
-            "line-width": [
-              "interpolate",
-              ["linear"],
-              ["zoom"],
-              5,
-              1.2,
-              7,
-              1.8,
-              9,
-              2.6,
-              11,
-              4.0,
-              13,
-              6.0,
-            ],
-          },
-        });
+      function getHistoryShardSourceId(shardNumber) {
+        return `historical-stream-source-${getHistoryShardPart(shardNumber)}`;
+      }
+
+      function getHistoryShardLayerId(shardNumber) {
+        return `history-stream-lines-${getHistoryShardPart(shardNumber)}`;
+      }
+
+      function getHistoryShardUrl(shardNumber) {
+        const part = getHistoryShardPart(shardNumber);
+
+        return (
+          `pmtiles://${HISTORY_STREAM_SHARD_DIRECTORY}/` +
+          `historical_stream_segments_part_${part}.pmtiles`
+        );
+      }
+
+      function addHistoryLayers() {
+        for (
+          let shardNumber = 1;
+          shardNumber <= HISTORY_STREAM_SHARD_COUNT;
+          shardNumber++
+        ) {
+          const sourceId = getHistoryShardSourceId(shardNumber);
+          const layerId = getHistoryShardLayerId(shardNumber);
+
+          if (!map.getSource(sourceId)) {
+            map.addSource(sourceId, {
+              type: "vector",
+              url: getHistoryShardUrl(shardNumber),
+              promoteId: "segment_id",
+            });
+          }
+
+          if (!map.getLayer(layerId)) {
+            map.addLayer({
+              id: layerId,
+              type: "line",
+              source: sourceId,
+              "source-layer": HISTORY_STREAM_SOURCE_LAYER,
+              minzoom: 5,
+              layout: {
+                visibility: "none",
+                "line-cap": "round",
+                "line-join": "round",
+              },
+              paint: {
+                "line-color": "#94a3b8",
+                "line-opacity": 0.95,
+                "line-width": [
+                  "interpolate",
+                  ["linear"],
+                  ["zoom"],
+                  5,
+                  1.2,
+                  7,
+                  1.8,
+                  9,
+                  2.6,
+                  11,
+                  4.0,
+                  13,
+                  6.0,
+                ],
+              },
+            });
+
+            HISTORY_STREAM_LAYER_IDS.push(layerId);
+          }
+        }
 
         addHistoryInteractions();
       }
 
+      function setHistoryLayersVisibility(visible) {
+        const visibility = visible ? "visible" : "none";
+
+        HISTORY_STREAM_LAYER_IDS.forEach((layerId) => {
+          if (map.getLayer(layerId)) {
+            map.setLayoutProperty(layerId, "visibility", visibility);
+          }
+        });
+      }
+
       async function updateHistoryLayer() {
-        if (!map.getLayer("history-stream-lines")) return;
+        if (HISTORY_STREAM_LAYER_IDS.length === 0) return;
 
         if (!isHistorySelected()) {
-          map.setLayoutProperty("history-stream-lines", "visibility", "none");
+          setHistoryLayersVisibility(false);
           updatePointCounter();
           return;
         }
@@ -1773,19 +1822,15 @@
             );
           }
 
-          map.setPaintProperty(
-            "history-stream-lines",
-            "line-color",
-            buildHistoryColorExpression(),
-          );
+          const colorExpression = buildHistoryColorExpression();
 
-          map.setPaintProperty("history-stream-lines", "line-opacity", 0.95);
+          HISTORY_STREAM_LAYER_IDS.forEach((layerId) => {
+            if (!map.getLayer(layerId)) return;
 
-          map.setLayoutProperty(
-            "history-stream-lines",
-            "visibility",
-            "visible",
-          );
+            map.setPaintProperty(layerId, "line-color", colorExpression);
+            map.setPaintProperty(layerId, "line-opacity", 0.95);
+            map.setLayoutProperty(layerId, "visibility", "visible");
+          });
 
           updatePointCounter();
 
@@ -1797,55 +1842,60 @@
             `the Alberta river network for ${monthName} ${historySelectedYear}.`;
         } catch (error) {
           console.error(error);
+          setHistoryLayersVisibility(false);
           status.textContent =
-            "Could not load historical river data. Check the CSV and historical_stream_segments.pmtiles paths.";
+            "Could not load historical river data. Check the climate CSV and all six historical PMTiles shard paths.";
         }
+      }
+
+      function showHistoryPopup(e) {
+        if (!isHistorySelected() || !e.features?.length) return;
+
+        const feature = e.features[0];
+        const props = feature.properties || {};
+        const gridId = String(props.era5_grid_id);
+        const value = activeHistoryValueLookup.get(gridId);
+        const config = getSelectedHistoryVariableConfig();
+        const monthName = historyMonth.options[historyMonth.selectedIndex].text;
+
+        if (activePopup) activePopup.remove();
+
+        activePopup = new maplibregl.Popup()
+          .setLngLat(e.lngLat)
+          .setHTML(
+            `
+            <div style="font-family: Arial; min-width: 240px;">
+              <h3 style="margin:0 0 8px;">Historical River Environment</h3>
+              <strong>Period:</strong> ${monthName} ${historySelectedYear}<br>
+              <strong>${config.label}:</strong>
+              ${Number.isFinite(value) ? value.toFixed(2) : "N/A"} ${config.unit}<br>
+              <strong>ERA5 grid ID:</strong> ${escapeHtml(gridId)}<br>
+              <strong>Latitude:</strong> ${e.lngLat.lat.toFixed(5)}<br>
+              <strong>Longitude:</strong> ${e.lngLat.lng.toFixed(5)}<br>
+            </div>
+            `,
+          )
+          .addTo(map);
       }
 
       function addHistoryInteractions() {
         if (historyInteractionsAdded) return;
         historyInteractionsAdded = true;
 
-        map.on("click", "history-stream-lines", (e) => {
-          if (!isHistorySelected() || !e.features.length) return;
+        HISTORY_STREAM_LAYER_IDS.forEach((layerId) => {
+          map.on("click", layerId, showHistoryPopup);
 
-          const feature = e.features[0];
-          const props = feature.properties || {};
-          const gridId = String(props.era5_grid_id);
-          const value = activeHistoryValueLookup.get(gridId);
-          const config = getSelectedHistoryVariableConfig();
-          const monthName =
-            historyMonth.options[historyMonth.selectedIndex].text;
+          map.on("mouseenter", layerId, () => {
+            if (!isSelectionMode) {
+              map.getCanvas().style.cursor = "pointer";
+            }
+          });
 
-          if (activePopup) activePopup.remove();
-
-          activePopup = new maplibregl.Popup()
-            .setLngLat(e.lngLat)
-            .setHTML(
-              `
-              <div style="font-family: Arial; min-width: 240px;">
-                <h3 style="margin:0 0 8px;">Historical River Environment</h3>
-                <strong>Period:</strong> ${monthName} ${historySelectedYear}<br>
-                <strong>${config.label}:</strong>
-                ${Number.isFinite(value) ? value.toFixed(2) : "N/A"} ${config.unit}<br>
-                <strong>Latitude:</strong> ${e.lngLat.lat.toFixed(5)}<br>
-                <strong>Longitude:</strong> ${e.lngLat.lng.toFixed(5)}<br>
-              </div>
-              `,
-            )
-            .addTo(map);
-        });
-
-        map.on("mouseenter", "history-stream-lines", () => {
-          if (!isSelectionMode) {
-            map.getCanvas().style.cursor = "pointer";
-          }
-        });
-
-        map.on("mouseleave", "history-stream-lines", () => {
-          if (!isSelectionMode) {
-            map.getCanvas().style.cursor = "";
-          }
+          map.on("mouseleave", layerId, () => {
+            if (!isSelectionMode) {
+              map.getCanvas().style.cursor = "";
+            }
+          });
         });
       }
 
@@ -2464,13 +2514,7 @@
           );
         }
 
-        if (map.getLayer("history-stream-lines")) {
-          map.setLayoutProperty(
-            "history-stream-lines",
-            "visibility",
-            showHistory ? "visible" : "none",
-          );
-        }
+        setHistoryLayersVisibility(showHistory);
 
         if (map.getLayer("fish-occurrences")) {
           map.setLayoutProperty(
@@ -3058,7 +3102,7 @@
           status.textContent = "Map loaded. Preparing stream layers...";
 
           addDirectedEdgeInteractions();
-          addHistoryLayer();
+          addHistoryLayers();
           await addFishLayer();
 
           addElevationInteractions();
