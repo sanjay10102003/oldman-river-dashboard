@@ -1,0 +1,520 @@
+{
+  "ARCTIC CHAR": {
+    "observations": 7,
+    "unique_waterbodies": 2,
+    "first_observation": "2001-07-20",
+    "latest_observation": "2001-08-02",
+    "species_code": "ARCH"
+  },
+  "ARCTIC GRAYLING": {
+    "observations": 4446,
+    "unique_waterbodies": 235,
+    "first_observation": "1956-06-13",
+    "latest_observation": "2025-08-20",
+    "species_code": "ARGR"
+  },
+  "ARCTIC GRAYLING (BELLY POPLN)": {
+    "observations": 3,
+    "unique_waterbodies": 2,
+    "first_observation": "2009-06-11",
+    "latest_observation": "2014-10-04",
+    "species_code": "AGMN"
+  },
+  "ATHABASCA RAINBOW TROUT": {
+    "observations": 23,
+    "unique_waterbodies": 10,
+    "first_observation": "2012-05-28",
+    "latest_observation": "2023-07-05",
+    "species_code": "ARTR"
+  },
+  "BLACK BULLHEAD": {
+    "observations": 2,
+    "unique_waterbodies": 1,
+    "first_observation": "2015-06-23",
+    "latest_observation": "2015-10-23",
+    "species_code": "BLBL"
+  },
+  "BRASSY MINNOW": {
+    "observations": 110,
+    "unique_waterbodies": 15,
+    "first_observation": "1984-08-23",
+    "latest_observation": "2023-05-15",
+    "species_code": "BRMN"
+  },
+  "BROOK STICKLEBACK": {
+    "observations": 16648,
+    "unique_waterbodies": 696,
+    "first_observation": "1969-05-11",
+    "latest_observation": "2026-02-02",
+    "species_code": "BRST"
+  },
+  "BROOK TROUT": {
+    "observations": 7587,
+    "unique_waterbodies": 354,
+    "first_observation": "1947-06-14",
+    "latest_observation": "2025-10-14",
+    "species_code": "BKTR"
+  },
+  "BROWN TROUT": {
+    "observations": 8180,
+    "unique_waterbodies": 166,
+    "first_observation": "1947-06-14",
+    "latest_observation": "2025-11-13",
+    "species_code": "BNTR"
+  },
+  "BULL TROUT": {
+    "observations": 16909,
+    "unique_waterbodies": 456,
+    "first_observation": "1946-08-23",
+    "latest_observation": "2025-10-16",
+    "species_code": "BLTR"
+  },
+  "BULL TROUT X BROOK TROUT HYBRID": {
+    "observations": 215,
+    "unique_waterbodies": 40,
+    "first_observation": "1993-08-09",
+    "latest_observation": "2025-08-22",
+    "species_code": "BLBK"
+  },
+  "BURBOT": {
+    "observations": 8858,
+    "unique_waterbodies": 500,
+    "first_observation": "1947-06-06",
+    "latest_observation": "2026-05-21",
+    "species_code": "BURB"
+  },
+  "CICHLID": {
+    "observations": 1,
+    "unique_waterbodies": 1,
+    "first_observation": "2003-09-15",
+    "latest_observation": "2003-09-15",
+    "species_code": "CCHL"
+  },
+  "CUTTHROAT TROUT": {
+    "observations": 5384,
+    "unique_waterbodies": 289,
+    "first_observation": "1946-08-23",
+    "latest_observation": "2025-09-26",
+    "species_code": "CTTR"
+  },
+  "CUTTHROAT TROUT X RAINBOW TROUT": {
+    "observations": 414,
+    "unique_waterbodies": 116,
+    "first_observation": "1959-07-20",
+    "latest_observation": "2025-11-13",
+    "species_code": "CRTR"
+  },
+  "DOLLY VARDEN": {
+    "observations": 12,
+    "unique_waterbodies": 4,
+    "first_observation": "1962-07-12",
+    "latest_observation": "2024-08-29",
+    "species_code": "DLVR"
+  },
+  "EMERALD SHINER": {
+    "observations": 1953,
+    "unique_waterbodies": 122,
+    "first_observation": "1968-07-08",
+    "latest_observation": "2025-10-07",
+    "species_code": "EMSH"
+  },
+  "FATHEAD MINNOW": {
+    "observations": 8599,
+    "unique_waterbodies": 379,
+    "first_observation": "1974-01-01",
+    "latest_observation": "2025-10-31",
+    "species_code": "FTMN"
+  },
+  "FINESCALE DACE": {
+    "observations": 3703,
+    "unique_waterbodies": 207,
+    "first_observation": "1975-05-05",
+    "latest_observation": "2025-10-17",
+    "species_code": "FNDC"
+  },
+  "FLATHEAD CHUB": {
+    "observations": 3326,
+    "unique_waterbodies": 107,
+    "first_observation": "1969-05-11",
+    "latest_observation": "2026-01-29",
+    "species_code": "FLCH"
+  },
+  "GOLDEN TROUT": {
+    "observations": 64,
+    "unique_waterbodies": 6,
+    "first_observation": "1976-07-20",
+    "latest_observation": "2022-07-05",
+    "species_code": "GLTR"
+  },
+  "GOLDEYE": {
+    "observations": 3640,
+    "unique_waterbodies": 74,
+    "first_observation": "1965-09-03",
+    "latest_observation": "2025-08-25",
+    "species_code": "GOLD"
+  },
+  "GOLDFISH": {
+    "observations": 177,
+    "unique_waterbodies": 19,
+    "first_observation": "1989-10-23",
+    "latest_observation": "2024-10-17",
+    "species_code": "GOFS"
+  },
+  "GRASS CARP": {
+    "observations": 3,
+    "unique_waterbodies": 2,
+    "first_observation": "2007-09-12",
+    "latest_observation": "2016-04-09",
+    "species_code": "GSCA"
+  },
+  "IOWA DARTER": {
+    "observations": 746,
+    "unique_waterbodies": 103,
+    "first_observation": "1965-06-17",
+    "latest_observation": "2025-09-08",
+    "species_code": "IWDR"
+  },
+  "KOI": {
+    "observations": 11,
+    "unique_waterbodies": 4,
+    "first_observation": "2017-05-25",
+    "latest_observation": "2023-08-08",
+    "species_code": "KOIF"
+  },
+  "KOKANEE": {
+    "observations": 36,
+    "unique_waterbodies": 5,
+    "first_observation": "1969-08-01",
+    "latest_observation": "2023-08-19",
+    "species_code": "KOKA"
+  },
+  "LAKE CHUB": {
+    "observations": 12031,
+    "unique_waterbodies": 574,
+    "first_observation": "1963-05-02",
+    "latest_observation": "2026-02-02",
+    "species_code": "LKCH"
+  },
+  "LAKE STURGEON": {
+    "observations": 4589,
+    "unique_waterbodies": 6,
+    "first_observation": "1967-07-01",
+    "latest_observation": "2024-10-27",
+    "species_code": "LKST"
+  },
+  "LAKE TROUT": {
+    "observations": 4234,
+    "unique_waterbodies": 68,
+    "first_observation": "1947-07-15",
+    "latest_observation": "2026-02-15",
+    "species_code": "LKTR"
+  },
+  "LAKE WHITEFISH": {
+    "observations": 34306,
+    "unique_waterbodies": 259,
+    "first_observation": "1942-02-15",
+    "latest_observation": "2026-05-22",
+    "species_code": "LKWH"
+  },
+  "LARGESCALE SUCKER": {
+    "observations": 338,
+    "unique_waterbodies": 19,
+    "first_observation": "1975-07-08",
+    "latest_observation": "2025-09-27",
+    "species_code": "LRSC"
+  },
+  "LOGPERCH": {
+    "observations": 44,
+    "unique_waterbodies": 8,
+    "first_observation": "1997-08-12",
+    "latest_observation": "2012-09-19",
+    "species_code": "LGPR"
+  },
+  "LONGNOSE DACE": {
+    "observations": 9346,
+    "unique_waterbodies": 432,
+    "first_observation": "1957-07-20",
+    "latest_observation": "2026-01-29",
+    "species_code": "LNDC"
+  },
+  "LONGNOSE SUCKER": {
+    "observations": 18848,
+    "unique_waterbodies": 626,
+    "first_observation": "1947-06-05",
+    "latest_observation": "2026-01-29",
+    "species_code": "LNSC"
+  },
+  "MOONEYE": {
+    "observations": 897,
+    "unique_waterbodies": 16,
+    "first_observation": "1980-08-28",
+    "latest_observation": "2025-09-30",
+    "species_code": "MOON"
+  },
+  "MOUNTAIN WHITEFISH": {
+    "observations": 13468,
+    "unique_waterbodies": 375,
+    "first_observation": "1946-08-23",
+    "latest_observation": "2025-10-31",
+    "species_code": "MNWH"
+  },
+  "NINESPINE STICKLEBACK": {
+    "observations": 313,
+    "unique_waterbodies": 57,
+    "first_observation": "1966-09-01",
+    "latest_observation": "2023-09-17",
+    "species_code": "NNST"
+  },
+  "NORTHERN PIKE": {
+    "observations": 49426,
+    "unique_waterbodies": 682,
+    "first_observation": "1954-05-01",
+    "latest_observation": "2026-05-22",
+    "species_code": "NRPK"
+  },
+  "NORTHERN PIKEMINNOW": {
+    "observations": 213,
+    "unique_waterbodies": 13,
+    "first_observation": "1969-08-19",
+    "latest_observation": "2025-09-27",
+    "species_code": "NRSQ"
+  },
+  "NORTHERN REDBELLY DACE": {
+    "observations": 1687,
+    "unique_waterbodies": 140,
+    "first_observation": "1975-09-29",
+    "latest_observation": "2025-10-29",
+    "species_code": "NRDC"
+  },
+  "NORTHERN REDBELLY DACE X FINESCALE DACE": {
+    "observations": 260,
+    "unique_waterbodies": 11,
+    "first_observation": "2005-05-19",
+    "latest_observation": "2023-09-11",
+    "species_code": "NFDC"
+  },
+  "PEAMOUTH CHUB": {
+    "observations": 2,
+    "unique_waterbodies": 2,
+    "first_observation": "1998-07-19",
+    "latest_observation": "2013-08-29",
+    "species_code": "PMCH"
+  },
+  "PEARL DACE": {
+    "observations": 4705,
+    "unique_waterbodies": 355,
+    "first_observation": "1969-07-18",
+    "latest_observation": "2025-10-26",
+    "species_code": "PRDC"
+  },
+  "PLAINS SUCKER": {
+    "observations": 1171,
+    "unique_waterbodies": 80,
+    "first_observation": "1972-07-05",
+    "latest_observation": "2025-10-22",
+    "species_code": "PLSC"
+  },
+  "PRICKLY SCULPIN": {
+    "observations": 10,
+    "unique_waterbodies": 2,
+    "first_observation": "2002-06-05",
+    "latest_observation": "2011-07-28",
+    "species_code": "PRSC"
+  },
+  "PRUSSIAN CARP": {
+    "observations": 1323,
+    "unique_waterbodies": 52,
+    "first_observation": "2010-09-28",
+    "latest_observation": "2025-10-31",
+    "species_code": "PRCR"
+  },
+  "PYGMY WHITEFISH": {
+    "observations": 19,
+    "unique_waterbodies": 2,
+    "first_observation": "1972-08-10",
+    "latest_observation": "2025-10-02",
+    "species_code": "PGWH"
+  },
+  "QUILLBACK": {
+    "observations": 511,
+    "unique_waterbodies": 12,
+    "first_observation": "1991-07-31",
+    "latest_observation": "2021-05-18",
+    "species_code": "QUIL"
+  },
+  "RAINBOW TROUT": {
+    "observations": 18794,
+    "unique_waterbodies": 418,
+    "first_observation": "1946-08-23",
+    "latest_observation": "2025-12-15",
+    "species_code": "RNTR"
+  },
+  "REDSIDE SHINER": {
+    "observations": 963,
+    "unique_waterbodies": 56,
+    "first_observation": "1968-07-31",
+    "latest_observation": "2026-01-29",
+    "species_code": "RDSH"
+  },
+  "RIVER SHINER": {
+    "observations": 395,
+    "unique_waterbodies": 22,
+    "first_observation": "1966-09-01",
+    "latest_observation": "2025-10-09",
+    "species_code": "RVSH"
+  },
+  "ROCKY MOUNTAIN SCULPIN": {
+    "observations": 1051,
+    "unique_waterbodies": 6,
+    "first_observation": "1979-11-20",
+    "latest_observation": "2024-10-17",
+    "species_code": "RMSC"
+  },
+  "ROSY RED MINNOW": {
+    "observations": 7,
+    "unique_waterbodies": 5,
+    "first_observation": "2016-08-16",
+    "latest_observation": "2023-06-19",
+    "species_code": "RRMN"
+  },
+  "ROUND WHITEFISH": {
+    "observations": 3,
+    "unique_waterbodies": 3,
+    "first_observation": "1988-06-02",
+    "latest_observation": "2000-07-12",
+    "species_code": "RNWH"
+  },
+  "SAUGER": {
+    "observations": 1098,
+    "unique_waterbodies": 13,
+    "first_observation": "1971-06-01",
+    "latest_observation": "2024-10-16",
+    "species_code": "SAUG"
+  },
+  "SHORTHEAD REDHORSE": {
+    "observations": 1836,
+    "unique_waterbodies": 38,
+    "first_observation": "1975-09-29",
+    "latest_observation": "2024-10-19",
+    "species_code": "SHRD"
+  },
+  "SHORTJAW CISCO": {
+    "observations": 12,
+    "unique_waterbodies": 2,
+    "first_observation": "1997-07-04",
+    "latest_observation": "2025-07-31",
+    "species_code": "SHCS"
+  },
+  "SILVER REDHORSE": {
+    "observations": 622,
+    "unique_waterbodies": 11,
+    "first_observation": "1995-05-30",
+    "latest_observation": "2024-10-19",
+    "species_code": "SLRD"
+  },
+  "SLIMY SCULPIN": {
+    "observations": 2877,
+    "unique_waterbodies": 159,
+    "first_observation": "1966-06-27",
+    "latest_observation": "2025-10-29",
+    "species_code": "SLSC"
+  },
+  "SMALLMOUTH BASS": {
+    "observations": 11,
+    "unique_waterbodies": 1,
+    "first_observation": "1981-08-09",
+    "latest_observation": "2000-07-12",
+    "species_code": "SMBS"
+  },
+  "SPOONHEAD SCULPIN": {
+    "observations": 2573,
+    "unique_waterbodies": 213,
+    "first_observation": "1973-05-01",
+    "latest_observation": "2025-10-22",
+    "species_code": "SPSC"
+  },
+  "SPOTTAIL SHINER": {
+    "observations": 8133,
+    "unique_waterbodies": 273,
+    "first_observation": "1953-08-03",
+    "latest_observation": "2025-10-09",
+    "species_code": "SPSH"
+  },
+  "STONECAT": {
+    "observations": 83,
+    "unique_waterbodies": 2,
+    "first_observation": "1979-11-20",
+    "latest_observation": "2020-08-27",
+    "species_code": "STON"
+  },
+  "THREESPINE STICKLEBACK": {
+    "observations": 22,
+    "unique_waterbodies": 5,
+    "first_observation": "1986-10-06",
+    "latest_observation": "2016-10-07",
+    "species_code": "THST"
+  },
+  "TIGER TROUT": {
+    "observations": 149,
+    "unique_waterbodies": 6,
+    "first_observation": "2010-10-14",
+    "latest_observation": "2025-12-15",
+    "species_code": "TGTR"
+  },
+  "TROUT-PERCH": {
+    "observations": 6052,
+    "unique_waterbodies": 299,
+    "first_observation": "1964-08-07",
+    "latest_observation": "2026-01-29",
+    "species_code": "TRPR"
+  },
+  "TULLIBEE (CISCO)": {
+    "observations": 13644,
+    "unique_waterbodies": 128,
+    "first_observation": "1944-05-01",
+    "latest_observation": "2025-10-09",
+    "species_code": "CISC"
+  },
+  "TULLIBEE (CISCO) X LAKE WHITEFISH": {
+    "observations": 113,
+    "unique_waterbodies": 17,
+    "first_observation": "1968-11-12",
+    "latest_observation": "2025-09-26",
+    "species_code": "TLWH"
+  },
+  "WALLEYE": {
+    "observations": 58688,
+    "unique_waterbodies": 333,
+    "first_observation": "1953-08-03",
+    "latest_observation": "2026-05-22",
+    "species_code": "WALL"
+  },
+  "WESTERN SILVERY MINNOW": {
+    "observations": 319,
+    "unique_waterbodies": 1,
+    "first_observation": "1979-11-20",
+    "latest_observation": "2020-10-01",
+    "species_code": "WSMN"
+  },
+  "WESTSLOPE CUTTHROAT TROUT": {
+    "observations": 550,
+    "unique_waterbodies": 74,
+    "first_observation": "1998-07-31",
+    "latest_observation": "2025-09-26",
+    "species_code": "WSCT"
+  },
+  "WHITE SUCKER": {
+    "observations": 32563,
+    "unique_waterbodies": 896,
+    "first_observation": "1947-06-05",
+    "latest_observation": "2026-05-22",
+    "species_code": "WHSC"
+  },
+  "YELLOW PERCH": {
+    "observations": 23901,
+    "unique_waterbodies": 339,
+    "first_observation": "1953-07-29",
+    "latest_observation": "2026-05-22",
+    "species_code": "YLPR"
+  }
+}

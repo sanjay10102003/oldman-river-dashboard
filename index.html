@@ -133,6 +133,38 @@
         color: #475569;
       }
 
+      .date-filter-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+        gap: 10px;
+      }
+
+      .date-filter-grid .field-label {
+        margin-top: 0;
+      }
+
+      .date-filter-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        margin-top: 11px;
+        padding: 7px 10px;
+        border: 1px solid #bfdbfe;
+        border-radius: 999px;
+        background: #eff6ff;
+        color: #1d4ed8;
+        font-size: 11px;
+        font-weight: 800;
+      }
+
+      .date-filter-badge::before {
+        content: "";
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #2563eb;
+      }
+
       .btn {
         width: 100%;
         border: none;
@@ -443,6 +475,196 @@
       .maplibregl-ctrl-logo {
         display: none !important;
       }
+
+      /* Professional fish observation popup */
+      .fish-popup .maplibregl-popup-content {
+        width: min(420px, calc(100vw - 32px));
+        max-width: min(420px, calc(100vw - 32px));
+        padding: 0;
+        overflow: hidden;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        background: #ffffff;
+        box-shadow: 0 18px 48px rgba(15, 23, 42, 0.24);
+      }
+
+      .fish-popup .maplibregl-popup-close-button {
+        top: 10px;
+        right: 10px;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        border-radius: 9px;
+        color: #475569;
+        font-size: 24px;
+        line-height: 30px;
+        background: rgba(248, 250, 252, 0.96);
+        transition:
+          background 0.15s ease,
+          color 0.15s ease;
+      }
+
+      .fish-popup .maplibregl-popup-close-button:hover {
+        color: #0f172a;
+        background: #e2e8f0;
+      }
+
+      .fish-popup .maplibregl-popup-tip {
+        border-top-color: #ffffff;
+        border-bottom-color: #ffffff;
+      }
+
+      .fish-popup-card {
+        min-width: 0;
+        max-width: 100%;
+        color: #0f172a;
+        font-family:
+          Inter,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Arial,
+          sans-serif;
+        overflow-wrap: anywhere;
+        word-break: normal;
+      }
+
+      .fish-popup-header {
+        padding: 20px 54px 16px 20px;
+        background: linear-gradient(135deg, #fff7ed 0%, #ffffff 100%);
+        border-bottom: 1px solid #fed7aa;
+      }
+
+      .fish-popup-eyebrow {
+        margin-bottom: 5px;
+        color: #c2410c;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+      }
+
+      .fish-popup-title {
+        margin: 0;
+        color: #0f172a;
+        font-size: 21px;
+        font-weight: 850;
+        line-height: 1.2;
+        letter-spacing: -0.025em;
+        overflow-wrap: anywhere;
+      }
+
+      .fish-popup-body {
+        padding: 17px 20px 19px;
+      }
+
+      .fish-popup-section + .fish-popup-section {
+        margin-top: 16px;
+        padding-top: 15px;
+        border-top: 1px solid #e2e8f0;
+      }
+
+      .fish-popup-section-title {
+        margin: 0 0 9px;
+        color: #64748b;
+        font-size: 10.5px;
+        font-weight: 800;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+      }
+
+      .fish-popup-grid {
+        display: grid;
+        grid-template-columns: minmax(112px, auto) minmax(0, 1fr);
+        gap: 8px 13px;
+        align-items: start;
+      }
+
+      .fish-popup-label {
+        color: #475569;
+        font-size: 13px;
+        font-weight: 700;
+        line-height: 1.4;
+      }
+
+      .fish-popup-value {
+        min-width: 0;
+        color: #0f172a;
+        font-size: 13px;
+        font-weight: 600;
+        line-height: 1.4;
+        overflow-wrap: anywhere;
+      }
+
+      .fish-popup-comments {
+        margin: 0;
+        padding: 11px 12px;
+        border: 1px solid #e2e8f0;
+        border-radius: 11px;
+        background: #f8fafc;
+        color: #334155;
+        font-size: 13px;
+        line-height: 1.5;
+        white-space: normal;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+      }
+
+      .fish-popup-coordinates {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .fish-popup-coordinate {
+        min-width: 0;
+        padding: 10px 11px;
+        border: 1px solid #e2e8f0;
+        border-radius: 11px;
+        background: #ffffff;
+      }
+
+      .fish-popup-coordinate-label {
+        display: block;
+        margin-bottom: 3px;
+        color: #64748b;
+        font-size: 10.5px;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      .fish-popup-coordinate-value {
+        display: block;
+        color: #0f172a;
+        font-family:
+          ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", monospace;
+        font-size: 12px;
+        font-weight: 700;
+        overflow-wrap: anywhere;
+      }
+
+      @media (max-width: 520px) {
+        .fish-popup .maplibregl-popup-content {
+          width: calc(100vw - 24px);
+          max-width: calc(100vw - 24px);
+        }
+
+        .fish-popup-grid {
+          grid-template-columns: 1fr;
+          gap: 2px;
+        }
+
+        .fish-popup-label {
+          margin-top: 7px;
+        }
+
+        .fish-popup-coordinates {
+          grid-template-columns: 1fr;
+        }
+      }
     </style>
   </head>
 
@@ -464,6 +686,44 @@
           <option value="fish">Fish Distribution</option>
           <option value="elevation">Elevation Tiles</option>
         </select>
+      </div>
+
+      <div class="card" id="liveWeatherControlCard">
+        <div class="card-title">Weather Date &amp; Time</div>
+
+        <div class="date-filter-grid">
+          <div>
+            <label class="field-label" for="liveWeatherDate">Date</label>
+            <input
+              id="liveWeatherDate"
+              type="date"
+              aria-describedby="liveWeatherDateHelp"
+            />
+          </div>
+
+          <div>
+            <label class="field-label" for="liveWeatherHour">Hour</label>
+            <select id="liveWeatherHour"></select>
+          </div>
+        </div>
+
+        <button class="btn btn-primary" id="applyLiveTimeBtn" type="button">
+          Apply Date &amp; Time
+        </button>
+
+        <button class="btn btn-light" id="useCurrentTimeBtn" type="button">
+          Use Current Time
+        </button>
+
+        <div class="date-filter-badge" id="liveWeatherPeriodBadge">
+          Current hourly conditions
+        </div>
+
+        <div class="help-text" id="liveWeatherDateHelp">
+          Select any date and hour from the previous five years up to today.
+          Changing the period clears displayed points so values from different
+          times are never mixed.
+        </div>
       </div>
 
       <div class="card" id="historyControlCard" style="display: none">
@@ -574,7 +834,7 @@
             </div>
 
             <div class="fish-stat-box" style="grid-column: 1 / -1">
-              <span class="fish-stat-label">Family</span>
+              <span class="fish-stat-label">Species code</span>
               <span class="fish-stat-value" id="fishFamily">N/A</span>
             </div>
           </div>
@@ -678,8 +938,8 @@
           >
             <span class="source-name">Open-Meteo Weather API</span>
             <span class="source-purpose"
-              >Current temperature, precipitation, wind, humidity and
-              pressure</span
+              >Hourly historical and current temperature, precipitation, wind,
+              humidity and pressure</span
             >
           </a>
 
@@ -699,15 +959,15 @@
 
           <a
             class="source-item"
-            href="https://www.gbif.org/"
+            href="https://geospatial.alberta.ca/titan/rest/services/biota/fwimt_pub_species_inventory/MapServer/30"
             target="_blank"
             rel="noopener noreferrer"
           >
             <span class="source-name"
-              >Global Biodiversity Information Facility (GBIF)</span
+              >Government of Alberta - FWMIS Fish Surveys</span
             >
             <span class="source-purpose"
-              >Fish species occurrence and observation records</span
+              >Provincial fish inventory survey and occurrence records</span
             >
           </a>
 
@@ -780,9 +1040,15 @@
 
       const HISTORY_STREAM_LAYER_IDS = [];
 
-      const FISH_GEOJSON_PATH = "data/fish/alberta_fish_occurrences.geojson";
+      const FISH_PMTILES_PATH = "data/fish/fwmis_fish_surveys_clean.pmtiles";
 
-      const FISH_SPECIES_PATH = "data/fish/alberta_fish_species.txt";
+      const FISH_SOURCE_LAYER = "fwmis_fish";
+
+      const FISH_SPECIES_PATH = "data/fish/fwmis_clean_fish_species.txt";
+
+      const FISH_STATS_PATH = "data/fish/fwmis_fish_species_stats.json";
+
+      const FISH_TOTAL_RECORDS = 423257;
 
       const WEATHER_LAYERS = {
         temperature: {
@@ -1039,7 +1305,7 @@
 
       const FISH_LAYER = {
         label: "Fish Distribution",
-        legend: [["#f97316", "Fish occurrence location"]],
+        legend: [["#f97316", "Fish survey record"]],
       };
 
       const ELEVATION_LAYER = {
@@ -1085,13 +1351,17 @@
       let historySelectedYear = 2020;
       let historySelectedMonth = 1;
       let historySelectedVariable = "temperature_c";
+
+      let liveWeatherSelectedDate = "";
+      let liveWeatherSelectedHour = 0;
+
       let activeHistoryValueLookup = new Map();
       let activeHistoryColorLookup = new Map();
 
       let fishSpeciesLoaded = false;
       let selectedFishSpecies = "";
       let fishSpeciesNames = [];
-      let fishGeojsonData = null;
+      let fishSpeciesStats = {};
 
       let isSelectionMode = false;
       let isDraggingSelection = false;
@@ -1116,6 +1386,16 @@
       const summaryCard = document.getElementById("summaryCard");
       const addDataCard = document.getElementById("addDataCard");
       const historyControlCard = document.getElementById("historyControlCard");
+      const liveWeatherControlCard = document.getElementById(
+        "liveWeatherControlCard",
+      );
+      const liveWeatherDate = document.getElementById("liveWeatherDate");
+      const liveWeatherHour = document.getElementById("liveWeatherHour");
+      const applyLiveTimeBtn = document.getElementById("applyLiveTimeBtn");
+      const useCurrentTimeBtn = document.getElementById("useCurrentTimeBtn");
+      const liveWeatherPeriodBadge = document.getElementById(
+        "liveWeatherPeriodBadge",
+      );
       const fishControlCard = document.getElementById("fishControlCard");
       const historyYear = document.getElementById("historyYear");
       const historyMonth = document.getElementById("historyMonth");
@@ -1318,6 +1598,170 @@
         }
       });
 
+      function isLiveWeatherSelected() {
+        return Boolean(WEATHER_LAYERS[getSelectedLayerKey()]);
+      }
+
+      function formatLocalDate(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+      }
+
+      function formatHourLabel(hour) {
+        const date = new Date(2000, 0, 1, Number(hour), 0, 0);
+        return new Intl.DateTimeFormat("en-CA", {
+          hour: "numeric",
+          minute: "2-digit",
+          hour12: true,
+        }).format(date);
+      }
+
+      function getSelectedLiveTimestamp() {
+        return `${liveWeatherSelectedDate}T${String(
+          liveWeatherSelectedHour,
+        ).padStart(2, "0")}:00`;
+      }
+
+      function isSelectedLiveDateHistorical() {
+        const today = formatLocalDate(new Date());
+        return liveWeatherSelectedDate < today;
+      }
+
+      function getLiveWeatherApiEndpoint() {
+        return isSelectedLiveDateHistorical()
+          ? "https://archive-api.open-meteo.com/v1/archive"
+          : "https://api.open-meteo.com/v1/forecast";
+      }
+
+      function updateLiveWeatherPeriodBadge(
+        dateValue = liveWeatherSelectedDate,
+        hourValue = liveWeatherSelectedHour,
+      ) {
+        if (!dateValue) return;
+
+        const selectedDate = new Date(
+          `${dateValue}T${String(hourValue).padStart(2, "0")}:00:00`,
+        );
+
+        const today = formatLocalDate(new Date());
+        const periodType =
+          dateValue < today ? "Historical hourly data" : "Current hourly data";
+
+        liveWeatherPeriodBadge.textContent =
+          `${periodType} · ` +
+          new Intl.DateTimeFormat("en-CA", {
+            weekday: "short",
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+            hour: "numeric",
+            minute: "2-digit",
+            hour12: true,
+          }).format(selectedDate) +
+          " (Alberta time)";
+      }
+
+      function initialiseLiveWeatherDateControls() {
+        const now = new Date();
+        const today = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate(),
+        );
+
+        const minimumDate = new Date(today);
+        minimumDate.setFullYear(minimumDate.getFullYear() - 5);
+
+        liveWeatherDate.min = formatLocalDate(minimumDate);
+        liveWeatherDate.max = formatLocalDate(today);
+
+        liveWeatherHour.innerHTML = "";
+
+        for (let hour = 0; hour < 24; hour++) {
+          const option = document.createElement("option");
+          option.value = String(hour);
+          option.textContent = formatHourLabel(hour);
+          liveWeatherHour.appendChild(option);
+        }
+
+        liveWeatherSelectedDate = formatLocalDate(now);
+        liveWeatherSelectedHour = now.getHours();
+
+        liveWeatherDate.value = liveWeatherSelectedDate;
+        liveWeatherHour.value = String(liveWeatherSelectedHour);
+        updateLiveWeatherPeriodBadge();
+      }
+
+      function clearLiveLayerForTimeChange() {
+        const layerKey = getSelectedLayerKey();
+        if (!WEATHER_LAYERS[layerKey]) return;
+
+        environmentFeatures = environmentFeatures.filter(
+          (feature) => feature.properties.layerKey !== layerKey,
+        );
+
+        usedPointKeys = new Set(
+          [...usedPointKeys].filter((key) => !key.startsWith(`${layerKey}:`)),
+        );
+
+        selectedEnvironmentPointId = null;
+        selectedEnvironmentPointIndex = -1;
+
+        if (activePopup) {
+          activePopup.remove();
+          activePopup = null;
+        }
+
+        updateEnvironmentLayer();
+        updatePointCounter();
+      }
+
+      function applySelectedLiveWeatherTime() {
+        const selectedDate = liveWeatherDate.value;
+        const selectedHour = Number(liveWeatherHour.value);
+
+        if (!selectedDate || !Number.isInteger(selectedHour)) {
+          status.textContent = "Select a valid weather date and hour.";
+          return;
+        }
+
+        if (
+          selectedDate < liveWeatherDate.min ||
+          selectedDate > liveWeatherDate.max
+        ) {
+          status.textContent =
+            `Choose a date between ${liveWeatherDate.min} and ` +
+            `${liveWeatherDate.max}.`;
+          return;
+        }
+
+        const periodChanged =
+          selectedDate !== liveWeatherSelectedDate ||
+          selectedHour !== liveWeatherSelectedHour;
+
+        liveWeatherSelectedDate = selectedDate;
+        liveWeatherSelectedHour = selectedHour;
+        updateLiveWeatherPeriodBadge();
+
+        if (periodChanged && isLiveWeatherSelected()) {
+          clearLiveLayerForTimeChange();
+        }
+
+        const layer = getSelectedLayer();
+        status.textContent =
+          `${layer.label} is set to ${liveWeatherPeriodBadge.textContent}. ` +
+          `Add points in the visible area or select a box.`;
+      }
+
+      function useCurrentLiveWeatherTime() {
+        const now = new Date();
+        liveWeatherDate.value = formatLocalDate(now);
+        liveWeatherHour.value = String(now.getHours());
+        applySelectedLiveWeatherTime();
+      }
+
       function getSelectedLayerKey() {
         return layerSelect.value;
       }
@@ -1370,29 +1814,24 @@
             ? "Species Selected"
             : "Species in Dataset";
 
-          if (fishGeojsonData) {
-            const recordCount = selectedFishSpecies
-              ? fishGeojsonData.features.filter(
-                  (feature) =>
-                    String(feature.properties?.species || "") ===
-                    selectedFishSpecies,
-                ).length
-              : fishGeojsonData.features.length;
+          const selectedStats = selectedFishSpecies
+            ? fishSpeciesStats[selectedFishSpecies]
+            : null;
 
-            pointCount.textContent = recordCount.toLocaleString();
-            summarySecondaryValue.textContent = selectedFishSpecies
-              ? "1"
-              : fishSpeciesNames.length.toLocaleString();
-          } else {
-            pointCount.textContent = "0";
-            summarySecondaryValue.textContent = "0";
-          }
+          const recordCount = selectedFishSpecies
+            ? Number(selectedStats?.observations || 0)
+            : FISH_TOTAL_RECORDS;
+
+          pointCount.textContent = recordCount.toLocaleString();
+          summarySecondaryValue.textContent = selectedFishSpecies
+            ? "1"
+            : fishSpeciesNames.length.toLocaleString();
           return;
         }
 
         summaryPrimaryLabel.textContent = "Visible Layer";
-        summarySecondaryLabel.textContent = "Per Action";
-        summarySecondaryValue.textContent = POINTS_PER_ACTION.toLocaleString();
+        summarySecondaryLabel.textContent = "Selected Time";
+        summarySecondaryValue.textContent = `${String(liveWeatherSelectedHour).padStart(2, "0")}:00`;
 
         const selectedLayerKey = getSelectedLayerKey();
 
@@ -1864,16 +2303,16 @@
           .setLngLat(e.lngLat)
           .setHTML(
             `
-            <div style="font-family: Arial; min-width: 240px;">
-              <h3 style="margin:0 0 8px;">Historical River Environment</h3>
-              <strong>Period:</strong> ${monthName} ${historySelectedYear}<br>
-              <strong>${config.label}:</strong>
-              ${Number.isFinite(value) ? value.toFixed(2) : "N/A"} ${config.unit}<br>
-              <strong>ERA5 grid ID:</strong> ${escapeHtml(gridId)}<br>
-              <strong>Latitude:</strong> ${e.lngLat.lat.toFixed(5)}<br>
-              <strong>Longitude:</strong> ${e.lngLat.lng.toFixed(5)}<br>
-            </div>
-            `,
+                  <div style="font-family: Arial; min-width: 240px;">
+                    <h3 style="margin:0 0 8px;">Historical River Environment</h3>
+                    <strong>Period:</strong> ${monthName} ${historySelectedYear}<br>
+                    <strong>${config.label}:</strong>
+                    ${Number.isFinite(value) ? value.toFixed(2) : "N/A"} ${config.unit}<br>
+                    <strong>ERA5 grid ID:</strong> ${escapeHtml(gridId)}<br>
+                    <strong>Latitude:</strong> ${e.lngLat.lat.toFixed(5)}<br>
+                    <strong>Longitude:</strong> ${e.lngLat.lng.toFixed(5)}<br>
+                  </div>
+                  `,
           )
           .addTo(map);
       }
@@ -1899,44 +2338,40 @@
         });
       }
 
-      async function loadFishGeojson() {
-        if (fishGeojsonData) return fishGeojsonData;
+      async function loadFishStatisticsFile() {
+        if (Object.keys(fishSpeciesStats).length > 0) {
+          return fishSpeciesStats;
+        }
 
-        const response = await fetch(FISH_GEOJSON_PATH);
+        const response = await fetch(FISH_STATS_PATH);
 
         if (!response.ok) {
-          throw new Error(`Could not load fish GeoJSON: ${response.status}`);
+          console.warn(
+            `Fish statistics file could not be loaded: ${response.status}`,
+          );
+          fishSpeciesStats = {};
+          return fishSpeciesStats;
         }
 
-        const data = await response.json();
-
-        if (
-          !data ||
-          data.type !== "FeatureCollection" ||
-          !Array.isArray(data.features)
-        ) {
-          throw new Error("Fish GeoJSON is not a valid FeatureCollection.");
-        }
-
-        fishGeojsonData = data;
-        return fishGeojsonData;
+        fishSpeciesStats = await response.json();
+        return fishSpeciesStats;
       }
 
       async function addFishLayer() {
         if (map.getSource("fishOccurrences")) return;
 
         try {
-          const data = await loadFishGeojson();
-
           map.addSource("fishOccurrences", {
-            type: "geojson",
-            data,
+            type: "vector",
+            url: `pmtiles://${FISH_PMTILES_PATH}`,
+            promoteId: "OBJECTID",
           });
 
           map.addLayer({
             id: "fish-occurrences",
             type: "circle",
             source: "fishOccurrences",
+            "source-layer": FISH_SOURCE_LAYER,
             minzoom: 0,
             layout: {
               visibility: "none",
@@ -1948,15 +2383,13 @@
                 ["linear"],
                 ["zoom"],
                 0,
-                2.8,
-                3,
-                3.4,
+                2.2,
                 5,
-                4.2,
+                3.2,
                 8,
-                5.2,
+                4.5,
                 11,
-                6.2,
+                6,
                 14,
                 8,
               ],
@@ -1965,11 +2398,11 @@
                 ["linear"],
                 ["zoom"],
                 0,
-                0.82,
-                5,
-                0.9,
+                0.72,
+                6,
+                0.86,
                 10,
-                0.96,
+                0.95,
               ],
               "circle-stroke-color": "#ffffff",
               "circle-stroke-width": [
@@ -1977,20 +2410,20 @@
                 ["linear"],
                 ["zoom"],
                 0,
-                0.7,
-                5,
-                1,
-                10,
-                1.4,
+                0.4,
+                7,
+                0.8,
+                11,
+                1.2,
               ],
             },
           });
 
           addFishInteractions();
         } catch (error) {
-          console.error("Could not add fish layer:", error);
+          console.error("Could not add FWMIS fish layer:", error);
           status.textContent =
-            "Map loaded, but the fish GeoJSON could not be loaded. Check data/fish/alberta_fish_occurrences.geojson.";
+            "The FWMIS fish PMTiles layer could not be loaded. Check data/fish/fwmis_fish_surveys_clean.pmtiles.";
         }
       }
 
@@ -2007,17 +2440,24 @@
         if (fishSpeciesLoaded) return;
 
         try {
-          const data = await loadFishGeojson();
+          const [speciesResponse] = await Promise.all([
+            fetch(FISH_SPECIES_PATH),
+            loadFishStatisticsFile(),
+          ]);
 
-          fishSpeciesNames = [
-            ...new Set(
-              data.features
-                .map((feature) =>
-                  String(feature.properties?.species || "").trim(),
-                )
-                .filter(Boolean),
-            ),
-          ].sort((a, b) => a.localeCompare(b));
+          if (!speciesResponse.ok) {
+            throw new Error(
+              `Could not load fish species list: ${speciesResponse.status}`,
+            );
+          }
+
+          const speciesText = await speciesResponse.text();
+
+          fishSpeciesNames = speciesText
+            .split(/\r?\n/)
+            .map((name) => name.trim())
+            .filter(Boolean)
+            .sort((a, b) => a.localeCompare(b));
 
           renderFishSpeciesOptions("");
           fishSpeciesLoaded = true;
@@ -2028,7 +2468,7 @@
         } catch (error) {
           console.error(error);
           status.textContent =
-            "Fish species list could not be loaded from the GeoJSON.";
+            "The cleaned FWMIS fish species list could not be loaded.";
         }
       }
 
@@ -2052,7 +2492,7 @@
 
         status.textContent = selectedFishSpecies
           ? `Showing ${selectedFishSpecies} occurrence locations across Alberta.`
-          : "Showing all Alberta fish occurrence locations.";
+          : "Showing all cleaned FWMIS fish survey records.";
       }
 
       function renderFishSpeciesOptions(searchText) {
@@ -2091,100 +2531,64 @@
         }
       }
 
-      function parseObservationDate(feature) {
-        const properties = feature.properties || {};
-        const eventDate = String(properties.eventDate || "").trim();
-
-        if (eventDate) {
-          const date = new Date(eventDate);
-
-          if (!Number.isNaN(date.getTime())) {
-            return {
-              timestamp: date.getTime(),
-              label: eventDate.slice(0, 10),
-            };
-          }
+      function formatFwmisDate(value) {
+        if (value === null || value === undefined || value === "") {
+          return "N/A";
         }
 
-        const year = Number(properties.year);
-
-        if (Number.isFinite(year) && year > 0) {
-          return {
-            timestamp: new Date(`${year}-01-01T00:00:00Z`).getTime(),
-            label: String(year),
-          };
+        if (typeof value === "number") {
+          const date = new Date(value);
+          return Number.isNaN(date.getTime())
+            ? "N/A"
+            : date.toISOString().slice(0, 10);
         }
 
-        return null;
+        const text = String(value).trim();
+        const numericValue = Number(text);
+
+        if (Number.isFinite(numericValue) && numericValue > 1000000000) {
+          const date = new Date(numericValue);
+          return Number.isNaN(date.getTime())
+            ? text
+            : date.toISOString().slice(0, 10);
+        }
+
+        const date = new Date(text);
+        return Number.isNaN(date.getTime())
+          ? text
+          : date.toISOString().slice(0, 10);
       }
 
       function updateFishStatistics() {
-        if (!fishGeojsonData) return;
-
         if (!selectedFishSpecies) {
           fishStats.classList.remove("visible");
           return;
         }
 
-        const matchingFeatures = fishGeojsonData.features.filter(
-          (feature) =>
-            String(feature.properties?.species || "") === selectedFishSpecies,
-        );
-
-        const localities = new Set();
-        const families = new Set();
-        const observationDates = [];
-
-        matchingFeatures.forEach((feature) => {
-          const properties = feature.properties || {};
-          const locality = String(properties.locality || "").trim();
-          const family = String(properties.family || "").trim();
-          const observationDate = parseObservationDate(feature);
-
-          if (locality) localities.add(locality);
-          if (family) families.add(family);
-          if (observationDate) observationDates.push(observationDate);
-        });
-
-        observationDates.sort((a, b) => a.timestamp - b.timestamp);
+        const stats = fishSpeciesStats[selectedFishSpecies] || {};
 
         fishStatsTitle.textContent = selectedFishSpecies;
-        fishObservationCount.textContent =
-          matchingFeatures.length.toLocaleString();
-        fishLocalityCount.textContent = localities.size.toLocaleString();
-        fishFirstObservation.textContent =
-          observationDates.length > 0 ? observationDates[0].label : "N/A";
-        fishLatestObservation.textContent =
-          observationDates.length > 0
-            ? observationDates[observationDates.length - 1].label
-            : "N/A";
-        fishFamily.textContent =
-          families.size > 0 ? [...families].sort().join(", ") : "N/A";
+        fishObservationCount.textContent = Number(
+          stats.observations || 0,
+        ).toLocaleString();
+        fishLocalityCount.textContent = Number(
+          stats.unique_waterbodies || 0,
+        ).toLocaleString();
+        fishFirstObservation.textContent = stats.first_observation || "N/A";
+        fishLatestObservation.textContent = stats.latest_observation || "N/A";
+        fishFamily.textContent = stats.species_code || "N/A";
 
         fishStats.classList.add("visible");
       }
 
       function updateFishFilter() {
-        const source = map.getSource("fishOccurrences");
-        if (!source || !fishGeojsonData) return;
+        if (!map.getLayer("fish-occurrences")) return;
 
-        if (!selectedFishSpecies) {
-          source.setData(fishGeojsonData);
-          updatePointCounter();
-          updateFishStatistics();
-          return;
-        }
+        const filter = selectedFishSpecies
+          ? ["==", ["get", "SPEC_NAME"], selectedFishSpecies]
+          : null;
 
-        const filteredFeatures = fishGeojsonData.features.filter(
-          (feature) =>
-            String(feature.properties?.species || "") === selectedFishSpecies,
-        );
-
-        source.setData({
-          type: "FeatureCollection",
-          features: filteredFeatures,
-        });
-
+        map.setFilter("fish-occurrences", filter);
         updatePointCounter();
         updateFishStatistics();
       }
@@ -2201,32 +2605,88 @@
 
           if (activePopup) activePopup.remove();
 
-          const species =
-            properties.species || properties.scientificName || "Unknown fish";
-          const locality = properties.locality || "Not recorded";
-          const eventDate = properties.eventDate || "Not recorded";
-          const family = properties.family || "Not recorded";
-          const basis =
-            properties.basisOfRecord || properties.basis || "Not recorded";
-          const institution = properties.institutionCode || "Not recorded";
-          const recordedBy = properties.recordedBy || "Not recorded";
+          const species = properties.SPEC_NAME || "Unknown fish";
+          const speciesCode = properties.SPEC_CODE || "Not recorded";
+          const waterbody =
+            properties.WTB_OFFICIAL_NAME ||
+            properties.WTB_COMMON_NAME ||
+            "Not recorded";
+          const surveyDate = formatFwmisDate(properties.TERMINATION_DATE);
+          const surveyType = properties.SURVEY_TYPE || "Not recorded";
+          const surveyId = properties.INV_SURVEY_ID || "Not recorded";
+          const projectId = properties.INV_PROJ_ID || "Not recorded";
+          const speciesCount =
+            properties.SPEC_SUM ?? properties.FEATURE_COUNT ?? "Not recorded";
+          const comments =
+            properties.SURVEY_COMMENTS ||
+            properties.PROJ_LOC_COMMENTS ||
+            "Not recorded";
 
-          activePopup = new maplibregl.Popup()
+          activePopup = new maplibregl.Popup({
+            className: "fish-popup",
+            maxWidth: "420px",
+            closeButton: true,
+            closeOnClick: true,
+            offset: 14,
+          })
             .setLngLat(event.lngLat)
             .setHTML(
               `
-              <div style="font-family: Arial; min-width: 250px; line-height: 1.45;">
-                <h3 style="margin:0 0 8px;">${escapeHtml(species)}</h3>
-                <strong>Family:</strong> ${escapeHtml(family)}<br>
-                <strong>Locality:</strong> ${escapeHtml(locality)}<br>
-                <strong>Observation date:</strong> ${escapeHtml(eventDate)}<br>
-                <strong>Record type:</strong> ${escapeHtml(basis)}<br>
-                <strong>Institution:</strong> ${escapeHtml(institution)}<br>
-                <strong>Recorded by:</strong> ${escapeHtml(recordedBy)}<br>
-                <strong>Latitude:</strong> ${event.lngLat.lat.toFixed(5)}<br>
-                <strong>Longitude:</strong> ${event.lngLat.lng.toFixed(5)}
-              </div>
-            `,
+                <article class="fish-popup-card">
+                  <header class="fish-popup-header">
+                    <div class="fish-popup-eyebrow">FWMIS fish observation</div>
+                    <h3 class="fish-popup-title">${escapeHtml(species)}</h3>
+                  </header>
+
+                  <div class="fish-popup-body">
+                    <section class="fish-popup-section">
+                      <h4 class="fish-popup-section-title">Observation details</h4>
+                      <div class="fish-popup-grid">
+                        <div class="fish-popup-label">Species code</div>
+                        <div class="fish-popup-value">${escapeHtml(speciesCode)}</div>
+
+                        <div class="fish-popup-label">Waterbody</div>
+                        <div class="fish-popup-value">${escapeHtml(waterbody)}</div>
+
+                        <div class="fish-popup-label">Survey date</div>
+                        <div class="fish-popup-value">${escapeHtml(surveyDate)}</div>
+
+                        <div class="fish-popup-label">Survey type</div>
+                        <div class="fish-popup-value">${escapeHtml(surveyType)}</div>
+
+                        <div class="fish-popup-label">Individuals recorded</div>
+                        <div class="fish-popup-value">${escapeHtml(speciesCount)}</div>
+
+                        <div class="fish-popup-label">Survey ID</div>
+                        <div class="fish-popup-value">${escapeHtml(surveyId)}</div>
+
+                        <div class="fish-popup-label">Project ID</div>
+                        <div class="fish-popup-value">${escapeHtml(projectId)}</div>
+                      </div>
+                    </section>
+
+                    <section class="fish-popup-section">
+                      <h4 class="fish-popup-section-title">Comments</h4>
+                      <p class="fish-popup-comments">${escapeHtml(comments)}</p>
+                    </section>
+
+                    <section class="fish-popup-section">
+                      <h4 class="fish-popup-section-title">Coordinates</h4>
+                      <div class="fish-popup-coordinates">
+                        <div class="fish-popup-coordinate">
+                          <span class="fish-popup-coordinate-label">Latitude</span>
+                          <span class="fish-popup-coordinate-value">${event.lngLat.lat.toFixed(5)}</span>
+                        </div>
+
+                        <div class="fish-popup-coordinate">
+                          <span class="fish-popup-coordinate-label">Longitude</span>
+                          <span class="fish-popup-coordinate-value">${event.lngLat.lng.toFixed(5)}</span>
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </article>
+              `,
             )
             .addTo(map);
         });
@@ -2248,6 +2708,7 @@
         const layer = WEATHER_LAYERS[layerKey];
         const newFeatures = [];
         const chunkSize = 50;
+        const selectedTimestamp = getSelectedLiveTimestamp();
 
         for (let i = 0; i < points.length; i += chunkSize) {
           const chunk = points.slice(i, i + chunkSize);
@@ -2256,10 +2717,13 @@
           const longitudes = chunk.map((p) => p.lon).join(",");
 
           const weatherUrl =
-            `https://api.open-meteo.com/v1/forecast` +
+            `${getLiveWeatherApiEndpoint()}` +
             `?latitude=${latitudes}` +
             `&longitude=${longitudes}` +
-            `&current=${layer.apiName}` +
+            `&hourly=${layer.apiName}` +
+            `&start_date=${liveWeatherSelectedDate}` +
+            `&end_date=${liveWeatherSelectedDate}` +
+            `&timezone=America%2FEdmonton` +
             `&temperature_unit=celsius` +
             `&wind_speed_unit=kmh`;
 
@@ -2267,25 +2731,32 @@
 
           if (response.status === 429) {
             status.textContent =
-              "API rate limit reached. Please wait a few seconds before adding more points.";
+              "API rate limit reached. Please wait before adding more points.";
             alert(
-              "API rate limit reached. Please wait a few seconds before adding more points.",
+              "API rate limit reached. Please wait before adding more points.",
             );
             break;
           }
 
           if (!response.ok) {
             console.error("API error:", response.status);
-            status.textContent = `API error: ${response.status}`;
+            status.textContent =
+              `Weather API error: ${response.status}. Confirm that the selected ` +
+              `date is within the previous five years through today.`;
             break;
           }
 
-          const data = await response.json();
+          const responseData = await response.json();
+          const locationResults = Array.isArray(responseData)
+            ? responseData
+            : [responseData];
 
           chunk.forEach((point, index) => {
-            const value = Array.isArray(data)
-              ? data[index]?.current?.[layer.apiName]
-              : data.current?.[layer.apiName];
+            const locationData = locationResults[index] || locationResults[0];
+            const hourlyTimes = locationData?.hourly?.time || [];
+            const hourlyValues = locationData?.hourly?.[layer.apiName] || [];
+            const timeIndex = hourlyTimes.indexOf(selectedTimestamp);
+            const value = timeIndex >= 0 ? hourlyValues[timeIndex] : null;
 
             if (value === undefined || value === null) return;
 
@@ -2305,6 +2776,8 @@
                 layerLabel: layer.label,
                 value,
                 unit: layer.unit,
+                observationTime: selectedTimestamp,
+                observationTimeLabel: liveWeatherPeriodBadge.textContent,
               },
             });
           });
@@ -2446,6 +2919,11 @@
           historyControlCard.style.display = showHistory ? "block" : "none";
         }
 
+        if (liveWeatherControlCard) {
+          liveWeatherControlCard.style.display =
+            !showElevation && !showHistory && !showFish ? "block" : "none";
+        }
+
         if (fishControlCard) {
           fishControlCard.style.display = showFish ? "block" : "none";
         }
@@ -2536,13 +3014,14 @@
         } else if (showFish) {
           status.textContent = selectedFishSpecies
             ? `Showing ${selectedFishSpecies} occurrence locations across Alberta.`
-            : "Showing all cleaned Alberta fish occurrence locations.";
+            : "Showing all cleaned FWMIS fish survey records.";
         } else if (showElevation) {
           status.textContent =
             "Click a red stream segment to view elevation details.";
         } else {
           status.textContent =
-            "Environmental layer selected. Blue arrows show stream-flow direction.";
+            `${getSelectedLayer().label} selected for ` +
+            `${liveWeatherPeriodBadge.textContent}. Blue arrows show stream-flow direction.`;
         }
       }
 
@@ -2571,13 +3050,13 @@
             .setLngLat(e.lngLat)
             .setHTML(
               `
-              <div style="font-family: Arial; min-width: 230px;">
-                <h3 style="margin:0 0 8px;">Elevation Flow</h3>
-                <strong>From elevation:</strong> ${fromText}<br>
-                <strong>To elevation:</strong> ${toText}<br>
-                <strong>Elevation drop:</strong> ${dropText}<br>
-              </div>
-              `,
+                    <div style="font-family: Arial; min-width: 230px;">
+                      <h3 style="margin:0 0 8px;">Elevation Flow</h3>
+                      <strong>From elevation:</strong> ${fromText}<br>
+                      <strong>To elevation:</strong> ${toText}<br>
+                      <strong>Elevation drop:</strong> ${dropText}<br>
+                    </div>
+                    `,
             )
             .addTo(map);
         });
@@ -2729,13 +3208,18 @@
           .setLngLat(coordinates)
           .setHTML(
             `
-            <div style="font-family: Arial; min-width: 210px;">
-              <h3 style="margin:0 0 8px;">${props.layerLabel} Point</h3>
-              <strong>${props.layerLabel}:</strong> ${props.value} ${props.unit}<br>
-              <strong>Latitude:</strong> ${coordinates[1].toFixed(5)}<br>
-              <strong>Longitude:</strong> ${coordinates[0].toFixed(5)}<br>
-            </div>
-            `,
+                  <div style="font-family: Arial; min-width: 210px;">
+                    <h3 style="margin:0 0 8px;">${props.layerLabel} Point</h3>
+                    <strong>${props.layerLabel}:</strong> ${props.value} ${props.unit}<br>
+                    <strong>Date and time:</strong> ${escapeHtml(
+                      props.observationTimeLabel ||
+                        props.observationTime ||
+                        "N/A",
+                    )}<br>
+                    <strong>Latitude:</strong> ${coordinates[1].toFixed(5)}<br>
+                    <strong>Longitude:</strong> ${coordinates[0].toFixed(5)}<br>
+                  </div>
+                  `,
           )
           .addTo(map);
       }
@@ -2953,6 +3437,24 @@
         await updateHistoryLayer();
       });
 
+      applyLiveTimeBtn.addEventListener("click", applySelectedLiveWeatherTime);
+
+      useCurrentTimeBtn.addEventListener("click", useCurrentLiveWeatherTime);
+
+      liveWeatherDate.addEventListener("change", () => {
+        updateLiveWeatherPeriodBadge(
+          liveWeatherDate.value,
+          Number(liveWeatherHour.value),
+        );
+      });
+
+      liveWeatherHour.addEventListener("change", () => {
+        updateLiveWeatherPeriodBadge(
+          liveWeatherDate.value,
+          Number(liveWeatherHour.value),
+        );
+      });
+
       fishSpeciesInput.addEventListener("focus", () => {
         fishSpeciesInput.select();
         renderFishSpeciesOptions(
@@ -3031,9 +3533,11 @@
           updateFishStatistics();
           status.textContent = selectedFishSpecies
             ? `Showing ${selectedFishSpecies} occurrence locations across Alberta.`
-            : "Showing all cleaned Alberta fish occurrence locations.";
+            : "Showing all cleaned FWMIS fish survey records.";
         } else if (!isElevationSelected() && !isHistorySelected()) {
-          status.textContent = `${layer.label} selected. Only this layer is shown now.`;
+          status.textContent =
+            `${layer.label} selected for ${liveWeatherPeriodBadge.textContent}. ` +
+            `Only this layer is shown now.`;
         }
       });
 
@@ -3097,6 +3601,7 @@
 
       map.on("load", async () => {
         try {
+          initialiseLiveWeatherDateControls();
           updateLegend();
 
           status.textContent = "Map loaded. Preparing stream layers...";
