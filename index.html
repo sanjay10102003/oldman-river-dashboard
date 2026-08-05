@@ -684,6 +684,7 @@
           <option value="pressure">Pressure</option>
           <option value="history">Historical Environment</option>
           <option value="fish">Fish Distribution</option>
+          <option value="ml">ML Rainbow Trout Prediction</option>
           <option value="elevation">Elevation Tiles</option>
         </select>
       </div>
@@ -1050,6 +1051,15 @@
 
       const FISH_TOTAL_RECORDS = 423257;
 
+      // Machine-learning river prediction PMTiles.
+      // Change these two values only if your file name or Tippecanoe layer name differs.
+      const ML_PMTILES_PATH =
+        "data/ml/rainbow_trout_stream_predictions.pmtiles";
+
+      const ML_SOURCE_LAYER = "ml_rivers";
+
+      const ML_LAYER_ID = "ml-rainbow-trout-rivers";
+
       const WEATHER_LAYERS = {
         temperature: {
           label: "Temperature",
@@ -1308,6 +1318,17 @@
         legend: [["#f97316", "Fish survey record"]],
       };
 
+      const ML_LAYER = {
+        label: "ML Rainbow Trout Prediction",
+        legend: [
+          ["#eff6ff", "Very low: 0% to 20%"],
+          ["#bfdbfe", "Low: 20% to 40%"],
+          ["#60a5fa", "Moderate: 40% to 60%"],
+          ["#2563eb", "High: 60% to 80%"],
+          ["#172554", "Very high: 80% to 100%"],
+        ],
+      };
+
       const ELEVATION_LAYER = {
         label: "Elevation Tiles",
         unit: "m",
@@ -1334,6 +1355,10 @@
         return getSelectedLayerKey() === "fish";
       }
 
+      function isMlSelected() {
+        return getSelectedLayerKey() === "ml";
+      }
+
       let allStreamPoints = [];
       let environmentFeatures = [];
       let usedPointKeys = new Set();
@@ -1343,6 +1368,7 @@
       let pointInteractionsAdded = false;
       let historyInteractionsAdded = false;
       let fishInteractionsAdded = false;
+      let mlInteractionsAdded = false;
       let activePopup = null;
 
       let historyRows = [];
@@ -1450,6 +1476,10 @@
               type: "vector",
               url: "pmtiles://data/alberta_directed_arrowheads.pmtiles",
             },
+            mlPredictions: {
+              type: "vector",
+              url: `pmtiles://${ML_PMTILES_PATH}`,
+            },
             elevationTiles: {
               type: "raster",
               tiles: ["data/elevation_tiles/{z}/{x}/{y}.png"],
@@ -1497,6 +1527,53 @@
                   2.2,
                   12,
                   3.5,
+                ],
+              },
+            },
+
+            {
+              id: ML_LAYER_ID,
+              type: "line",
+              source: "mlPredictions",
+              "source-layer": ML_SOURCE_LAYER,
+              minzoom: 5,
+              layout: {
+                visibility: "none",
+                "line-cap": "round",
+                "line-join": "round",
+              },
+              paint: {
+                "line-color": [
+                  "step",
+                  [
+                    "to-number",
+                    ["coalesce", ["get", "predicted_probability"], 0],
+                  ],
+                  "#eff6ff",
+                  0.2,
+                  "#bfdbfe",
+                  0.4,
+                  "#60a5fa",
+                  0.6,
+                  "#2563eb",
+                  0.8,
+                  "#172554",
+                ],
+                "line-opacity": 0.95,
+                "line-width": [
+                  "interpolate",
+                  ["linear"],
+                  ["zoom"],
+                  5,
+                  1.2,
+                  7,
+                  1.8,
+                  9,
+                  2.8,
+                  11,
+                  4.2,
+                  13,
+                  6.2,
                 ],
               },
             },
@@ -1770,6 +1847,7 @@
         if (isElevationSelected()) return ELEVATION_LAYER;
         if (isHistorySelected()) return HISTORY_LAYER;
         if (isFishSelected()) return FISH_LAYER;
+        if (isMlSelected()) return ML_LAYER;
         return WEATHER_LAYERS[getSelectedLayerKey()];
       }
 
@@ -1803,6 +1881,14 @@
           summarySecondaryLabel.textContent = "Time Period";
           summarySecondaryValue.textContent = `${historySelectedMonth}/${historySelectedYear}`;
           pointCount.textContent = "Alberta";
+          return;
+        }
+
+        if (isMlSelected()) {
+          summaryPrimaryLabel.textContent = "Prediction Layer";
+          summarySecondaryLabel.textContent = "Target Species";
+          pointCount.textContent = "Rivers";
+          summarySecondaryValue.textContent = "Rainbow Trout";
           return;
         }
 
@@ -2840,7 +2926,12 @@
       function updateEnvironmentLayer() {
         const selectedLayerKey = getSelectedLayerKey();
 
-        if (isElevationSelected() || isHistorySelected() || isFishSelected()) {
+        if (
+          isElevationSelected() ||
+          isHistorySelected() ||
+          isFishSelected() ||
+          isMlSelected()
+        ) {
           if (map.getSource("environment-points")) {
             map.getSource("environment-points").setData({
               type: "FeatureCollection",
@@ -2905,6 +2996,7 @@
         const showElevation = isElevationSelected();
         const showHistory = isHistorySelected();
         const showFish = isFishSelected();
+        const showMl = isMlSelected();
 
         if (summaryCard) {
           summaryCard.style.display = showElevation ? "none" : "block";
@@ -2912,7 +3004,9 @@
 
         if (addDataCard) {
           addDataCard.style.display =
-            showElevation || showHistory || showFish ? "none" : "block";
+            showElevation || showHistory || showFish || showMl
+              ? "none"
+              : "block";
         }
 
         if (historyControlCard) {
@@ -2921,7 +3015,9 @@
 
         if (liveWeatherControlCard) {
           liveWeatherControlCard.style.display =
-            !showElevation && !showHistory && !showFish ? "block" : "none";
+            !showElevation && !showHistory && !showFish && !showMl
+              ? "block"
+              : "none";
         }
 
         if (fishControlCard) {
@@ -2946,7 +3042,7 @@
           map.setLayoutProperty(
             "streams-line",
             "visibility",
-            showElevation || showHistory ? "none" : "visible",
+            showElevation || showHistory || showMl ? "none" : "visible",
           );
         }
 
@@ -2956,13 +3052,22 @@
           map.setLayoutProperty("streams-points", "visibility", "none");
         }
 
+        if (map.getLayer(ML_LAYER_ID)) {
+          map.setLayoutProperty(
+            ML_LAYER_ID,
+            "visibility",
+            showMl ? "visible" : "none",
+          );
+        }
+
         // Hide the default blue flow lines and arrowheads for Historical Environment.
+        // ML predictions reuse the blue directional river-flow arrows.
         // Weather layers use blue flow lines; Elevation uses red flow lines.
         if (map.getLayer("directed-arrow-lines")) {
           map.setLayoutProperty(
             "directed-arrow-lines",
             "visibility",
-            showHistory ? "none" : "visible",
+            showHistory || showMl ? "none" : "visible",
           );
 
           map.setPaintProperty(
@@ -2982,7 +3087,7 @@
           map.setLayoutProperty(
             "directed-arrowheads",
             "visibility",
-            showHistory ? "none" : "visible",
+            showHistory || showMl ? "none" : "visible",
           );
 
           map.setPaintProperty(
@@ -3003,9 +3108,12 @@
         }
 
         if (!isFetching) {
-          addVisibleBtn.disabled = showElevation || showHistory || showFish;
-          selectAreaBtn.disabled = showElevation || showHistory || showFish;
-          clearLayerBtn.disabled = showElevation || showHistory || showFish;
+          addVisibleBtn.disabled =
+            showElevation || showHistory || showFish || showMl;
+          selectAreaBtn.disabled =
+            showElevation || showHistory || showFish || showMl;
+          clearLayerBtn.disabled =
+            showElevation || showHistory || showFish || showMl;
         }
 
         if (showHistory) {
@@ -3015,6 +3123,9 @@
           status.textContent = selectedFishSpecies
             ? `Showing ${selectedFishSpecies} occurrence locations across Alberta.`
             : "Showing all cleaned FWMIS fish survey records.";
+        } else if (showMl) {
+          status.textContent =
+            "Showing only the model-predicted Rainbow Trout habitat probability layer.";
         } else if (showElevation) {
           status.textContent =
             "Click a red stream segment to view elevation details.";
@@ -3023,6 +3134,82 @@
             `${getSelectedLayer().label} selected for ` +
             `${liveWeatherPeriodBadge.textContent}. Blue arrows show stream-flow direction.`;
         }
+      }
+
+      function addMlInteractions() {
+        if (mlInteractionsAdded || !map.getLayer(ML_LAYER_ID)) return;
+        mlInteractionsAdded = true;
+
+        map.on("click", ML_LAYER_ID, (event) => {
+          if (!isMlSelected() || !event.features?.length) return;
+
+          const properties = event.features[0].properties || {};
+          const probability = Number(properties.predicted_probability);
+          const probabilityPercent = Number.isFinite(probability)
+            ? `${(probability * 100).toFixed(1)}%`
+            : "N/A";
+
+          const predictionClass =
+            properties.prediction_class ||
+            (Number.isFinite(probability)
+              ? probability < 0.2
+                ? "Very low"
+                : probability < 0.4
+                  ? "Low"
+                  : probability < 0.6
+                    ? "Moderate"
+                    : probability < 0.8
+                      ? "High"
+                      : "Very high"
+              : "N/A");
+
+          if (activePopup) activePopup.remove();
+
+          activePopup = new maplibregl.Popup({
+            maxWidth: "360px",
+            closeButton: true,
+            closeOnClick: true,
+          })
+            .setLngLat(event.lngLat)
+            .setHTML(
+              `
+                <div style="font-family:Arial;min-width:250px;line-height:1.5;">
+                  <h3 style="margin:0 0 10px;">Rainbow Trout ML Prediction</h3>
+                  <strong>Habitat probability:</strong> ${escapeHtml(probabilityPercent)}<br>
+                  <strong>Probability class:</strong> ${escapeHtml(predictionClass)}<br>
+                  <strong>Predicted presence:</strong> ${
+                    Number(properties.predicted_presence) === 1
+                      ? "Likely present"
+                      : Number(properties.predicted_presence) === 0
+                        ? "Likely absent"
+                        : Number.isFinite(probability)
+                          ? probability >= 0.5
+                            ? "Likely present"
+                            : "Likely absent"
+                          : "N/A"
+                  }<br>
+                  <strong>Latitude:</strong> ${event.lngLat.lat.toFixed(5)}<br>
+                  <strong>Longitude:</strong> ${event.lngLat.lng.toFixed(5)}<br>
+                  <div style="margin-top:9px;color:#64748b;font-size:12px;">
+                    River colour represents the model-predicted habitat probability.
+                  </div>
+                </div>
+              `,
+            )
+            .addTo(map);
+        });
+
+        map.on("mouseenter", ML_LAYER_ID, () => {
+          if (!isSelectionMode && isMlSelected()) {
+            map.getCanvas().style.cursor = "pointer";
+          }
+        });
+
+        map.on("mouseleave", ML_LAYER_ID, () => {
+          if (!isSelectionMode) {
+            map.getCanvas().style.cursor = "";
+          }
+        });
       }
 
       function addDirectedEdgeInteractions() {
@@ -3151,7 +3338,8 @@
           disabled ||
           isElevationSelected() ||
           isHistorySelected() ||
-          isFishSelected();
+          isFishSelected() ||
+          isMlSelected();
 
         addVisibleBtn.disabled = forceDisabled;
         selectAreaBtn.disabled = forceDisabled;
@@ -3534,6 +3722,9 @@
           status.textContent = selectedFishSpecies
             ? `Showing ${selectedFishSpecies} occurrence locations across Alberta.`
             : "Showing all cleaned FWMIS fish survey records.";
+        } else if (isMlSelected()) {
+          status.textContent =
+            "Showing only the Rainbow Trout ML habitat probability layer.";
         } else if (!isElevationSelected() && !isHistorySelected()) {
           status.textContent =
             `${layer.label} selected for ${liveWeatherPeriodBadge.textContent}. ` +
@@ -3607,6 +3798,7 @@
           status.textContent = "Map loaded. Preparing stream layers...";
 
           addDirectedEdgeInteractions();
+          addMlInteractions();
           addHistoryLayers();
           await addFishLayer();
 
