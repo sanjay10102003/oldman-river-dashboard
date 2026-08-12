@@ -133,13 +133,13 @@
         color: #475569;
       }
 
-      .date-filter-grid {
-        display: grid;
-        grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
-        gap: 10px;
+      #liveEnvironmentControls,
+      #historicalEnvironmentControls {
+        margin-top: 12px;
       }
 
-      .date-filter-grid .field-label {
+      #liveEnvironmentControls > .field-label:first-child,
+      #historicalEnvironmentControls > .field-label:first-child {
         margin-top: 0;
       }
 
@@ -677,53 +677,88 @@
       <div class="card">
         <div class="card-title">Layer Selection</div>
         <select id="layerSelect">
-          <option value="temperature">Temperature</option>
-          <option value="precipitation">Precipitation</option>
-          <option value="wind">Wind Speed</option>
-          <option value="humidity">Humidity</option>
-          <option value="pressure">Pressure</option>
-          <option value="history">Historical Environment</option>
+          <option value="environment">Environment</option>
           <option value="fish">Fish Distribution</option>
-          <option value="ml">ML Rainbow Trout Prediction</option>
+          <option value="ml">Rainbow Trout Count Prediction</option>
           <option value="elevation">Elevation Tiles</option>
         </select>
       </div>
 
       <div class="card" id="liveWeatherControlCard">
-        <div class="card-title">Weather Date &amp; Time</div>
+        <div class="card-title">Environment Controls</div>
 
-        <div class="date-filter-grid">
-          <div>
-            <label class="field-label" for="liveWeatherDate">Date</label>
-            <input
-              id="liveWeatherDate"
-              type="date"
-              aria-describedby="liveWeatherDateHelp"
-            />
+        <label class="field-label" for="environmentMode">Data Type</label>
+        <select id="environmentMode">
+          <option value="live">Daily Environment</option>
+          <option value="history">Historical Monthly Environment</option>
+        </select>
+
+        <label class="field-label" for="environmentVariable">Variable</label>
+        <select id="environmentVariable">
+          <option value="temperature">Temperature</option>
+          <option value="precipitation">Precipitation</option>
+          <option value="wind">Wind Speed</option>
+          <option value="humidity">Humidity</option>
+          <option value="pressure">Pressure</option>
+        </select>
+
+        <div id="liveEnvironmentControls">
+          <label class="field-label" for="liveWeatherDate">Date</label>
+          <input
+            id="liveWeatherDate"
+            type="date"
+            aria-describedby="liveWeatherDateHelp"
+          />
+
+          <button class="btn btn-primary" id="applyLiveTimeBtn" type="button">
+            Apply Date
+          </button>
+
+          <button class="btn btn-light" id="useCurrentTimeBtn" type="button">
+            Use Today
+          </button>
+
+          <div class="date-filter-badge" id="liveWeatherPeriodBadge">
+            Daily environment
           </div>
 
-          <div>
-            <label class="field-label" for="liveWeatherHour">Hour</label>
-            <select id="liveWeatherHour"></select>
+          <div class="help-text" id="liveWeatherDateHelp">
+            Select a date from the previous five years up to today. A single
+            daily value is calculated for the selected environmental variable.
           </div>
         </div>
 
-        <button class="btn btn-primary" id="applyLiveTimeBtn" type="button">
-          Apply Date &amp; Time
-        </button>
+        <div id="historicalEnvironmentControls" style="display: none">
+          <label class="field-label" for="historyYear">Year</label>
+          <select id="historyYear">
+            <option value="2020">2020</option>
+            <option value="2021">2021</option>
+            <option value="2022">2022</option>
+            <option value="2023">2023</option>
+            <option value="2024">2024</option>
+            <option value="2025">2025</option>
+          </select>
 
-        <button class="btn btn-light" id="useCurrentTimeBtn" type="button">
-          Use Current Time
-        </button>
+          <label class="field-label" for="historyMonth">Month</label>
+          <select id="historyMonth">
+            <option value="1">January</option>
+            <option value="2">February</option>
+            <option value="3">March</option>
+            <option value="4">April</option>
+            <option value="5">May</option>
+            <option value="6">June</option>
+            <option value="7">July</option>
+            <option value="8">August</option>
+            <option value="9">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
+          </select>
 
-        <div class="date-filter-badge" id="liveWeatherPeriodBadge">
-          Current hourly conditions
-        </div>
-
-        <div class="help-text" id="liveWeatherDateHelp">
-          Select any date and hour from the previous five years up to today.
-          Changing the period clears displayed points so values from different
-          times are never mixed.
+          <div class="help-text">
+            Monthly ERA5-Land values from 2020 to 2025 are applied directly to
+            the Alberta river network.
+          </div>
         </div>
       </div>
 
@@ -1051,14 +1086,15 @@
 
       const FISH_TOTAL_RECORDS = 423257;
 
-      // Machine-learning river prediction PMTiles.
-      // Change these two values only if your file name or Tippecanoe layer name differs.
+      // Rainbow Trout count regression prediction points.
       const ML_PMTILES_PATH =
-        "data/ml/rainbow_trout_stream_predictions.pmtiles";
+        "data/ml/rainbow_trout_point_count_predictions.pmtiles";
 
-      const ML_SOURCE_LAYER = "ml_rivers";
+      const ML_SOURCE_LAYER = "ml_rainbow_trout_points";
 
-      const ML_LAYER_ID = "ml-rainbow-trout-rivers";
+      const ML_LAYER_ID = "ml-rainbow-trout-count-points";
+
+      const ML_TOTAL_PREDICTION_POINTS = 642278;
 
       const WEATHER_LAYERS = {
         temperature: {
@@ -1067,20 +1103,20 @@
           unit: "°C",
           colorStops: [
             -15,
-            "#2b83ba",
+            "#d73027",
             5,
-            "#2b83ba",
+            "#d73027",
             10,
             "#ffffbf",
             15,
             "#ffffbf",
             30,
-            "#d7191c",
+            "#2166ac",
           ],
           legend: [
-            ["#2b83ba", "Low: < 5°C"],
+            ["#d73027", "Low: < 5°C"],
             ["#ffffbf", "Normal: 5°C - 15°C"],
-            ["#d7191c", "High: > 15°C"],
+            ["#2166ac", "High: > 15°C"],
           ],
         },
 
@@ -1090,20 +1126,20 @@
           unit: "mm",
           colorStops: [
             0,
-            "#2b83ba",
+            "#d73027",
             1,
-            "#2b83ba",
+            "#d73027",
             5,
             "#ffffbf",
             10,
             "#ffffbf",
             20,
-            "#d7191c",
+            "#2166ac",
           ],
           legend: [
-            ["#2b83ba", "Low: 0 - 1 mm"],
+            ["#d73027", "Low: 0 - 1 mm"],
             ["#ffffbf", "Normal: 1 - 10 mm"],
-            ["#d7191c", "High: > 10 mm"],
+            ["#2166ac", "High: > 10 mm"],
           ],
         },
 
@@ -1113,20 +1149,20 @@
           unit: "km/h",
           colorStops: [
             0,
-            "#1d4ed8",
+            "#d73027",
             10,
-            "#1d4ed8",
+            "#d73027",
             20,
-            "#d97706",
+            "#ffffbf",
             30,
-            "#d97706",
+            "#ffffbf",
             60,
-            "#b91c1c",
+            "#2166ac",
           ],
           legend: [
-            ["#1d4ed8", "Low: 0 - 10 km/h"],
-            ["#d97706", "Normal: 10 - 30 km/h"],
-            ["#b91c1c", "High: > 30 km/h"],
+            ["#d73027", "Low: 0 - 10 km/h"],
+            ["#ffffbf", "Normal: 10 - 30 km/h"],
+            ["#2166ac", "High: > 30 km/h"],
           ],
         },
 
@@ -1136,20 +1172,20 @@
           unit: "%",
           colorStops: [
             0,
-            "#2b83ba",
+            "#d73027",
             30,
-            "#2b83ba",
+            "#d73027",
             70,
             "#ffffbf",
             85,
             "#ffffbf",
             100,
-            "#d7191c",
+            "#2166ac",
           ],
           legend: [
-            ["#2b83ba", "Low: < 30%"],
+            ["#d73027", "Low: < 30%"],
             ["#ffffbf", "Normal: 30% - 85%"],
-            ["#d7191c", "High: > 85%"],
+            ["#2166ac", "High: > 85%"],
           ],
         },
 
@@ -1159,20 +1195,20 @@
           unit: "hPa",
           colorStops: [
             850,
-            "#1d4ed8",
+            "#d73027",
             950,
-            "#1d4ed8",
+            "#d73027",
             1015,
-            "#6d28d9",
+            "#ffffbf",
             1030,
-            "#6d28d9",
+            "#ffffbf",
             1050,
-            "#b91c1c",
+            "#2166ac",
           ],
           legend: [
-            ["#1d4ed8", "Low: < 950 hPa"],
-            ["#6d28d9", "Normal: 950 - 1030 hPa"],
-            ["#b91c1c", "High: > 1030 hPa"],
+            ["#d73027", "Low: < 950 hPa"],
+            ["#ffffbf", "Normal: 950 - 1030 hPa"],
+            ["#2166ac", "High: > 1030 hPa"],
           ],
         },
       };
@@ -1183,24 +1219,24 @@
           unit: "°C",
           colorStops: [
             -27.1,
-            "#eff6ff",
+            "#d73027",
             -14.346,
-            "#bfdbfe",
+            "#d73027",
             -6.382,
-            "#60a5fa",
+            "#fdae61",
             2.898,
-            "#2563eb",
+            "#ffffbf",
             12.395,
-            "#172554",
+            "#67c5d5",
             24.9,
-            "#172554",
+            "#2166ac",
           ],
           legend: [
-            ["#eff6ff", "Very cold: ≤ -14.3°C"],
-            ["#bfdbfe", "Cold: -14.3°C to -6.4°C"],
-            ["#60a5fa", "Cool: -6.4°C to 2.9°C"],
-            ["#2563eb", "Mild: 2.9°C to 12.4°C"],
-            ["#172554", "Warm: > 12.4°C"],
+            ["#d73027", "Very cold: ≤ -14.3°C"],
+            ["#fdae61", "Cold: -14.3°C to -6.4°C"],
+            ["#ffffbf", "Cool: -6.4°C to 2.9°C"],
+            ["#67c5d5", "Mild: 2.9°C to 12.4°C"],
+            ["#2166ac", "Warm: > 12.4°C"],
           ],
         },
 
@@ -1209,24 +1245,24 @@
           unit: "mm/month",
           colorStops: [
             0.9,
-            "#eff6ff",
+            "#d73027",
             9.173,
-            "#bfdbfe",
+            "#d73027",
             18.671,
-            "#60a5fa",
+            "#fdae61",
             29.571,
-            "#2563eb",
+            "#ffffbf",
             45.907,
-            "#172554",
+            "#67c5d5",
             246.5,
-            "#172554",
+            "#2166ac",
           ],
           legend: [
-            ["#eff6ff", "Very low: ≤ 9.2 mm"],
-            ["#bfdbfe", "Low: 9.2 to 18.7 mm"],
-            ["#60a5fa", "Moderate: 18.7 to 29.6 mm"],
-            ["#2563eb", "High: 29.6 to 45.9 mm"],
-            ["#172554", "Very high: > 45.9 mm"],
+            ["#d73027", "Very low: ≤ 9.2 mm"],
+            ["#fdae61", "Low: 9.2 to 18.7 mm"],
+            ["#ffffbf", "Moderate: 18.7 to 29.6 mm"],
+            ["#67c5d5", "High: 29.6 to 45.9 mm"],
+            ["#2166ac", "Very high: > 45.9 mm"],
           ],
         },
 
@@ -1235,24 +1271,24 @@
           unit: "m/s",
           colorStops: [
             0,
-            "#eff6ff",
+            "#d73027",
             0.304,
-            "#bfdbfe",
+            "#d73027",
             0.582,
-            "#60a5fa",
+            "#fdae61",
             0.824,
-            "#2563eb",
+            "#ffffbf",
             1.103,
-            "#172554",
+            "#67c5d5",
             4.5,
-            "#172554",
+            "#2166ac",
           ],
           legend: [
-            ["#eff6ff", "Very low: ≤ 0.30 m/s"],
-            ["#bfdbfe", "Low: 0.30 to 0.58 m/s"],
-            ["#60a5fa", "Moderate: 0.58 to 0.82 m/s"],
-            ["#2563eb", "Elevated: 0.82 to 1.10 m/s"],
-            ["#172554", "High: > 1.10 m/s"],
+            ["#d73027", "Very low: ≤ 0.30 m/s"],
+            ["#fdae61", "Low: 0.30 to 0.58 m/s"],
+            ["#ffffbf", "Moderate: 0.58 to 0.82 m/s"],
+            ["#67c5d5", "Elevated: 0.82 to 1.10 m/s"],
+            ["#2166ac", "High: > 1.10 m/s"],
           ],
         },
 
@@ -1261,24 +1297,24 @@
           unit: "%",
           colorStops: [
             34.7,
-            "#eff6ff",
+            "#d73027",
             54.11,
-            "#bfdbfe",
+            "#d73027",
             62.26,
-            "#60a5fa",
+            "#fdae61",
             68.023,
-            "#2563eb",
+            "#ffffbf",
             73.264,
-            "#172554",
+            "#67c5d5",
             91.7,
-            "#172554",
+            "#2166ac",
           ],
           legend: [
-            ["#eff6ff", "Very dry: ≤ 54.1%"],
-            ["#bfdbfe", "Dry: 54.1% to 62.3%"],
-            ["#60a5fa", "Moderate: 62.3% to 68.0%"],
-            ["#2563eb", "Humid: 68.0% to 73.3%"],
-            ["#172554", "Very humid: > 73.3%"],
+            ["#d73027", "Very dry: ≤ 54.1%"],
+            ["#fdae61", "Dry: 54.1% to 62.3%"],
+            ["#ffffbf", "Moderate: 62.3% to 68.0%"],
+            ["#67c5d5", "Humid: 68.0% to 73.3%"],
+            ["#2166ac", "Very humid: > 73.3%"],
           ],
         },
 
@@ -1287,24 +1323,24 @@
           unit: "hPa",
           colorStops: [
             739,
-            "#eff6ff",
+            "#d73027",
             870.986,
-            "#bfdbfe",
+            "#d73027",
             918.997,
-            "#60a5fa",
+            "#fdae61",
             933.519,
-            "#2563eb",
+            "#ffffbf",
             944.432,
-            "#172554",
+            "#67c5d5",
             999,
-            "#172554",
+            "#2166ac",
           ],
           legend: [
-            ["#eff6ff", "Very low: ≤ 871.0 hPa"],
-            ["#bfdbfe", "Low: 871.0 to 919.0 hPa"],
-            ["#60a5fa", "Moderate: 919.0 to 933.5 hPa"],
-            ["#2563eb", "High: 933.5 to 944.4 hPa"],
-            ["#172554", "Very high: > 944.4 hPa"],
+            ["#d73027", "Very low: ≤ 871.0 hPa"],
+            ["#fdae61", "Low: 871.0 to 919.0 hPa"],
+            ["#ffffbf", "Moderate: 919.0 to 933.5 hPa"],
+            ["#67c5d5", "High: 933.5 to 944.4 hPa"],
+            ["#2166ac", "Very high: > 944.4 hPa"],
           ],
         },
       };
@@ -1315,17 +1351,84 @@
 
       const FISH_LAYER = {
         label: "Fish Distribution",
-        legend: [["#f97316", "Fish survey record"]],
+        legend: [["#64748b", "Colour represents fish species"]],
       };
 
+      // Distinct, reusable palette for fish species.
+      // Species are assigned colours alphabetically, so each species keeps
+      // the same colour every time the dashboard loads.
+      const FISH_SPECIES_COLORS = [
+        "#2563eb",
+        "#dc2626",
+        "#16a34a",
+        "#9333ea",
+        "#ea580c",
+        "#0891b2",
+        "#be123c",
+        "#4f46e5",
+        "#65a30d",
+        "#c026d3",
+        "#0f766e",
+        "#b45309",
+        "#7c3aed",
+        "#0284c7",
+        "#e11d48",
+        "#15803d",
+        "#a21caf",
+        "#ca8a04",
+        "#0369a1",
+        "#c2410c",
+      ];
+
+      let fishSpeciesColorLookup = new Map();
+
+      function buildFishSpeciesColorLookup() {
+        fishSpeciesColorLookup = new Map();
+
+        fishSpeciesNames.forEach((speciesName, index) => {
+          fishSpeciesColorLookup.set(
+            speciesName,
+            FISH_SPECIES_COLORS[index % FISH_SPECIES_COLORS.length],
+          );
+        });
+      }
+
+      function getFishSpeciesColor(speciesName) {
+        return fishSpeciesColorLookup.get(speciesName) || "#64748b";
+      }
+
+      function updateFishSpeciesColors() {
+        if (
+          !map.getLayer("fish-occurrences") ||
+          fishSpeciesNames.length === 0
+        ) {
+          return;
+        }
+
+        const colorExpression = ["match", ["get", "SPEC_NAME"]];
+
+        fishSpeciesNames.forEach((speciesName) => {
+          colorExpression.push(speciesName, getFishSpeciesColor(speciesName));
+        });
+
+        // Fallback colour for missing / unexpected species names.
+        colorExpression.push("#64748b");
+
+        map.setPaintProperty(
+          "fish-occurrences",
+          "circle-color",
+          colorExpression,
+        );
+      }
+
       const ML_LAYER = {
-        label: "ML Rainbow Trout Prediction",
+        label: "Rainbow Trout Count Prediction",
         legend: [
-          ["#eff6ff", "Very low: 0% to 20%"],
-          ["#bfdbfe", "Low: 20% to 40%"],
-          ["#60a5fa", "Moderate: 40% to 60%"],
-          ["#2563eb", "High: 60% to 80%"],
-          ["#172554", "Very high: 80% to 100%"],
+          ["#d73027", "Low: < 3 fish"],
+          ["#fdae61", "3 to < 5 fish"],
+          ["#ffffbf", "5 to < 10 fish"],
+          ["#67c5d5", "10 to < 15 fish"],
+          ["#2166ac", "High: ≥ 15 fish"],
         ],
       };
 
@@ -1333,13 +1436,13 @@
         label: "Elevation Tiles",
         unit: "m",
         legend: [
-          ["#08306b", "0-200 m"],
-          ["#2171b5", "200-600 m"],
-          ["#41ab5d", "600-1000 m"],
-          ["#ffff00", "1000-1400 m"],
-          ["#ff9900", "1400-1800 m"],
-          ["#ff0000", "1800-2200 m"],
-          ["#7f0000", ">2200 m"],
+          ["#b2182b", "0-200 m"],
+          ["#d6604d", "200-600 m"],
+          ["#f4a582", "600-1000 m"],
+          ["#f7f7f7", "1000-1400 m"],
+          ["#92c5de", "1400-1800 m"],
+          ["#4393c3", "1800-2200 m"],
+          ["#2166ac", ">2200 m"],
         ],
       };
 
@@ -1348,7 +1451,17 @@
       }
 
       function isHistorySelected() {
-        return getSelectedLayerKey() === "history";
+        return (
+          getSelectedLayerKey() === "environment" &&
+          environmentMode.value === "history"
+        );
+      }
+
+      function isLiveEnvironmentSelected() {
+        return (
+          getSelectedLayerKey() === "environment" &&
+          environmentMode.value === "live"
+        );
       }
 
       function isFishSelected() {
@@ -1379,7 +1492,6 @@
       let historySelectedVariable = "temperature_c";
 
       let liveWeatherSelectedDate = "";
-      let liveWeatherSelectedHour = 0;
 
       let activeHistoryValueLookup = new Map();
       let activeHistoryColorLookup = new Map();
@@ -1415,8 +1527,17 @@
       const liveWeatherControlCard = document.getElementById(
         "liveWeatherControlCard",
       );
+      const environmentMode = document.getElementById("environmentMode");
+      const environmentVariable = document.getElementById(
+        "environmentVariable",
+      );
+      const liveEnvironmentControls = document.getElementById(
+        "liveEnvironmentControls",
+      );
+      const historicalEnvironmentControls = document.getElementById(
+        "historicalEnvironmentControls",
+      );
       const liveWeatherDate = document.getElementById("liveWeatherDate");
-      const liveWeatherHour = document.getElementById("liveWeatherHour");
       const applyLiveTimeBtn = document.getElementById("applyLiveTimeBtn");
       const useCurrentTimeBtn = document.getElementById("useCurrentTimeBtn");
       const liveWeatherPeriodBadge = document.getElementById(
@@ -1533,47 +1654,62 @@
 
             {
               id: ML_LAYER_ID,
-              type: "line",
+              type: "circle",
               source: "mlPredictions",
               "source-layer": ML_SOURCE_LAYER,
               minzoom: 5,
               layout: {
                 visibility: "none",
-                "line-cap": "round",
-                "line-join": "round",
               },
               paint: {
-                "line-color": [
-                  "step",
+                "circle-color": [
+                  "interpolate",
+                  ["linear"],
                   [
                     "to-number",
-                    ["coalesce", ["get", "predicted_probability"], 0],
+                    ["coalesce", ["get", "predicted_fish_count"], 0],
                   ],
-                  "#eff6ff",
-                  0.2,
-                  "#bfdbfe",
-                  0.4,
-                  "#60a5fa",
-                  0.6,
-                  "#2563eb",
-                  0.8,
-                  "#172554",
+                  1.5,
+                  "#d73027",
+                  3,
+                  "#fdae61",
+                  5,
+                  "#ffffbf",
+                  10,
+                  "#67c5d5",
+                  22.5,
+                  "#2166ac",
                 ],
-                "line-opacity": 0.95,
-                "line-width": [
+                "circle-radius": [
+                  "interpolate",
+                  ["linear"],
+                  [
+                    "to-number",
+                    ["coalesce", ["get", "predicted_fish_count"], 0],
+                  ],
+                  1,
+                  2.5,
+                  3,
+                  4,
+                  5,
+                  5.5,
+                  10,
+                  7,
+                  25,
+                  10,
+                ],
+                "circle-opacity": 0.88,
+                "circle-stroke-color": "#ffffff",
+                "circle-stroke-width": [
                   "interpolate",
                   ["linear"],
                   ["zoom"],
                   5,
-                  1.2,
-                  7,
-                  1.8,
+                  0.3,
                   9,
-                  2.8,
-                  11,
-                  4.2,
+                  0.7,
                   13,
-                  6.2,
+                  1.2,
                 ],
               },
             },
@@ -1676,7 +1812,7 @@
       });
 
       function isLiveWeatherSelected() {
-        return Boolean(WEATHER_LAYERS[getSelectedLayerKey()]);
+        return isLiveEnvironmentSelected();
       }
 
       function formatLocalDate(date) {
@@ -1684,21 +1820,6 @@
         const month = String(date.getMonth() + 1).padStart(2, "0");
         const day = String(date.getDate()).padStart(2, "0");
         return `${year}-${month}-${day}`;
-      }
-
-      function formatHourLabel(hour) {
-        const date = new Date(2000, 0, 1, Number(hour), 0, 0);
-        return new Intl.DateTimeFormat("en-CA", {
-          hour: "numeric",
-          minute: "2-digit",
-          hour12: true,
-        }).format(date);
-      }
-
-      function getSelectedLiveTimestamp() {
-        return `${liveWeatherSelectedDate}T${String(
-          liveWeatherSelectedHour,
-        ).padStart(2, "0")}:00`;
       }
 
       function isSelectedLiveDateHistorical() {
@@ -1714,17 +1835,16 @@
 
       function updateLiveWeatherPeriodBadge(
         dateValue = liveWeatherSelectedDate,
-        hourValue = liveWeatherSelectedHour,
       ) {
         if (!dateValue) return;
 
-        const selectedDate = new Date(
-          `${dateValue}T${String(hourValue).padStart(2, "0")}:00:00`,
-        );
-
+        const selectedDate = new Date(`${dateValue}T12:00:00`);
         const today = formatLocalDate(new Date());
+
         const periodType =
-          dateValue < today ? "Historical hourly data" : "Current hourly data";
+          dateValue < today
+            ? "Daily historical environment"
+            : "Daily environment";
 
         liveWeatherPeriodBadge.textContent =
           `${periodType} · ` +
@@ -1733,11 +1853,7 @@
             month: "short",
             day: "numeric",
             year: "numeric",
-            hour: "numeric",
-            minute: "2-digit",
-            hour12: true,
-          }).format(selectedDate) +
-          " (Alberta time)";
+          }).format(selectedDate);
       }
 
       function initialiseLiveWeatherDateControls() {
@@ -1754,33 +1870,30 @@
         liveWeatherDate.min = formatLocalDate(minimumDate);
         liveWeatherDate.max = formatLocalDate(today);
 
-        liveWeatherHour.innerHTML = "";
-
-        for (let hour = 0; hour < 24; hour++) {
-          const option = document.createElement("option");
-          option.value = String(hour);
-          option.textContent = formatHourLabel(hour);
-          liveWeatherHour.appendChild(option);
-        }
-
         liveWeatherSelectedDate = formatLocalDate(now);
-        liveWeatherSelectedHour = now.getHours();
-
         liveWeatherDate.value = liveWeatherSelectedDate;
-        liveWeatherHour.value = String(liveWeatherSelectedHour);
+
         updateLiveWeatherPeriodBadge();
       }
 
       function clearLiveLayerForTimeChange() {
         const layerKey = getSelectedLayerKey();
-        if (!WEATHER_LAYERS[layerKey]) return;
+        if (!isLiveEnvironmentSelected()) return;
+
+        const selectedVariableKey = environmentVariable.value;
 
         environmentFeatures = environmentFeatures.filter(
-          (feature) => feature.properties.layerKey !== layerKey,
+          (feature) =>
+            !(
+              feature.properties.layerKey === layerKey &&
+              feature.properties.variableKey === selectedVariableKey
+            ),
         );
 
         usedPointKeys = new Set(
-          [...usedPointKeys].filter((key) => !key.startsWith(`${layerKey}:`)),
+          [...usedPointKeys].filter(
+            (key) => !key.startsWith(`${layerKey}:${selectedVariableKey}:`),
+          ),
         );
 
         selectedEnvironmentPointId = null;
@@ -1797,10 +1910,9 @@
 
       function applySelectedLiveWeatherTime() {
         const selectedDate = liveWeatherDate.value;
-        const selectedHour = Number(liveWeatherHour.value);
 
-        if (!selectedDate || !Number.isInteger(selectedHour)) {
-          status.textContent = "Select a valid weather date and hour.";
+        if (!selectedDate) {
+          status.textContent = "Select a valid weather date.";
           return;
         }
 
@@ -1814,15 +1926,12 @@
           return;
         }
 
-        const periodChanged =
-          selectedDate !== liveWeatherSelectedDate ||
-          selectedHour !== liveWeatherSelectedHour;
+        const periodChanged = selectedDate !== liveWeatherSelectedDate;
 
         liveWeatherSelectedDate = selectedDate;
-        liveWeatherSelectedHour = selectedHour;
         updateLiveWeatherPeriodBadge();
 
-        if (periodChanged && isLiveWeatherSelected()) {
+        if (periodChanged && isLiveEnvironmentSelected()) {
           clearLiveLayerForTimeChange();
         }
 
@@ -1835,7 +1944,6 @@
       function useCurrentLiveWeatherTime() {
         const now = new Date();
         liveWeatherDate.value = formatLocalDate(now);
-        liveWeatherHour.value = String(now.getHours());
         applySelectedLiveWeatherTime();
       }
 
@@ -1848,15 +1956,39 @@
         if (isHistorySelected()) return HISTORY_LAYER;
         if (isFishSelected()) return FISH_LAYER;
         if (isMlSelected()) return ML_LAYER;
-        return WEATHER_LAYERS[getSelectedLayerKey()];
+        if (isLiveEnvironmentSelected()) {
+          return WEATHER_LAYERS[environmentVariable.value];
+        }
+        return WEATHER_LAYERS.temperature;
       }
 
       function getSelectedHistoryVariableConfig() {
         return HISTORY_VARIABLES[historySelectedVariable];
       }
 
+      function getHistoryVariableFromEnvironmentVariable(variableKey) {
+        const lookup = {
+          temperature: "temperature_c",
+          precipitation: "precipitation_mm_month",
+          wind: "wind_speed_ms",
+          humidity: "relative_humidity_percent",
+          pressure: "surface_pressure_hpa",
+        };
+
+        return lookup[variableKey] || "temperature_c";
+      }
+
+      function syncHistoryVariableWithEnvironmentVariable() {
+        historySelectedVariable = getHistoryVariableFromEnvironmentVariable(
+          environmentVariable.value,
+        );
+      }
+
       function getPointKey(point, layerKey) {
-        return `${layerKey}:${point.lon.toFixed(5)},${point.lat.toFixed(5)}`;
+        const variableKey =
+          layerKey === "environment" ? environmentVariable.value : layerKey;
+
+        return `${layerKey}:${variableKey}:${point.lon.toFixed(5)},${point.lat.toFixed(5)}`;
       }
 
       function randomSample(array, count) {
@@ -1885,9 +2017,9 @@
         }
 
         if (isMlSelected()) {
-          summaryPrimaryLabel.textContent = "Prediction Layer";
+          summaryPrimaryLabel.textContent = "Prediction Points";
           summarySecondaryLabel.textContent = "Target Species";
-          pointCount.textContent = "Rivers";
+          pointCount.textContent = ML_TOTAL_PREDICTION_POINTS.toLocaleString();
           summarySecondaryValue.textContent = "Rainbow Trout";
           return;
         }
@@ -1916,13 +2048,16 @@
         }
 
         summaryPrimaryLabel.textContent = "Visible Layer";
-        summarySecondaryLabel.textContent = "Selected Time";
-        summarySecondaryValue.textContent = `${String(liveWeatherSelectedHour).padStart(2, "0")}:00`;
+        summarySecondaryLabel.textContent = "Selected Date";
+        summarySecondaryValue.textContent = liveWeatherSelectedDate || "N/A";
 
         const selectedLayerKey = getSelectedLayerKey();
+        const selectedVariableKey = environmentVariable.value;
 
         const selectedCount = environmentFeatures.filter(
-          (feature) => feature.properties.layerKey === selectedLayerKey,
+          (feature) =>
+            feature.properties.layerKey === selectedLayerKey &&
+            feature.properties.variableKey === selectedVariableKey,
         ).length;
 
         pointCount.textContent = selectedCount.toLocaleString();
@@ -1938,7 +2073,23 @@
           : layer.label;
         legendRows.innerHTML = "";
 
-        layer.legend.forEach(([color, text]) => {
+        let legendItems = layer.legend;
+
+        if (isFishSelected()) {
+          if (selectedFishSpecies) {
+            legendItems = [
+              [getFishSpeciesColor(selectedFishSpecies), selectedFishSpecies],
+              ["#94a3b8", "Circle size = fish count"],
+            ];
+          } else {
+            legendItems = [
+              ["#2563eb", "Each species has a different colour"],
+              ["#94a3b8", "Circle size = fish count"],
+            ];
+          }
+        }
+
+        legendItems.forEach(([color, text]) => {
           const row = document.createElement("div");
           row.className = "legend-row";
 
@@ -2160,43 +2311,43 @@
 
       function getHistoryColor(value) {
         if (historySelectedVariable === "temperature_c") {
-          if (value <= -14.346) return "#eff6ff";
-          if (value <= -6.382) return "#bfdbfe";
-          if (value <= 2.898) return "#60a5fa";
-          if (value <= 12.395) return "#2563eb";
-          return "#172554";
+          if (value <= -14.346) return "#d73027";
+          if (value <= -6.382) return "#fdae61";
+          if (value <= 2.898) return "#ffffbf";
+          if (value <= 12.395) return "#67c5d5";
+          return "#2166ac";
         }
 
         if (historySelectedVariable === "precipitation_mm_month") {
-          if (value <= 9.173) return "#eff6ff";
-          if (value <= 18.671) return "#bfdbfe";
-          if (value <= 29.571) return "#60a5fa";
-          if (value <= 45.907) return "#2563eb";
-          return "#172554";
+          if (value <= 9.173) return "#d73027";
+          if (value <= 18.671) return "#fdae61";
+          if (value <= 29.571) return "#ffffbf";
+          if (value <= 45.907) return "#67c5d5";
+          return "#2166ac";
         }
 
         if (historySelectedVariable === "wind_speed_ms") {
-          if (value <= 0.304) return "#eff6ff";
-          if (value <= 0.582) return "#bfdbfe";
-          if (value <= 0.824) return "#60a5fa";
-          if (value <= 1.103) return "#2563eb";
-          return "#172554";
+          if (value <= 0.304) return "#d73027";
+          if (value <= 0.582) return "#fdae61";
+          if (value <= 0.824) return "#ffffbf";
+          if (value <= 1.103) return "#67c5d5";
+          return "#2166ac";
         }
 
         if (historySelectedVariable === "relative_humidity_percent") {
-          if (value <= 54.11) return "#eff6ff";
-          if (value <= 62.26) return "#bfdbfe";
-          if (value <= 68.023) return "#60a5fa";
-          if (value <= 73.264) return "#2563eb";
-          return "#172554";
+          if (value <= 54.11) return "#d73027";
+          if (value <= 62.26) return "#fdae61";
+          if (value <= 68.023) return "#ffffbf";
+          if (value <= 73.264) return "#67c5d5";
+          return "#2166ac";
         }
 
         if (historySelectedVariable === "surface_pressure_hpa") {
-          if (value <= 870.986) return "#eff6ff";
-          if (value <= 918.997) return "#bfdbfe";
-          if (value <= 933.519) return "#60a5fa";
-          if (value <= 944.432) return "#2563eb";
-          return "#172554";
+          if (value <= 870.986) return "#d73027";
+          if (value <= 918.997) return "#fdae61";
+          if (value <= 933.519) return "#ffffbf";
+          if (value <= 944.432) return "#67c5d5";
+          return "#2166ac";
         }
 
         return "#94a3b8";
@@ -2463,33 +2614,65 @@
               visibility: "none",
             },
             paint: {
-              "circle-color": "#f97316",
+              // Species-specific colour is applied after the species list loads.
+              "circle-color": "#64748b",
+
+              // Radius is driven by fish count and still increases slightly with zoom.
               "circle-radius": [
                 "interpolate",
                 ["linear"],
                 ["zoom"],
                 0,
-                2.2,
-                5,
-                3.2,
+                [
+                  "interpolate",
+                  ["linear"],
+                  ["to-number", ["coalesce", ["get", "SPEC_SUM"], 0]],
+                  0,
+                  2,
+                  5,
+                  2.8,
+                  20,
+                  4,
+                  50,
+                  5,
+                  100,
+                  6,
+                ],
                 8,
-                4.5,
-                11,
-                6,
+                [
+                  "interpolate",
+                  ["linear"],
+                  ["to-number", ["coalesce", ["get", "SPEC_SUM"], 0]],
+                  0,
+                  3,
+                  5,
+                  4,
+                  20,
+                  5.5,
+                  50,
+                  7,
+                  100,
+                  9,
+                ],
                 14,
-                8,
+                [
+                  "interpolate",
+                  ["linear"],
+                  ["to-number", ["coalesce", ["get", "SPEC_SUM"], 0]],
+                  0,
+                  4,
+                  5,
+                  5.5,
+                  20,
+                  7.5,
+                  50,
+                  10,
+                  100,
+                  13,
+                ],
               ],
-              "circle-opacity": [
-                "interpolate",
-                ["linear"],
-                ["zoom"],
-                0,
-                0.72,
-                6,
-                0.86,
-                10,
-                0.95,
-              ],
+
+              "circle-opacity": 0.88,
               "circle-stroke-color": "#ffffff",
               "circle-stroke-width": [
                 "interpolate",
@@ -2506,6 +2689,10 @@
           });
 
           addFishInteractions();
+
+          if (fishSpeciesLoaded) {
+            updateFishSpeciesColors();
+          }
         } catch (error) {
           console.error("Could not add FWMIS fish layer:", error);
           status.textContent =
@@ -2544,6 +2731,9 @@
             .map((name) => name.trim())
             .filter(Boolean)
             .sort((a, b) => a.localeCompare(b));
+
+          buildFishSpeciesColorLookup();
+          updateFishSpeciesColors();
 
           renderFishSpeciesOptions("");
           fishSpeciesLoaded = true;
@@ -2585,20 +2775,10 @@
         const query = String(searchText || "")
           .trim()
           .toLowerCase();
+
         fishSpeciesMenu.innerHTML = "";
 
-        const allButton = document.createElement("button");
-        allButton.type = "button";
-        allButton.className = "searchable-select-option";
-        allButton.textContent = "All species";
-        allButton.addEventListener("click", () => selectFishSpecies(""));
-        fishSpeciesMenu.appendChild(allButton);
-
-        const matchingSpecies = fishSpeciesNames.filter((speciesName) =>
-          speciesName.toLowerCase().includes(query),
-        );
-
-        matchingSpecies.forEach((speciesName) => {
+        function addSpeciesOption(speciesName) {
           const button = document.createElement("button");
           button.type = "button";
           button.className = "searchable-select-option";
@@ -2607,14 +2787,41 @@
             selectFishSpecies(speciesName),
           );
           fishSpeciesMenu.appendChild(button);
-        });
+        }
 
-        if (matchingSpecies.length === 0 && query) {
+        // With no search text, show All species followed by the complete list.
+        if (!query) {
+          const allButton = document.createElement("button");
+          allButton.type = "button";
+          allButton.className = "searchable-select-option";
+          allButton.textContent = "All species";
+          allButton.addEventListener("click", () => selectFishSpecies(""));
+          fishSpeciesMenu.appendChild(allButton);
+
+          fishSpeciesNames.forEach(addSpeciesOption);
+          return;
+        }
+
+        // Put matching species first.
+        const matchingSpecies = fishSpeciesNames.filter((speciesName) =>
+          speciesName.toLowerCase().includes(query),
+        );
+
+        // Keep every other species underneath the matches.
+        const otherSpecies = fishSpeciesNames.filter(
+          (speciesName) => !speciesName.toLowerCase().includes(query),
+        );
+
+        if (matchingSpecies.length === 0) {
           const empty = document.createElement("div");
           empty.className = "searchable-select-empty";
-          empty.textContent = "No matching species found.";
+          empty.textContent =
+            "No exact matching species. Showing all species below.";
           fishSpeciesMenu.appendChild(empty);
         }
+
+        matchingSpecies.forEach(addSpeciesOption);
+        otherSpecies.forEach(addSpeciesOption);
       }
 
       function formatFwmisDate(value) {
@@ -2791,10 +2998,10 @@
       }
 
       async function fetchWeatherForPoints(points, layerKey) {
-        const layer = WEATHER_LAYERS[layerKey];
+        const variableKey = environmentVariable.value;
+        const layer = WEATHER_LAYERS[variableKey];
         const newFeatures = [];
         const chunkSize = 50;
-        const selectedTimestamp = getSelectedLiveTimestamp();
 
         for (let i = 0; i < points.length; i += chunkSize) {
           const chunk = points.slice(i, i + chunkSize);
@@ -2839,12 +3046,25 @@
 
           chunk.forEach((point, index) => {
             const locationData = locationResults[index] || locationResults[0];
-            const hourlyTimes = locationData?.hourly?.time || [];
             const hourlyValues = locationData?.hourly?.[layer.apiName] || [];
-            const timeIndex = hourlyTimes.indexOf(selectedTimestamp);
-            const value = timeIndex >= 0 ? hourlyValues[timeIndex] : null;
 
-            if (value === undefined || value === null) return;
+            const validValues = hourlyValues
+              .map(Number)
+              .filter((value) => Number.isFinite(value));
+
+            if (validValues.length === 0) return;
+
+            let value;
+
+            if (variableKey === "precipitation") {
+              // Total precipitation for the selected day.
+              value = validValues.reduce((sum, current) => sum + current, 0);
+            } else {
+              // Daily mean for temperature, wind, humidity, and pressure.
+              value =
+                validValues.reduce((sum, current) => sum + current, 0) /
+                validValues.length;
+            }
 
             usedPointKeys.add(getPointKey(point, layerKey));
 
@@ -2859,10 +3079,11 @@
                 pointId: getPointKey(point, layerKey),
                 selected: false,
                 layerKey,
+                variableKey,
                 layerLabel: layer.label,
-                value,
+                value: Number(value.toFixed(2)),
                 unit: layer.unit,
-                observationTime: selectedTimestamp,
+                observationDate: liveWeatherSelectedDate,
                 observationTimeLabel: liveWeatherPeriodBadge.textContent,
               },
             });
@@ -2877,7 +3098,7 @@
       function buildCircleColorExpression() {
         return [
           "match",
-          ["get", "layerKey"],
+          ["get", "variableKey"],
 
           "temperature",
           [
@@ -2925,6 +3146,7 @@
 
       function updateEnvironmentLayer() {
         const selectedLayerKey = getSelectedLayerKey();
+        const selectedVariableKey = environmentVariable.value;
 
         if (
           isElevationSelected() ||
@@ -2942,7 +3164,9 @@
         }
 
         const visibleFeatures = environmentFeatures.filter(
-          (feature) => feature.properties.layerKey === selectedLayerKey,
+          (feature) =>
+            feature.properties.layerKey === selectedLayerKey &&
+            feature.properties.variableKey === selectedVariableKey,
         );
 
         const data = {
@@ -3010,14 +3234,24 @@
         }
 
         if (historyControlCard) {
-          historyControlCard.style.display = showHistory ? "block" : "none";
+          historyControlCard.style.display = "none";
         }
 
         if (liveWeatherControlCard) {
           liveWeatherControlCard.style.display =
-            !showElevation && !showHistory && !showFish && !showMl
-              ? "block"
-              : "none";
+            getSelectedLayerKey() === "environment" ? "block" : "none";
+        }
+
+        if (liveEnvironmentControls) {
+          liveEnvironmentControls.style.display = showHistory
+            ? "none"
+            : "block";
+        }
+
+        if (historicalEnvironmentControls) {
+          historicalEnvironmentControls.style.display = showHistory
+            ? "block"
+            : "none";
         }
 
         if (fishControlCard) {
@@ -3042,7 +3276,49 @@
           map.setLayoutProperty(
             "streams-line",
             "visibility",
-            showElevation || showHistory || showMl ? "none" : "visible",
+            showElevation || showHistory ? "none" : "visible",
+          );
+
+          // Keep the Alberta river network visible underneath the
+          // Rainbow Trout count prediction points.
+          map.setPaintProperty("streams-line", "line-color", "#0057ff");
+
+          map.setPaintProperty(
+            "streams-line",
+            "line-opacity",
+            showMl ? 0.65 : 0.95,
+          );
+
+          map.setPaintProperty(
+            "streams-line",
+            "line-width",
+            showMl
+              ? [
+                  "interpolate",
+                  ["linear"],
+                  ["zoom"],
+                  5,
+                  0.6,
+                  8,
+                  1.0,
+                  10,
+                  1.5,
+                  12,
+                  2.2,
+                ]
+              : [
+                  "interpolate",
+                  ["linear"],
+                  ["zoom"],
+                  5,
+                  0.8,
+                  8,
+                  1.4,
+                  10,
+                  2.2,
+                  12,
+                  3.5,
+                ],
           );
         }
 
@@ -3125,7 +3401,7 @@
             : "Showing all cleaned FWMIS fish survey records.";
         } else if (showMl) {
           status.textContent =
-            "Showing only the model-predicted Rainbow Trout habitat probability layer.";
+            "Showing Rainbow Trout predicted survey counts with the Alberta river network underneath.";
         } else if (showElevation) {
           status.textContent =
             "Click a red stream segment to view elevation details.";
@@ -3144,56 +3420,123 @@
           if (!isMlSelected() || !event.features?.length) return;
 
           const properties = event.features[0].properties || {};
-          const probability = Number(properties.predicted_probability);
-          const probabilityPercent = Number.isFinite(probability)
-            ? `${(probability * 100).toFixed(1)}%`
-            : "N/A";
+          const predictedCount = Number(properties.predicted_fish_count);
+          const roundedCount = Number(properties.predicted_fish_count_rounded);
+          const abundanceClass = properties.abundance_class || "N/A";
+          const temperature = Number(properties.temperature_c);
+          const precipitation = Number(properties.precipitation_mm_month);
+          const wind = Number(properties.wind_speed_ms);
+          const humidity = Number(properties.relative_humidity_percent);
+          const pressure = Number(properties.surface_pressure_hpa);
+          const predictionYear = properties.prediction_year ?? "N/A";
+          const predictionMonth = Number(properties.prediction_month);
 
-          const predictionClass =
-            properties.prediction_class ||
-            (Number.isFinite(probability)
-              ? probability < 0.2
-                ? "Very low"
-                : probability < 0.4
-                  ? "Low"
-                  : probability < 0.6
-                    ? "Moderate"
-                    : probability < 0.8
-                      ? "High"
-                      : "Very high"
-              : "N/A");
+          const predictionPeriod =
+            Number.isFinite(predictionMonth) && predictionYear !== "N/A"
+              ? `${predictionYear}-${String(predictionMonth).padStart(2, "0")}`
+              : "N/A";
 
           if (activePopup) activePopup.remove();
 
           activePopup = new maplibregl.Popup({
-            maxWidth: "360px",
+            className: "fish-popup",
+            maxWidth: "420px",
             closeButton: true,
             closeOnClick: true,
+            offset: 14,
           })
             .setLngLat(event.lngLat)
             .setHTML(
               `
-                <div style="font-family:Arial;min-width:250px;line-height:1.5;">
-                  <h3 style="margin:0 0 10px;">Rainbow Trout ML Prediction</h3>
-                  <strong>Habitat probability:</strong> ${escapeHtml(probabilityPercent)}<br>
-                  <strong>Probability class:</strong> ${escapeHtml(predictionClass)}<br>
-                  <strong>Predicted presence:</strong> ${
-                    Number(properties.predicted_presence) === 1
-                      ? "Likely present"
-                      : Number(properties.predicted_presence) === 0
-                        ? "Likely absent"
-                        : Number.isFinite(probability)
-                          ? probability >= 0.5
-                            ? "Likely present"
-                            : "Likely absent"
-                          : "N/A"
-                  }<br>
-                  <strong>Latitude:</strong> ${event.lngLat.lat.toFixed(5)}<br>
-                  <strong>Longitude:</strong> ${event.lngLat.lng.toFixed(5)}<br>
-                  <div style="margin-top:9px;color:#64748b;font-size:12px;">
-                    River colour represents the model-predicted habitat probability.
+                <article class="fish-popup-card">
+                  <header class="fish-popup-header">
+                    <div class="fish-popup-eyebrow">Machine-learning regression</div>
+                    <h3 class="fish-popup-title">Rainbow Trout Count Prediction</h3>
+                  </header>
+
+                  <div class="fish-popup-body">
+                    <section class="fish-popup-section">
+                      <h4 class="fish-popup-section-title">Prediction</h4>
+                      <div class="fish-popup-grid">
+                        <div class="fish-popup-label">Predicted count</div>
+                        <div class="fish-popup-value">${
+                          Number.isFinite(predictedCount)
+                            ? predictedCount.toFixed(2)
+                            : "N/A"
+                        }</div>
+
+                        <div class="fish-popup-label">Rounded count</div>
+                        <div class="fish-popup-value">${
+                          Number.isFinite(roundedCount)
+                            ? Math.round(roundedCount)
+                            : "N/A"
+                        }</div>
+
+                        <div class="fish-popup-label">Abundance class</div>
+                        <div class="fish-popup-value">${escapeHtml(abundanceClass)}</div>
+
+                        <div class="fish-popup-label">Prediction period</div>
+                        <div class="fish-popup-value">${escapeHtml(predictionPeriod)}</div>
+                      </div>
+                    </section>
+
+                    <section class="fish-popup-section">
+                      <h4 class="fish-popup-section-title">Environmental conditions</h4>
+                      <div class="fish-popup-grid">
+                        <div class="fish-popup-label">Temperature</div>
+                        <div class="fish-popup-value">${
+                          Number.isFinite(temperature)
+                            ? `${temperature.toFixed(2)} °C`
+                            : "N/A"
+                        }</div>
+
+                        <div class="fish-popup-label">Monthly precipitation</div>
+                        <div class="fish-popup-value">${
+                          Number.isFinite(precipitation)
+                            ? `${precipitation.toFixed(2)} mm`
+                            : "N/A"
+                        }</div>
+
+                        <div class="fish-popup-label">Wind speed</div>
+                        <div class="fish-popup-value">${
+                          Number.isFinite(wind)
+                            ? `${wind.toFixed(2)} m/s`
+                            : "N/A"
+                        }</div>
+
+                        <div class="fish-popup-label">Relative humidity</div>
+                        <div class="fish-popup-value">${
+                          Number.isFinite(humidity)
+                            ? `${humidity.toFixed(2)}%`
+                            : "N/A"
+                        }</div>
+
+                        <div class="fish-popup-label">Surface pressure</div>
+                        <div class="fish-popup-value">${
+                          Number.isFinite(pressure)
+                            ? `${pressure.toFixed(2)} hPa`
+                            : "N/A"
+                        }</div>
+                      </div>
+                    </section>
+
+                    <section class="fish-popup-section">
+                      <h4 class="fish-popup-section-title">Coordinates</h4>
+                      <div class="fish-popup-coordinates">
+                        <div class="fish-popup-coordinate">
+                          <span class="fish-popup-coordinate-label">Latitude</span>
+                          <span class="fish-popup-coordinate-value">${event.lngLat.lat.toFixed(5)}</span>
+                        </div>
+                        <div class="fish-popup-coordinate">
+                          <span class="fish-popup-coordinate-label">Longitude</span>
+                          <span class="fish-popup-coordinate-value">${event.lngLat.lng.toFixed(5)}</span>
+                        </div>
+                      </div>
+                    </section>
+
+                   
                   </div>
-                </div>
+                </article>
               `,
             )
             .addTo(map);
@@ -3348,19 +3691,25 @@
 
       function getOrderedLayerFeatures() {
         const layerKey = getSelectedLayerKey();
+        const selectedVariableKey = environmentVariable.value;
 
         // Use the saved GeoJSON order, not MapLibre's rendered feature order.
         // This makes keyboard navigation predictable:
         // Right = next, Left = exact previous point.
         return environmentFeatures.filter(
-          (feature) => feature.properties.layerKey === layerKey,
+          (feature) =>
+            feature.properties.layerKey === layerKey &&
+            feature.properties.variableKey === selectedVariableKey,
         );
       }
 
       function refreshEnvironmentSource() {
         const selectedLayerKey = getSelectedLayerKey();
+        const selectedVariableKey = environmentVariable.value;
         const visibleFeatures = environmentFeatures.filter(
-          (feature) => feature.properties.layerKey === selectedLayerKey,
+          (feature) =>
+            feature.properties.layerKey === selectedLayerKey &&
+            feature.properties.variableKey === selectedVariableKey,
         );
 
         if (map.getSource("environment-points")) {
@@ -3399,9 +3748,9 @@
                   <div style="font-family: Arial; min-width: 210px;">
                     <h3 style="margin:0 0 8px;">${props.layerLabel} Point</h3>
                     <strong>${props.layerLabel}:</strong> ${props.value} ${props.unit}<br>
-                    <strong>Date and time:</strong> ${escapeHtml(
+                    <strong>Date:</strong> ${escapeHtml(
                       props.observationTimeLabel ||
-                        props.observationTime ||
+                        props.observationDate ||
                         "N/A",
                     )}<br>
                     <strong>Latitude:</strong> ${coordinates[1].toFixed(5)}<br>
@@ -3573,13 +3922,20 @@
       function clearSelectedLayer() {
         const layerKey = getSelectedLayerKey();
         const layer = getSelectedLayer();
+        const selectedVariableKey = environmentVariable.value;
 
         environmentFeatures = environmentFeatures.filter(
-          (feature) => feature.properties.layerKey !== layerKey,
+          (feature) =>
+            !(
+              feature.properties.layerKey === layerKey &&
+              feature.properties.variableKey === selectedVariableKey
+            ),
         );
 
         usedPointKeys = new Set(
-          [...usedPointKeys].filter((key) => !key.startsWith(`${layerKey}:`)),
+          [...usedPointKeys].filter(
+            (key) => !key.startsWith(`${layerKey}:${selectedVariableKey}:`),
+          ),
         );
 
         clearSelectedPoint();
@@ -3619,35 +3975,25 @@
         await updateHistoryLayer();
       });
 
-      historyVariable.addEventListener("change", async (e) => {
-        historySelectedVariable = e.target.value;
-        updateLegend();
-        await updateHistoryLayer();
-      });
+      if (historyVariable) {
+        historyVariable.addEventListener("change", async (e) => {
+          historySelectedVariable = e.target.value;
+          updateLegend();
+          await updateHistoryLayer();
+        });
+      }
 
       applyLiveTimeBtn.addEventListener("click", applySelectedLiveWeatherTime);
 
       useCurrentTimeBtn.addEventListener("click", useCurrentLiveWeatherTime);
 
       liveWeatherDate.addEventListener("change", () => {
-        updateLiveWeatherPeriodBadge(
-          liveWeatherDate.value,
-          Number(liveWeatherHour.value),
-        );
-      });
-
-      liveWeatherHour.addEventListener("change", () => {
-        updateLiveWeatherPeriodBadge(
-          liveWeatherDate.value,
-          Number(liveWeatherHour.value),
-        );
+        updateLiveWeatherPeriodBadge(liveWeatherDate.value);
       });
 
       fishSpeciesInput.addEventListener("focus", () => {
         fishSpeciesInput.select();
-        renderFishSpeciesOptions(
-          selectedFishSpecies ? selectedFishSpecies : "",
-        );
+        renderFishSpeciesOptions("");
         openFishSpeciesMenu();
       });
 
@@ -3692,6 +4038,34 @@
         }
       });
 
+      environmentMode.addEventListener("change", async () => {
+        syncHistoryVariableWithEnvironmentVariable();
+        updateLegend();
+        updateLayerVisibilityForSelection();
+        updateEnvironmentLayer();
+
+        if (isHistorySelected()) {
+          await updateHistoryLayer();
+        } else {
+          await updateHistoryLayer();
+          updatePointCounter();
+          status.textContent = `${getSelectedLayer().label} selected for ${liveWeatherPeriodBadge.textContent}.`;
+        }
+      });
+
+      environmentVariable.addEventListener("change", async () => {
+        syncHistoryVariableWithEnvironmentVariable();
+        updateLegend();
+        updateEnvironmentLayer();
+        updatePointCounter();
+
+        if (isHistorySelected()) {
+          await updateHistoryLayer();
+        } else {
+          status.textContent = `${getSelectedLayer().label} selected for ${liveWeatherPeriodBadge.textContent}.`;
+        }
+      });
+
       layerSelect.addEventListener("change", async () => {
         updateLegend();
         clearSelectedPoint();
@@ -3703,6 +4077,8 @@
         }
         updateLayerVisibilityForSelection();
         updateEnvironmentLayer();
+
+        syncHistoryVariableWithEnvironmentVariable();
 
         if (isHistorySelected()) {
           await updateHistoryLayer();
@@ -3724,11 +4100,11 @@
             : "Showing all cleaned FWMIS fish survey records.";
         } else if (isMlSelected()) {
           status.textContent =
-            "Showing only the Rainbow Trout ML habitat probability layer.";
+            "Showing Rainbow Trout predicted survey counts with the Alberta river network underneath.";
         } else if (!isElevationSelected() && !isHistorySelected()) {
           status.textContent =
             `${layer.label} selected for ${liveWeatherPeriodBadge.textContent}. ` +
-            `Only this layer is shown now.`;
+            `Only this environment variable is shown now.`;
         }
       });
 
@@ -3793,6 +4169,7 @@
       map.on("load", async () => {
         try {
           initialiseLiveWeatherDateControls();
+          syncHistoryVariableWithEnvironmentVariable();
           updateLegend();
 
           status.textContent = "Map loaded. Preparing stream layers...";
