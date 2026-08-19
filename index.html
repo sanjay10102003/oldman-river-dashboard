@@ -30,7 +30,7 @@
           "Segoe UI",
           Arial,
           sans-serif;
-        background: #eef2f7;
+        background: #eef3ea;
       }
 
       #map {
@@ -46,8 +46,8 @@
         max-height: calc(100vh - 36px);
         overflow-y: auto;
         z-index: 10;
-        background: rgba(255, 255, 255, 0.96);
-        border: 1px solid rgba(226, 232, 240, 0.95);
+        background: rgba(255, 255, 255, 0.97);
+        border: 1px solid rgba(203, 213, 225, 0.95);
         border-radius: 22px;
         padding: 20px;
         box-shadow: 0 20px 50px rgba(15, 23, 42, 0.25);
@@ -92,8 +92,8 @@
       }
 
       .stat {
-        background: white;
-        border: 1px solid #e2e8f0;
+        background: #ffffff;
+        border: 1px solid #d8e0d4;
         border-radius: 15px;
         padding: 12px;
       }
@@ -117,8 +117,8 @@
         width: 100%;
         padding: 12px;
         border-radius: 12px;
-        border: 1px solid #cbd5e1;
-        background: white;
+        border: 1px solid #bac8b8;
+        background: #ffffff;
         color: #0f172a;
         font-size: 14px;
         font-weight: 600;
@@ -178,15 +178,15 @@
       }
 
       .btn-primary {
-        background: #2563eb;
+        background: #0f4c5c;
         color: white;
       }
       .btn-primary:hover {
-        background: #1d4ed8;
+        background: #083b49;
       }
 
       .btn-dark {
-        background: #0f172a;
+        background: #17364a;
         color: white;
       }
       .btn-dark:hover {
@@ -236,8 +236,8 @@
         right: 18px;
         bottom: 24px;
         z-index: 10;
-        background: rgba(255, 255, 255, 0.96);
-        border: 1px solid #e2e8f0;
+        background: rgba(255, 255, 255, 0.97);
+        border: 1px solid #cdd8cf;
         padding: 15px;
         border-radius: 16px;
         font-size: 15px;
@@ -275,6 +275,62 @@
         display: block;
         min-width: 0;
         white-space: nowrap;
+      }
+
+      .history-gradient-legend {
+        margin-top: 10px;
+        width: 100%;
+      }
+
+      .history-gradient-bar {
+        width: 100%;
+        height: 18px;
+        border-radius: 999px;
+        border: 1px solid rgba(15, 23, 42, 0.18);
+        background: linear-gradient(
+          90deg,
+          #7f1d1d 0%,
+          #991b1b 10%,
+          #b91c1c 20%,
+          #dc2626 30%,
+          #ef4444 40%,
+          #f97316 55%,
+          #fb923c 65%,
+          #f59e0b 75%,
+          #facc15 88%,
+          #fde047 100%
+        );
+      }
+
+      .history-gradient-scale {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+        margin-top: 6px;
+        color: #475569;
+        font-size: 11px;
+        font-weight: 700;
+      }
+
+      .history-gradient-scale span:nth-child(2) {
+        text-align: center;
+      }
+
+      .history-gradient-scale span:last-child {
+        text-align: right;
+      }
+
+      /* Scrollable species list for the Fish Distribution legend */
+      #legendRows.fish-scroll {
+        max-height: 280px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding-right: 6px;
+        scrollbar-width: thin;
+      }
+
+      #legendRows.fish-scroll .legend-row {
+        margin-top: 8px;
       }
 
       .searchable-select {
@@ -476,6 +532,21 @@
         display: none !important;
       }
 
+      .maplibregl-ctrl-group {
+        border: 1px solid #c7d3ca !important;
+        border-radius: 10px !important;
+        overflow: hidden;
+        box-shadow: 0 6px 18px rgba(23, 54, 74, 0.12) !important;
+      }
+
+      .maplibregl-ctrl-group button {
+        background-color: rgba(255, 255, 255, 0.96) !important;
+      }
+
+      .maplibregl-ctrl-group button:hover {
+        background-color: #edf5f0 !important;
+      }
+
       /* Professional fish observation popup */
       .fish-popup .maplibregl-popup-content {
         width: min(420px, calc(100vw - 32px));
@@ -531,9 +602,52 @@
       }
 
       .fish-popup-header {
-        padding: 20px 54px 16px 20px;
-        background: linear-gradient(135deg, #fff7ed 0%, #ffffff 100%);
-        border-bottom: 1px solid #fed7aa;
+        position: relative;
+        padding: 20px 150px 16px 20px;
+        background: linear-gradient(135deg, #edf5f0 0%, #ffffff 100%);
+        border-bottom: 1px solid #c8d7d0;
+      }
+
+      .fish-popup-nav {
+        position: absolute;
+        top: 12px;
+        right: 50px;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .fish-popup-nav-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+        padding: 0;
+        border: 1px solid #e2e8f0;
+        border-radius: 9px;
+        background: rgba(255, 255, 255, 0.96);
+        color: #334155;
+        font-size: 21px;
+        font-weight: 800;
+        line-height: 1;
+        cursor: pointer;
+        transition: 0.15s ease;
+      }
+
+      .fish-popup-nav-button:hover {
+        border-color: #fdba74;
+        background: #fff7ed;
+        color: #17364a;
+      }
+
+      .fish-popup-nav-counter {
+        min-width: 38px;
+        color: #64748b;
+        font-size: 11px;
+        font-weight: 800;
+        text-align: center;
+        white-space: nowrap;
       }
 
       .fish-popup-eyebrow {
@@ -665,6 +779,45 @@
           grid-template-columns: 1fr;
         }
       }
+
+      .basemap-map-control {
+        position: absolute;
+        top: 14px;
+        right: 58px;
+        z-index: 8;
+        width: 210px;
+        padding: 10px 12px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.96);
+        border: 1px solid rgba(203, 213, 225, 0.95);
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.14);
+        backdrop-filter: blur(8px);
+      }
+      .basemap-map-control label {
+        display: block;
+        margin-bottom: 6px;
+        color: #334155;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      .basemap-map-control select {
+        width: 100%;
+        padding: 8px 30px 8px 10px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        background: #fff;
+        color: #0f172a;
+        font-size: 13px;
+        font-weight: 700;
+        outline: none;
+        cursor: pointer;
+      }
+      .basemap-map-control select:focus {
+        border-color: #0f4c5c;
+        box-shadow: 0 0 0 3px rgba(15, 76, 92, 0.12);
+      }
     </style>
   </head>
 
@@ -679,7 +832,8 @@
         <select id="layerSelect">
           <option value="environment">Environment</option>
           <option value="fish">Fish Distribution</option>
-          <option value="ml">Rainbow Trout Count Prediction</option>
+          <option value="ml">Rainbow Trout Monthly Prediction</option>
+          <option value="riverBinary">River Binary Grid</option>
           <option value="elevation">Elevation Tiles</option>
         </select>
       </div>
@@ -841,6 +995,11 @@
           ></div>
         </div>
 
+        <label class="field-label" for="fishYearSelect">Survey Year</label>
+        <select id="fishYearSelect">
+          <option value="">All years</option>
+        </select>
+
         <div class="fish-stats" id="fishStats">
           <div class="fish-stats-title" id="fishStatsTitle">
             Species Statistics
@@ -878,7 +1037,32 @@
 
         <div class="help-text">
           Search or select a species, then click a point to view observation
-          details.
+          details. Repeated > symbols show river-flow direction.
+        </div>
+      </div>
+
+      <div class="card" id="mlControlCard" style="display: none">
+        <div class="card-title">Rainbow Trout Prediction</div>
+
+        <label class="field-label" for="mlMonthSelect">Month</label>
+        <select id="mlMonthSelect">
+          <option value="01">January</option>
+          <option value="02">February</option>
+          <option value="03">March</option>
+          <option value="04">April</option>
+          <option value="05">May</option>
+          <option value="06">June</option>
+          <option value="07" selected>July</option>
+          <option value="08">August</option>
+          <option value="09">September</option>
+          <option value="10">October</option>
+          <option value="11">November</option>
+          <option value="12">December</option>
+        </select>
+
+        <div class="help-text">
+          Select a month to view direct Rainbow Trout count predictions for all
+          629,200 river prediction locations.
         </div>
       </div>
 
@@ -951,6 +1135,14 @@
             >
           </a>
 
+          <div class="source-item">
+            <span class="source-name">Derived River Binary Grid</span>
+            <span class="source-purpose"
+              >200 m × 200 m binary raster derived from the Alberta stream
+              network; 1 = river cell, 0 = non-river cell</span
+            >
+          </div>
+
           <a
             class="source-item"
             href="https://open.alberta.ca/opendata/gda-c16469a2-5541-455c-bba0-63a24c0ff08a"
@@ -1007,6 +1199,18 @@
             >
           </a>
 
+          <div class="source-item">
+            <span class="source-name"
+              >Derived Rainbow Trout Count Prediction</span
+            >
+            <span class="source-purpose"
+              >Direct count regression using valid FWMIS lotic surveys,
+              including zero-count and positive-count Rainbow Trout surveys,
+              combined with ERA5-Land temperature, precipitation, wind speed,
+              relative humidity and surface pressure.</span
+            >
+          </div>
+
           <a
             class="source-item"
             href="https://www.openstreetmap.org/copyright"
@@ -1049,6 +1253,16 @@
     </div>
 
     <div id="map"></div>
+    <div class="basemap-map-control">
+      <label for="basemapSelect">Basemap</label>
+      <select id="basemapSelect">
+        <option value="voyager" selected>Voyager</option>
+        <option value="positron">Positron Light</option>
+        <option value="dark">Dark Matter</option>
+        <option value="osm">OpenStreetMap</option>
+        <option value="topo">Topographic</option>
+      </select>
+    </div>
     <div id="selectionBox"></div>
 
     <div id="legend">
@@ -1086,15 +1300,65 @@
 
       const FISH_TOTAL_RECORDS = 423257;
 
-      // Rainbow Trout count regression prediction points.
-      const ML_PMTILES_PATH =
-        "data/ml/rainbow_trout_point_count_predictions.pmtiles";
+      // Monthly Rainbow Trout direct-count prediction points.
+      // Each month uses two PMTiles archives displayed together.
+      const ML_MONTH_FILES = {
+        "01": [
+          "data/ml/monthly_pmtiles_split/rainbow_trout_01_january_direct_count_all_surveys_part1.pmtiles",
+          "data/ml/monthly_pmtiles_split/rainbow_trout_01_january_direct_count_all_surveys_part2.pmtiles",
+        ],
+        "02": [
+          "data/ml/monthly_pmtiles_split/rainbow_trout_02_february_direct_count_all_surveys_part1.pmtiles",
+          "data/ml/monthly_pmtiles_split/rainbow_trout_02_february_direct_count_all_surveys_part2.pmtiles",
+        ],
+        "03": [
+          "data/ml/monthly_pmtiles_split/rainbow_trout_03_march_direct_count_all_surveys_part1.pmtiles",
+          "data/ml/monthly_pmtiles_split/rainbow_trout_03_march_direct_count_all_surveys_part2.pmtiles",
+        ],
+        "04": [
+          "data/ml/monthly_pmtiles_split/rainbow_trout_04_april_direct_count_all_surveys_part1.pmtiles",
+          "data/ml/monthly_pmtiles_split/rainbow_trout_04_april_direct_count_all_surveys_part2.pmtiles",
+        ],
+        "05": [
+          "data/ml/monthly_pmtiles_split/rainbow_trout_05_may_direct_count_all_surveys_part1.pmtiles",
+          "data/ml/monthly_pmtiles_split/rainbow_trout_05_may_direct_count_all_surveys_part2.pmtiles",
+        ],
+        "06": [
+          "data/ml/monthly_pmtiles_split/rainbow_trout_06_june_direct_count_all_surveys_part1.pmtiles",
+          "data/ml/monthly_pmtiles_split/rainbow_trout_06_june_direct_count_all_surveys_part2.pmtiles",
+        ],
+        "07": [
+          "data/ml/monthly_pmtiles_split/rainbow_trout_07_july_direct_count_all_surveys_part1.pmtiles",
+          "data/ml/monthly_pmtiles_split/rainbow_trout_07_july_direct_count_all_surveys_part2.pmtiles",
+        ],
+        "08": [
+          "data/ml/monthly_pmtiles_split/rainbow_trout_08_august_direct_count_all_surveys_part1.pmtiles",
+          "data/ml/monthly_pmtiles_split/rainbow_trout_08_august_direct_count_all_surveys_part2.pmtiles",
+        ],
+        "09": [
+          "data/ml/monthly_pmtiles_split/rainbow_trout_09_september_direct_count_all_surveys_part1.pmtiles",
+          "data/ml/monthly_pmtiles_split/rainbow_trout_09_september_direct_count_all_surveys_part2.pmtiles",
+        ],
+        10: [
+          "data/ml/monthly_pmtiles_split/rainbow_trout_10_october_direct_count_all_surveys_part1.pmtiles",
+          "data/ml/monthly_pmtiles_split/rainbow_trout_10_october_direct_count_all_surveys_part2.pmtiles",
+        ],
+        11: [
+          "data/ml/monthly_pmtiles_split/rainbow_trout_11_november_direct_count_all_surveys_part1.pmtiles",
+          "data/ml/monthly_pmtiles_split/rainbow_trout_11_november_direct_count_all_surveys_part2.pmtiles",
+        ],
+        12: [
+          "data/ml/monthly_pmtiles_split/rainbow_trout_12_december_direct_count_all_surveys_part1.pmtiles",
+          "data/ml/monthly_pmtiles_split/rainbow_trout_12_december_direct_count_all_surveys_part2.pmtiles",
+        ],
+      };
 
       const ML_SOURCE_LAYER = "ml_rainbow_trout_points";
-
-      const ML_LAYER_ID = "ml-rainbow-trout-count-points";
-
-      const ML_TOTAL_PREDICTION_POINTS = 642278;
+      const ML_LAYER_IDS = [
+        "ml-rainbow-trout-monthly-points-part1",
+        "ml-rainbow-trout-monthly-points-part2",
+      ];
+      const ML_TOTAL_PREDICTION_POINTS = 629200;
 
       const WEATHER_LAYERS = {
         temperature: {
@@ -1103,20 +1367,20 @@
           unit: "°C",
           colorStops: [
             -15,
-            "#d73027",
+            "#b91c1c",
             5,
-            "#d73027",
+            "#b91c1c",
             10,
-            "#ffffbf",
+            "#f97316",
             15,
-            "#ffffbf",
+            "#f59e0b",
             30,
-            "#2166ac",
+            "#fde047",
           ],
           legend: [
-            ["#d73027", "Low: < 5°C"],
-            ["#ffffbf", "Normal: 5°C - 15°C"],
-            ["#2166ac", "High: > 15°C"],
+            ["#b91c1c", "Low: < 5°C"],
+            ["#f97316", "Normal: 5°C - 15°C"],
+            ["#fde047", "High: > 15°C"],
           ],
         },
 
@@ -1126,20 +1390,20 @@
           unit: "mm",
           colorStops: [
             0,
-            "#d73027",
+            "#b91c1c",
             1,
-            "#d73027",
+            "#b91c1c",
             5,
-            "#ffffbf",
+            "#f97316",
             10,
-            "#ffffbf",
+            "#f59e0b",
             20,
-            "#2166ac",
+            "#fde047",
           ],
           legend: [
-            ["#d73027", "Low: 0 - 1 mm"],
-            ["#ffffbf", "Normal: 1 - 10 mm"],
-            ["#2166ac", "High: > 10 mm"],
+            ["#b91c1c", "Low: 0 - 1 mm"],
+            ["#f97316", "Normal: 1 - 10 mm"],
+            ["#fde047", "High: > 10 mm"],
           ],
         },
 
@@ -1149,20 +1413,20 @@
           unit: "km/h",
           colorStops: [
             0,
-            "#d73027",
+            "#b91c1c",
             10,
-            "#d73027",
+            "#b91c1c",
             20,
-            "#ffffbf",
+            "#f97316",
             30,
-            "#ffffbf",
+            "#f59e0b",
             60,
-            "#2166ac",
+            "#fde047",
           ],
           legend: [
-            ["#d73027", "Low: 0 - 10 km/h"],
-            ["#ffffbf", "Normal: 10 - 30 km/h"],
-            ["#2166ac", "High: > 30 km/h"],
+            ["#b91c1c", "Low: 0 - 10 km/h"],
+            ["#f97316", "Normal: 10 - 30 km/h"],
+            ["#fde047", "High: > 30 km/h"],
           ],
         },
 
@@ -1172,20 +1436,20 @@
           unit: "%",
           colorStops: [
             0,
-            "#d73027",
+            "#b91c1c",
             30,
-            "#d73027",
+            "#b91c1c",
             70,
-            "#ffffbf",
+            "#f97316",
             85,
-            "#ffffbf",
+            "#f59e0b",
             100,
-            "#2166ac",
+            "#fde047",
           ],
           legend: [
-            ["#d73027", "Low: < 30%"],
-            ["#ffffbf", "Normal: 30% - 85%"],
-            ["#2166ac", "High: > 85%"],
+            ["#b91c1c", "Low: < 30%"],
+            ["#f97316", "Normal: 30% - 85%"],
+            ["#fde047", "High: > 85%"],
           ],
         },
 
@@ -1195,20 +1459,20 @@
           unit: "hPa",
           colorStops: [
             850,
-            "#d73027",
+            "#b91c1c",
             950,
-            "#d73027",
+            "#b91c1c",
             1015,
-            "#ffffbf",
+            "#f97316",
             1030,
-            "#ffffbf",
+            "#f59e0b",
             1050,
-            "#2166ac",
+            "#fde047",
           ],
           legend: [
-            ["#d73027", "Low: < 950 hPa"],
-            ["#ffffbf", "Normal: 950 - 1030 hPa"],
-            ["#2166ac", "High: > 1030 hPa"],
+            ["#b91c1c", "Low: < 950 hPa"],
+            ["#f97316", "Normal: 950 - 1030 hPa"],
+            ["#fde047", "High: > 1030 hPa"],
           ],
         },
       };
@@ -1219,25 +1483,21 @@
           unit: "°C",
           colorStops: [
             -27.1,
-            "#d73027",
+            "#b91c1c",
             -14.346,
-            "#d73027",
+            "#b91c1c",
             -6.382,
-            "#fdae61",
+            "#ef4444",
             2.898,
-            "#ffffbf",
+            "#f97316",
             12.395,
-            "#67c5d5",
+            "#f59e0b",
             24.9,
-            "#2166ac",
+            "#fde047",
           ],
-          legend: [
-            ["#d73027", "Very cold: ≤ -14.3°C"],
-            ["#fdae61", "Cold: -14.3°C to -6.4°C"],
-            ["#ffffbf", "Cool: -6.4°C to 2.9°C"],
-            ["#67c5d5", "Mild: 2.9°C to 12.4°C"],
-            ["#2166ac", "Warm: > 12.4°C"],
-          ],
+          gradientMin: -27.1,
+          gradientMax: 24.9,
+          legend: [],
         },
 
         precipitation_mm_month: {
@@ -1245,25 +1505,21 @@
           unit: "mm/month",
           colorStops: [
             0.9,
-            "#d73027",
+            "#b91c1c",
             9.173,
-            "#d73027",
+            "#b91c1c",
             18.671,
-            "#fdae61",
+            "#ef4444",
             29.571,
-            "#ffffbf",
+            "#f97316",
             45.907,
-            "#67c5d5",
+            "#f59e0b",
             246.5,
-            "#2166ac",
+            "#fde047",
           ],
-          legend: [
-            ["#d73027", "Very low: ≤ 9.2 mm"],
-            ["#fdae61", "Low: 9.2 to 18.7 mm"],
-            ["#ffffbf", "Moderate: 18.7 to 29.6 mm"],
-            ["#67c5d5", "High: 29.6 to 45.9 mm"],
-            ["#2166ac", "Very high: > 45.9 mm"],
-          ],
+          gradientMin: 0.9,
+          gradientMax: 246.5,
+          legend: [],
         },
 
         wind_speed_ms: {
@@ -1271,25 +1527,21 @@
           unit: "m/s",
           colorStops: [
             0,
-            "#d73027",
+            "#b91c1c",
             0.304,
-            "#d73027",
+            "#b91c1c",
             0.582,
-            "#fdae61",
+            "#ef4444",
             0.824,
-            "#ffffbf",
+            "#f97316",
             1.103,
-            "#67c5d5",
+            "#f59e0b",
             4.5,
-            "#2166ac",
+            "#fde047",
           ],
-          legend: [
-            ["#d73027", "Very low: ≤ 0.30 m/s"],
-            ["#fdae61", "Low: 0.30 to 0.58 m/s"],
-            ["#ffffbf", "Moderate: 0.58 to 0.82 m/s"],
-            ["#67c5d5", "Elevated: 0.82 to 1.10 m/s"],
-            ["#2166ac", "High: > 1.10 m/s"],
-          ],
+          gradientMin: 0,
+          gradientMax: 4.5,
+          legend: [],
         },
 
         relative_humidity_percent: {
@@ -1297,25 +1549,21 @@
           unit: "%",
           colorStops: [
             34.7,
-            "#d73027",
+            "#b91c1c",
             54.11,
-            "#d73027",
+            "#b91c1c",
             62.26,
-            "#fdae61",
+            "#ef4444",
             68.023,
-            "#ffffbf",
+            "#f97316",
             73.264,
-            "#67c5d5",
+            "#f59e0b",
             91.7,
-            "#2166ac",
+            "#fde047",
           ],
-          legend: [
-            ["#d73027", "Very dry: ≤ 54.1%"],
-            ["#fdae61", "Dry: 54.1% to 62.3%"],
-            ["#ffffbf", "Moderate: 62.3% to 68.0%"],
-            ["#67c5d5", "Humid: 68.0% to 73.3%"],
-            ["#2166ac", "Very humid: > 73.3%"],
-          ],
+          gradientMin: 34.7,
+          gradientMax: 91.7,
+          legend: [],
         },
 
         surface_pressure_hpa: {
@@ -1323,25 +1571,21 @@
           unit: "hPa",
           colorStops: [
             739,
-            "#d73027",
+            "#b91c1c",
             870.986,
-            "#d73027",
+            "#b91c1c",
             918.997,
-            "#fdae61",
+            "#ef4444",
             933.519,
-            "#ffffbf",
+            "#f97316",
             944.432,
-            "#67c5d5",
+            "#f59e0b",
             999,
-            "#2166ac",
+            "#fde047",
           ],
-          legend: [
-            ["#d73027", "Very low: ≤ 871.0 hPa"],
-            ["#fdae61", "Low: 871.0 to 919.0 hPa"],
-            ["#ffffbf", "Moderate: 919.0 to 933.5 hPa"],
-            ["#67c5d5", "High: 933.5 to 944.4 hPa"],
-            ["#2166ac", "Very high: > 944.4 hPa"],
-          ],
+          gradientMin: 739,
+          gradientMax: 999,
+          legend: [],
         },
       };
 
@@ -1422,14 +1666,7 @@
       }
 
       const ML_LAYER = {
-        label: "Rainbow Trout Count Prediction",
-        legend: [
-          ["#d73027", "Low: < 3 fish"],
-          ["#fdae61", "3 to < 5 fish"],
-          ["#ffffbf", "5 to < 10 fish"],
-          ["#67c5d5", "10 to < 15 fish"],
-          ["#2166ac", "High: ≥ 15 fish"],
-        ],
+        label: "Rainbow Trout Predicted Count",
       };
 
       const ELEVATION_LAYER = {
@@ -1446,8 +1683,20 @@
         ],
       };
 
+      const RIVER_BINARY_LAYER = {
+        label: "River Binary Grid",
+        legend: [
+          ["#00e5ff", "River pixel = 1"],
+          ["rgba(255,255,255,0)", "Non-river pixel = 0"],
+        ],
+      };
+
       function isElevationSelected() {
         return getSelectedLayerKey() === "elevation";
+      }
+
+      function isRiverBinarySelected() {
+        return getSelectedLayerKey() === "riverBinary";
       }
 
       function isHistorySelected() {
@@ -1498,8 +1747,10 @@
 
       let fishSpeciesLoaded = false;
       let selectedFishSpecies = "";
+      let selectedFishYear = "";
       let fishSpeciesNames = [];
       let fishSpeciesStats = {};
+      let mlSelectedMonth = "07";
 
       let isSelectionMode = false;
       let isDraggingSelection = false;
@@ -1517,6 +1768,7 @@
         "summarySecondaryValue",
       );
       const layerSelect = document.getElementById("layerSelect");
+      const basemapSelect = document.getElementById("basemapSelect");
       const addVisibleBtn = document.getElementById("addVisibleBtn");
       const selectAreaBtn = document.getElementById("selectAreaBtn");
       const cancelSelectBtn = document.getElementById("cancelSelectBtn");
@@ -1544,6 +1796,8 @@
         "liveWeatherPeriodBadge",
       );
       const fishControlCard = document.getElementById("fishControlCard");
+      const mlControlCard = document.getElementById("mlControlCard");
+      const mlMonthSelect = document.getElementById("mlMonthSelect");
       const historyYear = document.getElementById("historyYear");
       const historyMonth = document.getElementById("historyMonth");
       const historyVariable = document.getElementById("historyVariable");
@@ -1553,6 +1807,7 @@
       const fishSpeciesInput = document.getElementById("fishSpeciesInput");
       const fishSpeciesToggle = document.getElementById("fishSpeciesToggle");
       const fishSpeciesMenu = document.getElementById("fishSpeciesMenu");
+      const fishYearSelect = document.getElementById("fishYearSelect");
       const fishStats = document.getElementById("fishStats");
       const fishStatsTitle = document.getElementById("fishStatsTitle");
       const fishObservationCount = document.getElementById(
@@ -1578,12 +1833,56 @@
           glyphs: "https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf",
 
           sources: {
-            osm: {
+            basemapVoyager: {
+              type: "raster",
+              tiles: [
+                "https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png",
+                "https://b.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png",
+                "https://c.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png",
+              ],
+              tileSize: 256,
+              attribution:
+                '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a> &copy; CARTO',
+            },
+
+            basemapPositron: {
+              type: "raster",
+              tiles: [
+                "https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
+                "https://b.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
+                "https://c.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
+              ],
+              tileSize: 256,
+              attribution:
+                '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a> &copy; CARTO',
+            },
+
+            basemapDark: {
+              type: "raster",
+              tiles: [
+                "https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png",
+                "https://b.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png",
+                "https://c.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png",
+              ],
+              tileSize: 256,
+              attribution:
+                '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a> &copy; CARTO',
+            },
+
+            basemapOsm: {
               type: "raster",
               tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],
               tileSize: 256,
               attribution:
                 '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a>',
+            },
+
+            basemapTopo: {
+              type: "raster",
+              tiles: ["https://tile.openmaps.fr/opentopomap/{z}/{x}/{y}.png"],
+              tileSize: 256,
+              attribution:
+                '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a> | OpenTopoMap',
             },
             streams: {
               type: "vector",
@@ -1597,9 +1896,13 @@
               type: "vector",
               url: "pmtiles://data/alberta_directed_arrowheads.pmtiles",
             },
-            mlPredictions: {
+            mlPredictionsPart1: {
               type: "vector",
-              url: `pmtiles://${ML_PMTILES_PATH}`,
+              url: `pmtiles://${ML_MONTH_FILES["07"][0]}`,
+            },
+            mlPredictionsPart2: {
+              type: "vector",
+              url: `pmtiles://${ML_MONTH_FILES["07"][1]}`,
             },
             elevationTiles: {
               type: "raster",
@@ -1609,12 +1912,67 @@
               maxzoom: 11,
               scheme: "tms",
             },
+            riverBinaryTiles: {
+              type: "raster",
+              tiles: ["data/river_binary_tiles/{z}/{x}/{y}.png"],
+              tileSize: 256,
+              minzoom: 5,
+              maxzoom: 11,
+            },
           },
           layers: [
             {
-              id: "osm-basemap",
+              id: "basemap-voyager",
               type: "raster",
-              source: "osm",
+              source: "basemapVoyager",
+              layout: { visibility: "visible" },
+              paint: {
+                "raster-opacity": 0.93,
+                "raster-saturation": -0.08,
+                "raster-contrast": -0.03,
+              },
+            },
+
+            {
+              id: "basemap-positron",
+              type: "raster",
+              source: "basemapPositron",
+              layout: { visibility: "none" },
+              paint: {
+                "raster-opacity": 0.96,
+              },
+            },
+
+            {
+              id: "basemap-dark",
+              type: "raster",
+              source: "basemapDark",
+              layout: { visibility: "none" },
+              paint: {
+                "raster-opacity": 0.96,
+              },
+            },
+
+            {
+              id: "basemap-osm",
+              type: "raster",
+              source: "basemapOsm",
+              layout: { visibility: "none" },
+              paint: {
+                "raster-opacity": 0.9,
+                "raster-saturation": -0.18,
+                "raster-contrast": -0.05,
+              },
+            },
+
+            {
+              id: "basemap-topo",
+              type: "raster",
+              source: "basemapTopo",
+              layout: { visibility: "none" },
+              paint: {
+                "raster-opacity": 0.94,
+              },
             },
             {
               id: "elevation-tiles-layer",
@@ -1629,87 +1987,363 @@
               },
             },
             {
+              id: "river-binary-layer",
+              type: "raster",
+              source: "riverBinaryTiles",
+              layout: {
+                visibility: "none",
+              },
+              paint: {
+                "raster-opacity": 0.9,
+                "raster-resampling": "nearest",
+              },
+            },
+            {
               id: "streams-line",
               type: "line",
               source: "streams",
               "source-layer": "alberta_stream",
               paint: {
-                "line-color": "#0057ff",
+                "line-color": "#087ea4",
                 "line-opacity": 0.95,
                 "line-width": [
                   "interpolate",
                   ["linear"],
                   ["zoom"],
                   5,
-                  0.8,
+                  0.6,
                   8,
-                  1.4,
+                  1.0,
                   10,
-                  2.2,
+                  1.5,
                   12,
-                  3.5,
+                  2.2,
                 ],
               },
             },
 
             {
-              id: ML_LAYER_ID,
+              id: "river-chevron-arrows",
+              type: "symbol",
+              source: "directedArrows",
+              "source-layer": "directed_edges",
+              minzoom: 7,
+              layout: {
+                "symbol-placement": "line",
+                "symbol-spacing": [
+                  "interpolate",
+                  ["linear"],
+                  ["zoom"],
+                  7,
+                  85,
+                  10,
+                  62,
+                  13,
+                  45,
+                ],
+                "text-field": ">",
+                "text-size": [
+                  "interpolate",
+                  ["linear"],
+                  ["zoom"],
+                  7,
+                  11,
+                  10,
+                  13,
+                  13,
+                  16,
+                ],
+                "text-rotation-alignment": "map",
+                "text-pitch-alignment": "map",
+                "text-keep-upright": false,
+                visibility: "visible",
+              },
+              paint: {
+                "text-color": "#0f2233",
+                "text-halo-color": "rgba(255,255,255,0.9)",
+                "text-halo-width": 1,
+              },
+            },
+
+            {
+              id: ML_LAYER_IDS[0],
               type: "circle",
-              source: "mlPredictions",
+              source: "mlPredictionsPart1",
               "source-layer": ML_SOURCE_LAYER,
               minzoom: 5,
-              layout: {
-                visibility: "none",
-              },
+              layout: { visibility: "none" },
               paint: {
                 "circle-color": [
                   "interpolate",
                   ["linear"],
-                  [
-                    "to-number",
-                    ["coalesce", ["get", "predicted_fish_count"], 0],
-                  ],
-                  1.5,
-                  "#d73027",
+                  ["to-number", ["coalesce", ["get", "predicted_count"], 0], 0],
+                  0,
+                  "#b91c1c",
+                  1,
+                  "#dc2626",
+                  2,
+                  "#ef4444",
                   3,
-                  "#fdae61",
+                  "#f97316",
+                  4,
+                  "#fb923c",
                   5,
-                  "#ffffbf",
+                  "#f59e0b",
+                  6,
+                  "#fbbf24",
+                  7,
+                  "#facc15",
+                  8,
+                  "#fde047",
                   10,
-                  "#67c5d5",
-                  22.5,
-                  "#2166ac",
+                  "#fef08a",
                 ],
                 "circle-radius": [
                   "interpolate",
                   ["linear"],
-                  [
-                    "to-number",
-                    ["coalesce", ["get", "predicted_fish_count"], 0],
-                  ],
-                  1,
-                  2.5,
-                  3,
-                  4,
+                  ["zoom"],
                   5,
-                  5.5,
-                  10,
-                  7,
-                  25,
-                  10,
+                  [
+                    "interpolate",
+                    ["linear"],
+                    [
+                      "to-number",
+                      ["coalesce", ["get", "predicted_count"], 0],
+                      0,
+                    ],
+                    0,
+                    2.6,
+                    3,
+                    3.3,
+                    6,
+                    4.2,
+                    10,
+                    5.3,
+                    15,
+                    6.5,
+                    25,
+                    8.0,
+                  ],
+                  8,
+                  [
+                    "interpolate",
+                    ["linear"],
+                    [
+                      "to-number",
+                      ["coalesce", ["get", "predicted_count"], 0],
+                      0,
+                    ],
+                    0,
+                    3.2,
+                    3,
+                    4.0,
+                    6,
+                    5.1,
+                    10,
+                    6.4,
+                    15,
+                    7.8,
+                    25,
+                    9.8,
+                  ],
+                  11,
+                  [
+                    "interpolate",
+                    ["linear"],
+                    [
+                      "to-number",
+                      ["coalesce", ["get", "predicted_count"], 0],
+                      0,
+                    ],
+                    0,
+                    4.0,
+                    3,
+                    5.0,
+                    6,
+                    6.2,
+                    10,
+                    7.9,
+                    15,
+                    9.8,
+                    25,
+                    12.2,
+                  ],
+                  14,
+                  [
+                    "interpolate",
+                    ["linear"],
+                    [
+                      "to-number",
+                      ["coalesce", ["get", "predicted_count"], 0],
+                      0,
+                    ],
+                    0,
+                    5.0,
+                    3,
+                    6.3,
+                    6,
+                    8.0,
+                    10,
+                    10.2,
+                    15,
+                    12.5,
+                    25,
+                    15.5,
+                  ],
                 ],
-                "circle-opacity": 0.88,
+                "circle-opacity": 0.92,
                 "circle-stroke-color": "#ffffff",
                 "circle-stroke-width": [
                   "interpolate",
                   ["linear"],
                   ["zoom"],
                   5,
-                  0.3,
-                  9,
+                  0.25,
+                  8,
+                  0.45,
+                  11,
                   0.7,
-                  13,
-                  1.2,
+                  14,
+                  1.0,
+                ],
+              },
+            },
+            {
+              id: ML_LAYER_IDS[1],
+              type: "circle",
+              source: "mlPredictionsPart2",
+              "source-layer": ML_SOURCE_LAYER,
+              minzoom: 5,
+              layout: { visibility: "none" },
+              paint: {
+                "circle-color": [
+                  "interpolate",
+                  ["linear"],
+                  ["to-number", ["coalesce", ["get", "predicted_count"], 0], 0],
+                  0,
+                  "#dc2626",
+                  2,
+                  "#ef4444",
+                  4,
+                  "#f97316",
+                  6,
+                  "#facc15",
+                  10,
+                  "#8dd3c7",
+                  15,
+                  "#38bdf8",
+                  20,
+                  "#2563eb",
+                  30,
+                  "#1e3a8a",
+                ],
+                "circle-radius": [
+                  "interpolate",
+                  ["linear"],
+                  ["zoom"],
+                  5,
+                  [
+                    "interpolate",
+                    ["linear"],
+                    [
+                      "to-number",
+                      ["coalesce", ["get", "predicted_count"], 0],
+                      0,
+                    ],
+                    0,
+                    2.6,
+                    3,
+                    3.3,
+                    6,
+                    4.2,
+                    10,
+                    5.3,
+                    15,
+                    6.5,
+                    25,
+                    8.0,
+                  ],
+                  8,
+                  [
+                    "interpolate",
+                    ["linear"],
+                    [
+                      "to-number",
+                      ["coalesce", ["get", "predicted_count"], 0],
+                      0,
+                    ],
+                    0,
+                    3.2,
+                    3,
+                    4.0,
+                    6,
+                    5.1,
+                    10,
+                    6.4,
+                    15,
+                    7.8,
+                    25,
+                    9.8,
+                  ],
+                  11,
+                  [
+                    "interpolate",
+                    ["linear"],
+                    [
+                      "to-number",
+                      ["coalesce", ["get", "predicted_count"], 0],
+                      0,
+                    ],
+                    0,
+                    4.0,
+                    3,
+                    5.0,
+                    6,
+                    6.2,
+                    10,
+                    7.9,
+                    15,
+                    9.8,
+                    25,
+                    12.2,
+                  ],
+                  14,
+                  [
+                    "interpolate",
+                    ["linear"],
+                    [
+                      "to-number",
+                      ["coalesce", ["get", "predicted_count"], 0],
+                      0,
+                    ],
+                    0,
+                    5.0,
+                    3,
+                    6.3,
+                    6,
+                    8.0,
+                    10,
+                    10.2,
+                    15,
+                    12.5,
+                    25,
+                    15.5,
+                  ],
+                ],
+                "circle-opacity": 0.92,
+                "circle-stroke-color": "#ffffff",
+                "circle-stroke-width": [
+                  "interpolate",
+                  ["linear"],
+                  ["zoom"],
+                  5,
+                  0.25,
+                  8,
+                  0.45,
+                  11,
+                  0.7,
+                  14,
+                  1.0,
                 ],
               },
             },
@@ -1731,11 +2365,13 @@
                   ["linear"],
                   ["zoom"],
                   7,
-                  1.2,
+                  0.85,
+                  8,
+                  1.0,
                   10,
-                  2.0,
+                  1.5,
                   12,
-                  3.0,
+                  2.2,
                 ],
               },
             },
@@ -1947,12 +2583,62 @@
         applySelectedLiveWeatherTime();
       }
 
+      const BASEMAP_LAYER_IDS = {
+        voyager: "basemap-voyager",
+        positron: "basemap-positron",
+        dark: "basemap-dark",
+        osm: "basemap-osm",
+        topo: "basemap-topo",
+      };
+
+      function updateBasemap() {
+        const selectedBasemap = basemapSelect.value;
+
+        Object.entries(BASEMAP_LAYER_IDS).forEach(([key, layerId]) => {
+          if (!map.getLayer(layerId)) return;
+
+          map.setLayoutProperty(
+            layerId,
+            "visibility",
+            key === selectedBasemap ? "visible" : "none",
+          );
+        });
+
+        // Improve overlay contrast depending on the selected basemap.
+        const darkBasemap = selectedBasemap === "dark";
+
+        if (map.getLayer("streams-line")) {
+          map.setPaintProperty(
+            "streams-line",
+            "line-color",
+            darkBasemap ? "#38bdf8" : "#087ea4",
+          );
+        }
+
+        if (map.getLayer("river-chevron-arrows")) {
+          map.setPaintProperty(
+            "river-chevron-arrows",
+            "text-color",
+            darkBasemap ? "#f8fafc" : "#0f2233",
+          );
+
+          map.setPaintProperty(
+            "river-chevron-arrows",
+            "text-halo-color",
+            darkBasemap ? "rgba(15,23,42,0.9)" : "rgba(255,255,255,0.92)",
+          );
+        }
+
+        status.textContent = `${basemapSelect.options[basemapSelect.selectedIndex].text} basemap selected.`;
+      }
+
       function getSelectedLayerKey() {
         return layerSelect.value;
       }
 
       function getSelectedLayer() {
         if (isElevationSelected()) return ELEVATION_LAYER;
+        if (isRiverBinarySelected()) return RIVER_BINARY_LAYER;
         if (isHistorySelected()) return HISTORY_LAYER;
         if (isFishSelected()) return FISH_LAYER;
         if (isMlSelected()) return ML_LAYER;
@@ -2008,6 +2694,14 @@
           return;
         }
 
+        if (isRiverBinarySelected()) {
+          summaryPrimaryLabel.textContent = "Raster Grid";
+          summarySecondaryLabel.textContent = "Cell Size";
+          pointCount.textContent = "Binary";
+          summarySecondaryValue.textContent = "200 m";
+          return;
+        }
+
         if (isHistorySelected()) {
           summaryPrimaryLabel.textContent = "River Network";
           summarySecondaryLabel.textContent = "Time Period";
@@ -2018,19 +2712,24 @@
 
         if (isMlSelected()) {
           summaryPrimaryLabel.textContent = "Prediction Points";
-          summarySecondaryLabel.textContent = "Target Species";
+          summarySecondaryLabel.textContent = "Prediction Month";
           pointCount.textContent = ML_TOTAL_PREDICTION_POINTS.toLocaleString();
-          summarySecondaryValue.textContent = "Rainbow Trout";
+          summarySecondaryValue.textContent =
+            mlMonthSelect.options[mlMonthSelect.selectedIndex].text;
           return;
         }
 
         if (isFishSelected()) {
-          summaryPrimaryLabel.textContent = selectedFishSpecies
-            ? "Matching Records"
-            : "Fish Records";
-          summarySecondaryLabel.textContent = selectedFishSpecies
-            ? "Species Selected"
-            : "Species in Dataset";
+          summaryPrimaryLabel.textContent =
+            selectedFishSpecies || selectedFishYear
+              ? "Filtered Fish Records"
+              : "Fish Records";
+
+          summarySecondaryLabel.textContent = selectedFishYear
+            ? "Survey Year"
+            : selectedFishSpecies
+              ? "Species Selected"
+              : "Species in Dataset";
 
           const selectedStats = selectedFishSpecies
             ? fishSpeciesStats[selectedFishSpecies]
@@ -2040,10 +2739,15 @@
             ? Number(selectedStats?.observations || 0)
             : FISH_TOTAL_RECORDS;
 
-          pointCount.textContent = recordCount.toLocaleString();
-          summarySecondaryValue.textContent = selectedFishSpecies
-            ? "1"
-            : fishSpeciesNames.length.toLocaleString();
+          pointCount.textContent = selectedFishYear
+            ? "Filtered"
+            : recordCount.toLocaleString();
+
+          summarySecondaryValue.textContent = selectedFishYear
+            ? selectedFishYear
+            : selectedFishSpecies
+              ? "1"
+              : fishSpeciesNames.length.toLocaleString();
           return;
         }
 
@@ -2063,6 +2767,32 @@
         pointCount.textContent = selectedCount.toLocaleString();
       }
 
+      function formatHistoryLegendNumber(value, variableKey) {
+        if (!Number.isFinite(Number(value))) return "N/A";
+
+        if (variableKey === "temperature_c") {
+          return `${Number(value).toFixed(1)}°C`;
+        }
+
+        if (variableKey === "precipitation_mm_month") {
+          return `${Number(value).toFixed(1)} mm`;
+        }
+
+        if (variableKey === "wind_speed_ms") {
+          return `${Number(value).toFixed(2)} m/s`;
+        }
+
+        if (variableKey === "relative_humidity_percent") {
+          return `${Number(value).toFixed(1)}%`;
+        }
+
+        if (variableKey === "surface_pressure_hpa") {
+          return `${Number(value).toFixed(0)} hPa`;
+        }
+
+        return String(value);
+      }
+
       function updateLegend() {
         const layer = isHistorySelected()
           ? getSelectedHistoryVariableConfig()
@@ -2071,9 +2801,92 @@
         legendTitle.textContent = isHistorySelected()
           ? `Historical: ${layer.label}`
           : layer.label;
+
         legendRows.innerHTML = "";
+        legendRows.classList.remove("fish-scroll");
+
+        // Historical environment uses ONE continuous colour bar instead of
+        // named classes such as cold / mild / warm.
+        if (isHistorySelected()) {
+          const minValue = Number(layer.gradientMin);
+          const maxValue = Number(layer.gradientMax);
+          const midValue = (minValue + maxValue) / 2;
+
+          const wrapper = document.createElement("div");
+          wrapper.className = "history-gradient-legend";
+
+          const bar = document.createElement("div");
+          bar.className = "history-gradient-bar";
+
+          const scale = document.createElement("div");
+          scale.className = "history-gradient-scale";
+
+          const minLabel = document.createElement("span");
+          minLabel.textContent = formatHistoryLegendNumber(
+            minValue,
+            historySelectedVariable,
+          );
+
+          const midLabel = document.createElement("span");
+          midLabel.textContent = formatHistoryLegendNumber(
+            midValue,
+            historySelectedVariable,
+          );
+
+          const maxLabel = document.createElement("span");
+          maxLabel.textContent = formatHistoryLegendNumber(
+            maxValue,
+            historySelectedVariable,
+          );
+
+          scale.appendChild(minLabel);
+          scale.appendChild(midLabel);
+          scale.appendChild(maxLabel);
+
+          wrapper.appendChild(bar);
+          wrapper.appendChild(scale);
+          legendRows.appendChild(wrapper);
+          return;
+        }
 
         let legendItems = layer.legend;
+
+        if (isMlSelected()) {
+          legendTitle.textContent = "Rainbow Trout Predicted Count";
+
+          const wrapper = document.createElement("div");
+          wrapper.className = "history-gradient-legend";
+
+          const bar = document.createElement("div");
+          bar.className = "history-gradient-bar";
+          bar.style.background =
+            "linear-gradient(90deg, #ef4444 0%, #f97316 50%, #facc15 100%)";
+          const scale = document.createElement("div");
+          scale.className = "history-gradient-scale";
+
+          const low = document.createElement("span");
+          low.textContent = "0";
+
+          const mid = document.createElement("span");
+          mid.textContent = "3";
+
+          const high = document.createElement("span");
+          high.textContent = "5+";
+
+          scale.appendChild(low);
+          scale.appendChild(mid);
+          scale.appendChild(high);
+          wrapper.appendChild(bar);
+          wrapper.appendChild(scale);
+          legendRows.appendChild(wrapper);
+
+          const note = document.createElement("div");
+          note.className = "help-text";
+          note.style.marginTop = "9px";
+          note.textContent = `${mlMonthSelect.options[mlMonthSelect.selectedIndex].text} · direct predicted survey count`;
+          legendRows.appendChild(note);
+          return;
+        }
 
         if (isFishSelected()) {
           if (selectedFishSpecies) {
@@ -2082,10 +2895,13 @@
               ["#94a3b8", "Circle size = fish count"],
             ];
           } else {
-            legendItems = [
-              ["#2563eb", "Each species has a different colour"],
-              ["#94a3b8", "Circle size = fish count"],
-            ];
+            legendRows.classList.add("fish-scroll");
+            legendItems = fishSpeciesNames.map((speciesName) => [
+              getFishSpeciesColor(speciesName),
+              speciesName,
+            ]);
+
+            legendItems.push(["#94a3b8", "Circle size = fish count"]);
           }
         }
 
@@ -2311,43 +3127,43 @@
 
       function getHistoryColor(value) {
         if (historySelectedVariable === "temperature_c") {
-          if (value <= -14.346) return "#d73027";
-          if (value <= -6.382) return "#fdae61";
-          if (value <= 2.898) return "#ffffbf";
-          if (value <= 12.395) return "#67c5d5";
-          return "#2166ac";
+          if (value <= -14.346) return "#b91c1c";
+          if (value <= -6.382) return "#ef4444";
+          if (value <= 2.898) return "#f97316";
+          if (value <= 12.395) return "#f59e0b";
+          return "#fde047";
         }
 
         if (historySelectedVariable === "precipitation_mm_month") {
-          if (value <= 9.173) return "#d73027";
-          if (value <= 18.671) return "#fdae61";
-          if (value <= 29.571) return "#ffffbf";
-          if (value <= 45.907) return "#67c5d5";
-          return "#2166ac";
+          if (value <= 9.173) return "#b91c1c";
+          if (value <= 18.671) return "#ef4444";
+          if (value <= 29.571) return "#f97316";
+          if (value <= 45.907) return "#f59e0b";
+          return "#fde047";
         }
 
         if (historySelectedVariable === "wind_speed_ms") {
-          if (value <= 0.304) return "#d73027";
-          if (value <= 0.582) return "#fdae61";
-          if (value <= 0.824) return "#ffffbf";
-          if (value <= 1.103) return "#67c5d5";
-          return "#2166ac";
+          if (value <= 0.304) return "#b91c1c";
+          if (value <= 0.582) return "#ef4444";
+          if (value <= 0.824) return "#f97316";
+          if (value <= 1.103) return "#f59e0b";
+          return "#fde047";
         }
 
         if (historySelectedVariable === "relative_humidity_percent") {
-          if (value <= 54.11) return "#d73027";
-          if (value <= 62.26) return "#fdae61";
-          if (value <= 68.023) return "#ffffbf";
-          if (value <= 73.264) return "#67c5d5";
-          return "#2166ac";
+          if (value <= 54.11) return "#b91c1c";
+          if (value <= 62.26) return "#ef4444";
+          if (value <= 68.023) return "#f97316";
+          if (value <= 73.264) return "#f59e0b";
+          return "#fde047";
         }
 
         if (historySelectedVariable === "surface_pressure_hpa") {
-          if (value <= 870.986) return "#d73027";
-          if (value <= 918.997) return "#fdae61";
-          if (value <= 933.519) return "#ffffbf";
-          if (value <= 944.432) return "#67c5d5";
-          return "#2166ac";
+          if (value <= 870.986) return "#b91c1c";
+          if (value <= 918.997) return "#ef4444";
+          if (value <= 933.519) return "#f97316";
+          if (value <= 944.432) return "#f59e0b";
+          return "#fde047";
         }
 
         return "#94a3b8";
@@ -2370,25 +3186,87 @@
 
           if (!Number.isFinite(value)) continue;
 
+          // Keep the real numeric ERA5 value for each grid cell.
+          // The line colour is interpolated continuously from this value,
+          // instead of converting values into five hard colour classes.
           activeHistoryValueLookup.set(gridId, value);
-          activeHistoryColorLookup.set(gridId, getHistoryColor(value));
         }
 
         console.log(
           "Historical ERA5 cells loaded:",
-          activeHistoryColorLookup.size,
+          activeHistoryValueLookup.size,
         );
       }
 
-      function buildHistoryColorExpression() {
+      function buildHistoryValueExpression() {
         const expression = ["match", ["to-string", ["get", "era5_grid_id"]]];
 
-        activeHistoryColorLookup.forEach((color, gridId) => {
-          expression.push(gridId, color);
+        activeHistoryValueLookup.forEach((value, gridId) => {
+          expression.push(gridId, value);
         });
 
-        expression.push("#94a3b8");
+        // Fallback numeric value for unexpected/missing cells.
+        expression.push(0);
         return expression;
+      }
+
+      function buildSensitiveGradientExpression(
+        valueExpression,
+        minValue,
+        maxValue,
+      ) {
+        const colors = [
+          "#7f1d1d",
+          "#991b1b",
+          "#b91c1c",
+          "#dc2626",
+          "#ef4444",
+          "#f97316",
+          "#fb923c",
+          "#f59e0b",
+          "#facc15",
+          "#fde047",
+        ];
+
+        const expression = ["interpolate", ["linear"], valueExpression];
+
+        const steps = colors.length - 1;
+
+        colors.forEach((color, index) => {
+          const value = minValue + ((maxValue - minValue) * index) / steps;
+          expression.push(value, color);
+        });
+
+        return expression;
+      }
+
+      function buildHistoryColorExpression() {
+        const valueExpression = buildHistoryValueExpression();
+
+        // More colour stops are used than before so even relatively small
+        // changes in the underlying value produce a more noticeable colour
+        // difference on the river network.
+        if (historySelectedVariable === "temperature_c") {
+          return buildSensitiveGradientExpression(valueExpression, -27.1, 24.9);
+        }
+
+        if (historySelectedVariable === "precipitation_mm_month") {
+          return buildSensitiveGradientExpression(valueExpression, 0.9, 246.5);
+        }
+
+        if (historySelectedVariable === "wind_speed_ms") {
+          return buildSensitiveGradientExpression(valueExpression, 0, 4.5);
+        }
+
+        if (historySelectedVariable === "relative_humidity_percent") {
+          return buildSensitiveGradientExpression(valueExpression, 34.7, 91.7);
+        }
+
+        if (historySelectedVariable === "surface_pressure_hpa") {
+          return buildSensitiveGradientExpression(valueExpression, 739, 999);
+        }
+
+        return "#94a3b8";
       }
 
       function getHistoryShardPart(shardNumber) {
@@ -2449,15 +3327,15 @@
                   ["linear"],
                   ["zoom"],
                   5,
-                  1.2,
-                  7,
-                  1.8,
-                  9,
-                  2.6,
-                  11,
-                  4.0,
+                  0.6,
+                  8,
+                  1.0,
+                  10,
+                  1.5,
+                  12,
+                  2.2,
                   13,
-                  6.0,
+                  2.6,
                 ],
               },
             });
@@ -2492,7 +3370,7 @@
           await loadHistoryCsv();
           prepareActiveHistoryLookup();
 
-          if (activeHistoryColorLookup.size === 0) {
+          if (activeHistoryValueLookup.size === 0) {
             throw new Error(
               "No historical values were found for the selected period.",
             );
@@ -2505,6 +3383,21 @@
 
             map.setPaintProperty(layerId, "line-color", colorExpression);
             map.setPaintProperty(layerId, "line-opacity", 0.95);
+            map.setPaintProperty(layerId, "line-width", [
+              "interpolate",
+              ["linear"],
+              ["zoom"],
+              5,
+              0.6,
+              8,
+              1.0,
+              10,
+              1.5,
+              12,
+              2.2,
+              13,
+              2.6,
+            ]);
             map.setLayoutProperty(layerId, "visibility", "visible");
           });
 
@@ -2672,8 +3565,8 @@
                 ],
               ],
 
-              "circle-opacity": 0.88,
-              "circle-stroke-color": "#ffffff",
+              "circle-opacity": 0.9,
+              "circle-stroke-color": "#17364a",
               "circle-stroke-width": [
                 "interpolate",
                 ["linear"],
@@ -2709,6 +3602,24 @@
           .replaceAll("'", "&#039;");
       }
 
+      function initialiseFishYearFilter() {
+        if (!fishYearSelect) return;
+
+        const currentYear = new Date().getFullYear();
+        const earliestYear = 1900;
+
+        fishYearSelect.innerHTML = '<option value="">All years</option>';
+
+        for (let year = currentYear; year >= earliestYear; year--) {
+          const option = document.createElement("option");
+          option.value = String(year);
+          option.textContent = String(year);
+          fishYearSelect.appendChild(option);
+        }
+
+        fishYearSelect.value = selectedFishYear;
+      }
+
       async function loadFishSpecies() {
         if (fishSpeciesLoaded) return;
 
@@ -2733,12 +3644,14 @@
             .sort((a, b) => a.localeCompare(b));
 
           buildFishSpeciesColorLookup();
-          updateFishSpeciesColors();
 
-          renderFishSpeciesOptions("");
           fishSpeciesLoaded = true;
 
+          renderFishSpeciesOptions("");
+
           if (isFishSelected()) {
+            updateFishSpeciesColors();
+            updateLegend();
             updatePointCounter();
           }
         } catch (error) {
@@ -2860,7 +3773,9 @@
 
         const stats = fishSpeciesStats[selectedFishSpecies] || {};
 
-        fishStatsTitle.textContent = selectedFishSpecies;
+        fishStatsTitle.textContent = selectedFishYear
+          ? `${selectedFishSpecies} · all-year statistics`
+          : selectedFishSpecies;
         fishObservationCount.textContent = Number(
           stats.observations || 0,
         ).toLocaleString();
@@ -2877,13 +3792,249 @@
       function updateFishFilter() {
         if (!map.getLayer("fish-occurrences")) return;
 
-        const filter = selectedFishSpecies
-          ? ["==", ["get", "SPEC_NAME"], selectedFishSpecies]
-          : null;
+        const filters = [];
+
+        // Species filter
+        if (selectedFishSpecies) {
+          filters.push(["==", ["get", "SPEC_NAME"], selectedFishSpecies]);
+        }
+
+        // Survey year filter.
+        // TERMINATION_DATE may be stored as:
+        //   1) ISO date text, e.g. "2014-07-15"
+        //   2) Unix timestamp in milliseconds
+        //   3) Unix timestamp in seconds
+        if (selectedFishYear) {
+          const year = Number(selectedFishYear);
+
+          const startDateMs = Date.UTC(year, 0, 1, 0, 0, 0);
+          const endDateMs = Date.UTC(year + 1, 0, 1, 0, 0, 0);
+
+          const startDateSeconds = Math.floor(startDateMs / 1000);
+          const endDateSeconds = Math.floor(endDateMs / 1000);
+
+          filters.push([
+            "any",
+
+            // ISO / text date such as "2014-07-15"
+            [
+              "==",
+              ["slice", ["to-string", ["get", "TERMINATION_DATE"]], 0, 4],
+              String(year),
+            ],
+
+            // Unix timestamp stored in milliseconds
+            [
+              "all",
+              [
+                ">=",
+                ["to-number", ["get", "TERMINATION_DATE"], -1],
+                startDateMs,
+              ],
+              ["<", ["to-number", ["get", "TERMINATION_DATE"], -1], endDateMs],
+            ],
+
+            // Unix timestamp stored in seconds
+            [
+              "all",
+              [
+                ">=",
+                ["to-number", ["get", "TERMINATION_DATE"], -1],
+                startDateSeconds,
+              ],
+              [
+                "<",
+                ["to-number", ["get", "TERMINATION_DATE"], -1],
+                endDateSeconds,
+              ],
+            ],
+          ]);
+        }
+
+        let filter = null;
+
+        if (filters.length === 1) {
+          filter = filters[0];
+        } else if (filters.length > 1) {
+          filter = ["all", ...filters];
+        }
+
+        console.log("Fish filter:", filter);
 
         map.setFilter("fish-occurrences", filter);
         updatePointCounter();
         updateFishStatistics();
+      }
+
+      function getFishFeatureCoordinates(feature, fallbackLngLat) {
+        const coords = feature?.geometry?.coordinates;
+        if (
+          Array.isArray(coords) &&
+          coords.length >= 2 &&
+          Number.isFinite(Number(coords[0])) &&
+          Number.isFinite(Number(coords[1]))
+        ) {
+          return [Number(coords[0]), Number(coords[1])];
+        }
+
+        return [fallbackLngLat.lng, fallbackLngLat.lat];
+      }
+
+      function getFishFeaturesAtSameLocation(event) {
+        const clickedFeature = event.features?.[0];
+        if (!clickedFeature) return [];
+
+        const [clickedLng, clickedLat] = getFishFeatureCoordinates(
+          clickedFeature,
+          event.lngLat,
+        );
+
+        // Query a small screen area so overlapping rendered fish points are all
+        // collected, then retain only records at essentially the same location.
+        const tolerance = 0.000001;
+        const padding = 6;
+        const point = event.point;
+        const nearbyFeatures = map.queryRenderedFeatures(
+          [
+            [point.x - padding, point.y - padding],
+            [point.x + padding, point.y + padding],
+          ],
+          { layers: ["fish-occurrences"] },
+        );
+
+        const sameLocation = nearbyFeatures.filter((feature) => {
+          const [lng, lat] = getFishFeatureCoordinates(feature, event.lngLat);
+          return (
+            Math.abs(lng - clickedLng) <= tolerance &&
+            Math.abs(lat - clickedLat) <= tolerance
+          );
+        });
+
+        // Vector tiles can occasionally return the same feature more than once
+        // near tile boundaries. Remove duplicates while preserving real records.
+        const unique = [];
+        const seen = new Set();
+
+        sameLocation.forEach((feature, index) => {
+          const props = feature.properties || {};
+          const [lng, lat] = getFishFeatureCoordinates(feature, event.lngLat);
+          const key = [
+            props.INV_SURVEY_ID ?? "",
+            props.INV_PROJ_ID ?? "",
+            props.SPEC_CODE ?? "",
+            props.SPEC_NAME ?? "",
+            props.TERMINATION_DATE ?? "",
+            props.SPEC_SUM ?? props.FEATURE_COUNT ?? "",
+            lng.toFixed(7),
+            lat.toFixed(7),
+          ].join("|");
+
+          if (!seen.has(key)) {
+            seen.add(key);
+            unique.push(feature);
+          }
+        });
+
+        return unique.length ? unique : [clickedFeature];
+      }
+
+      function buildFishPopupHtml(feature, coordinates, currentIndex, total) {
+        const properties = feature.properties || {};
+        const species = properties.SPEC_NAME || "Unknown fish";
+        const speciesCode = properties.SPEC_CODE || "Not recorded";
+        const waterbody =
+          properties.WTB_OFFICIAL_NAME ||
+          properties.WTB_COMMON_NAME ||
+          "Not recorded";
+        const surveyDate = formatFwmisDate(properties.TERMINATION_DATE);
+        const surveyType = properties.SURVEY_TYPE || "Not recorded";
+        const surveyId = properties.INV_SURVEY_ID || "Not recorded";
+        const projectId = properties.INV_PROJ_ID || "Not recorded";
+        const speciesCount =
+          properties.SPEC_SUM ?? properties.FEATURE_COUNT ?? "Not recorded";
+        const comments =
+          properties.SURVEY_COMMENTS ||
+          properties.PROJ_LOC_COMMENTS ||
+          "Not recorded";
+
+        const navigation =
+          total > 1
+            ? `
+                <div class="fish-popup-nav" aria-label="Observation navigation">
+                  <button
+                    type="button"
+                    class="fish-popup-nav-button fish-popup-prev"
+                    aria-label="Previous observation"
+                    title="Previous observation"
+                  >&#8249;</button>
+                  <span class="fish-popup-nav-counter">${currentIndex + 1} / ${total}</span>
+                  <button
+                    type="button"
+                    class="fish-popup-nav-button fish-popup-next"
+                    aria-label="Next observation"
+                    title="Next observation"
+                  >&#8250;</button>
+                </div>
+              `
+            : "";
+
+        return `
+          <article class="fish-popup-card">
+            <header class="fish-popup-header">
+              <div class="fish-popup-eyebrow">FWMIS fish observation</div>
+              <h3 class="fish-popup-title">${escapeHtml(species)}</h3>
+              ${navigation}
+            </header>
+
+            <div class="fish-popup-body">
+              <section class="fish-popup-section">
+                <h4 class="fish-popup-section-title">Observation details</h4>
+                <div class="fish-popup-grid">
+                  <div class="fish-popup-label">Species code</div>
+                  <div class="fish-popup-value">${escapeHtml(speciesCode)}</div>
+
+                  <div class="fish-popup-label">Waterbody</div>
+                  <div class="fish-popup-value">${escapeHtml(waterbody)}</div>
+
+                  <div class="fish-popup-label">Survey date</div>
+                  <div class="fish-popup-value">${escapeHtml(surveyDate)}</div>
+
+                  <div class="fish-popup-label">Survey type</div>
+                  <div class="fish-popup-value">${escapeHtml(surveyType)}</div>
+
+                  <div class="fish-popup-label">Individuals recorded</div>
+                  <div class="fish-popup-value">${escapeHtml(speciesCount)}</div>
+
+                  <div class="fish-popup-label">Survey ID</div>
+                  <div class="fish-popup-value">${escapeHtml(surveyId)}</div>
+
+                  <div class="fish-popup-label">Project ID</div>
+                  <div class="fish-popup-value">${escapeHtml(projectId)}</div>
+                </div>
+              </section>
+
+              <section class="fish-popup-section">
+                <h4 class="fish-popup-section-title">Comments</h4>
+                <p class="fish-popup-comments">${escapeHtml(comments)}</p>
+              </section>
+
+              <section class="fish-popup-section">
+                <h4 class="fish-popup-section-title">Coordinates</h4>
+                <div class="fish-popup-coordinates">
+                  <div class="fish-popup-coordinate">
+                    <span class="fish-popup-coordinate-label">Latitude</span>
+                    <span class="fish-popup-coordinate-value">${coordinates[1].toFixed(5)}</span>
+                  </div>
+
+                  <div class="fish-popup-coordinate">
+                    <span class="fish-popup-coordinate-label">Longitude</span>
+                    <span class="fish-popup-coordinate-value">${coordinates[0].toFixed(5)}</span>
+                  </div>
+                </div>
+              </section>
+            </div>
+          </article>
+        `;
       }
 
       function addFishInteractions() {
@@ -2893,27 +4044,14 @@
         map.on("click", "fish-occurrences", (event) => {
           if (!isFishSelected() || !event.features?.length) return;
 
-          const feature = event.features[0];
-          const properties = feature.properties || {};
+          const fishFeatures = getFishFeaturesAtSameLocation(event);
+          const popupCoordinates = getFishFeatureCoordinates(
+            fishFeatures[0],
+            event.lngLat,
+          );
+          let currentIndex = 0;
 
           if (activePopup) activePopup.remove();
-
-          const species = properties.SPEC_NAME || "Unknown fish";
-          const speciesCode = properties.SPEC_CODE || "Not recorded";
-          const waterbody =
-            properties.WTB_OFFICIAL_NAME ||
-            properties.WTB_COMMON_NAME ||
-            "Not recorded";
-          const surveyDate = formatFwmisDate(properties.TERMINATION_DATE);
-          const surveyType = properties.SURVEY_TYPE || "Not recorded";
-          const surveyId = properties.INV_SURVEY_ID || "Not recorded";
-          const projectId = properties.INV_PROJ_ID || "Not recorded";
-          const speciesCount =
-            properties.SPEC_SUM ?? properties.FEATURE_COUNT ?? "Not recorded";
-          const comments =
-            properties.SURVEY_COMMENTS ||
-            properties.PROJ_LOC_COMMENTS ||
-            "Not recorded";
 
           activePopup = new maplibregl.Popup({
             className: "fish-popup",
@@ -2922,66 +4060,41 @@
             closeOnClick: true,
             offset: 14,
           })
-            .setLngLat(event.lngLat)
-            .setHTML(
-              `
-                <article class="fish-popup-card">
-                  <header class="fish-popup-header">
-                    <div class="fish-popup-eyebrow">FWMIS fish observation</div>
-                    <h3 class="fish-popup-title">${escapeHtml(species)}</h3>
-                  </header>
-
-                  <div class="fish-popup-body">
-                    <section class="fish-popup-section">
-                      <h4 class="fish-popup-section-title">Observation details</h4>
-                      <div class="fish-popup-grid">
-                        <div class="fish-popup-label">Species code</div>
-                        <div class="fish-popup-value">${escapeHtml(speciesCode)}</div>
-
-                        <div class="fish-popup-label">Waterbody</div>
-                        <div class="fish-popup-value">${escapeHtml(waterbody)}</div>
-
-                        <div class="fish-popup-label">Survey date</div>
-                        <div class="fish-popup-value">${escapeHtml(surveyDate)}</div>
-
-                        <div class="fish-popup-label">Survey type</div>
-                        <div class="fish-popup-value">${escapeHtml(surveyType)}</div>
-
-                        <div class="fish-popup-label">Individuals recorded</div>
-                        <div class="fish-popup-value">${escapeHtml(speciesCount)}</div>
-
-                        <div class="fish-popup-label">Survey ID</div>
-                        <div class="fish-popup-value">${escapeHtml(surveyId)}</div>
-
-                        <div class="fish-popup-label">Project ID</div>
-                        <div class="fish-popup-value">${escapeHtml(projectId)}</div>
-                      </div>
-                    </section>
-
-                    <section class="fish-popup-section">
-                      <h4 class="fish-popup-section-title">Comments</h4>
-                      <p class="fish-popup-comments">${escapeHtml(comments)}</p>
-                    </section>
-
-                    <section class="fish-popup-section">
-                      <h4 class="fish-popup-section-title">Coordinates</h4>
-                      <div class="fish-popup-coordinates">
-                        <div class="fish-popup-coordinate">
-                          <span class="fish-popup-coordinate-label">Latitude</span>
-                          <span class="fish-popup-coordinate-value">${event.lngLat.lat.toFixed(5)}</span>
-                        </div>
-
-                        <div class="fish-popup-coordinate">
-                          <span class="fish-popup-coordinate-label">Longitude</span>
-                          <span class="fish-popup-coordinate-value">${event.lngLat.lng.toFixed(5)}</span>
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </article>
-              `,
-            )
+            .setLngLat(popupCoordinates)
             .addTo(map);
+
+          const renderObservation = () => {
+            activePopup.setHTML(
+              buildFishPopupHtml(
+                fishFeatures[currentIndex],
+                popupCoordinates,
+                currentIndex,
+                fishFeatures.length,
+              ),
+            );
+
+            if (fishFeatures.length <= 1) return;
+
+            const popupElement = activePopup.getElement();
+            const previousButton =
+              popupElement.querySelector(".fish-popup-prev");
+            const nextButton = popupElement.querySelector(".fish-popup-next");
+
+            previousButton?.addEventListener("click", (clickEvent) => {
+              clickEvent.stopPropagation();
+              currentIndex =
+                (currentIndex - 1 + fishFeatures.length) % fishFeatures.length;
+              renderObservation();
+            });
+
+            nextButton?.addEventListener("click", (clickEvent) => {
+              clickEvent.stopPropagation();
+              currentIndex = (currentIndex + 1) % fishFeatures.length;
+              renderObservation();
+            });
+          };
+
+          renderObservation();
         });
 
         map.on("mouseenter", "fish-occurrences", () => {
@@ -3150,6 +4263,7 @@
 
         if (
           isElevationSelected() ||
+          isRiverBinarySelected() ||
           isHistorySelected() ||
           isFishSelected() ||
           isMlSelected()
@@ -3218,6 +4332,7 @@
 
       function updateLayerVisibilityForSelection() {
         const showElevation = isElevationSelected();
+        const showRiverBinary = isRiverBinarySelected();
         const showHistory = isHistorySelected();
         const showFish = isFishSelected();
         const showMl = isMlSelected();
@@ -3228,7 +4343,11 @@
 
         if (addDataCard) {
           addDataCard.style.display =
-            showElevation || showHistory || showFish || showMl
+            showElevation ||
+            showRiverBinary ||
+            showHistory ||
+            showFish ||
+            showMl
               ? "none"
               : "block";
         }
@@ -3258,6 +4377,10 @@
           fishControlCard.style.display = showFish ? "block" : "none";
         }
 
+        if (mlControlCard) {
+          mlControlCard.style.display = showMl ? "block" : "none";
+        }
+
         if (elevationInfoCard) {
           elevationInfoCard.style.display = showElevation ? "block" : "none";
         }
@@ -3270,56 +4393,50 @@
           );
         }
 
+        if (map.getLayer("river-binary-layer")) {
+          map.setLayoutProperty(
+            "river-binary-layer",
+            "visibility",
+            showRiverBinary ? "visible" : "none",
+          );
+        }
+
         // Blue stream network should stay visible for all layers,
         // including Elevation Tiles, so the arrows have visible river lines behind them.
         if (map.getLayer("streams-line")) {
+          // Historical Environment uses its own coloured river layers.
+          // Keep the main blue river network visible underneath the ML prediction points.
           map.setLayoutProperty(
             "streams-line",
             "visibility",
-            showElevation || showHistory ? "none" : "visible",
+            showHistory || showRiverBinary ? "none" : "visible",
           );
 
-          // Keep the Alberta river network visible underneath the
-          // Rainbow Trout count prediction points.
-          map.setPaintProperty("streams-line", "line-color", "#0057ff");
+          map.setPaintProperty(
+            "streams-line",
+            "line-color",
+            showElevation ? "#ef4444" : "#087ea4",
+          );
 
           map.setPaintProperty(
             "streams-line",
             "line-opacity",
-            showMl ? 0.65 : 0.95,
+            showMl ? 0.62 : 0.95,
           );
 
-          map.setPaintProperty(
-            "streams-line",
-            "line-width",
-            showMl
-              ? [
-                  "interpolate",
-                  ["linear"],
-                  ["zoom"],
-                  5,
-                  0.6,
-                  8,
-                  1.0,
-                  10,
-                  1.5,
-                  12,
-                  2.2,
-                ]
-              : [
-                  "interpolate",
-                  ["linear"],
-                  ["zoom"],
-                  5,
-                  0.8,
-                  8,
-                  1.4,
-                  10,
-                  2.2,
-                  12,
-                  3.5,
-                ],
-          );
+          map.setPaintProperty("streams-line", "line-width", [
+            "interpolate",
+            ["linear"],
+            ["zoom"],
+            5,
+            0.7,
+            8,
+            1.1,
+            10,
+            1.7,
+            12,
+            2.5,
+          ]);
         }
 
         if (map.getLayer("streams-points")) {
@@ -3328,48 +4445,56 @@
           map.setLayoutProperty("streams-points", "visibility", "none");
         }
 
-        if (map.getLayer(ML_LAYER_ID)) {
-          map.setLayoutProperty(
-            ML_LAYER_ID,
-            "visibility",
-            showMl ? "visible" : "none",
-          );
-        }
+        ML_LAYER_IDS.forEach((layerId) => {
+          if (map.getLayer(layerId)) {
+            map.setLayoutProperty(
+              layerId,
+              "visibility",
+              showMl ? "visible" : "none",
+            );
+          }
+        });
 
         // Hide the default blue flow lines and arrowheads for Historical Environment.
-        // ML predictions reuse the blue directional river-flow arrows.
+        // The ML layer now uses the predicted river segments themselves.
         // Weather layers use blue flow lines; Elevation uses red flow lines.
         if (map.getLayer("directed-arrow-lines")) {
-          map.setLayoutProperty(
-            "directed-arrow-lines",
-            "visibility",
-            showHistory || showMl ? "none" : "visible",
-          );
-
-          map.setPaintProperty(
-            "directed-arrow-lines",
-            "line-color",
-            showElevation ? "#ef4444" : "#0057ff",
-          );
-
-          map.setPaintProperty(
-            "directed-arrow-lines",
-            "line-opacity",
-            showElevation ? 0.85 : 0.95,
-          );
+          // Legacy directional line overlay hidden. Chevron symbols now show
+          // the river direction as a repeated >>>>>> pattern.
+          map.setLayoutProperty("directed-arrow-lines", "visibility", "none");
         }
 
         if (map.getLayer("directed-arrowheads")) {
+          // Hide the previous arrowhead geometry so it does not create
+          // star-shaped intersections.
+          map.setLayoutProperty("directed-arrowheads", "visibility", "none");
+        }
+
+        if (map.getLayer("river-chevron-arrows")) {
+          // Show flow chevrons for Daily Environment, Historical Environment,
+          // Fish Distribution, and Elevation. Hide only on the ML layer.
           map.setLayoutProperty(
-            "directed-arrowheads",
+            "river-chevron-arrows",
             "visibility",
-            showHistory || showMl ? "none" : "visible",
+            showMl || showRiverBinary ? "none" : "visible",
+          );
+
+          const darkBasemap = basemapSelect.value === "dark";
+
+          map.setPaintProperty(
+            "river-chevron-arrows",
+            "text-color",
+            darkBasemap
+              ? "#f8fafc"
+              : showHistory || showElevation
+                ? "#111827"
+                : "#0f2233",
           );
 
           map.setPaintProperty(
-            "directed-arrowheads",
-            "line-color",
-            showElevation ? "#000000" : "#0f172a",
+            "river-chevron-arrows",
+            "text-halo-color",
+            darkBasemap ? "rgba(15,23,42,0.9)" : "rgba(255,255,255,0.92)",
           );
         }
 
@@ -3385,23 +4510,41 @@
 
         if (!isFetching) {
           addVisibleBtn.disabled =
-            showElevation || showHistory || showFish || showMl;
+            showElevation ||
+            showRiverBinary ||
+            showHistory ||
+            showFish ||
+            showMl;
           selectAreaBtn.disabled =
-            showElevation || showHistory || showFish || showMl;
+            showElevation ||
+            showRiverBinary ||
+            showHistory ||
+            showFish ||
+            showMl;
           clearLayerBtn.disabled =
-            showElevation || showHistory || showFish || showMl;
+            showElevation ||
+            showRiverBinary ||
+            showHistory ||
+            showFish ||
+            showMl;
         }
 
-        if (showHistory) {
+        if (showRiverBinary) {
+          status.textContent =
+            "Showing the 200 m × 200 m Alberta river binary raster. Cyan cells represent river pixels (1); transparent cells represent non-river pixels (0).";
+        } else if (showHistory) {
           status.textContent =
             "Historical environment selected. Climate values are shown directly on the river network.";
         } else if (showFish) {
-          status.textContent = selectedFishSpecies
-            ? `Showing ${selectedFishSpecies} occurrence locations across Alberta.`
-            : "Showing all cleaned FWMIS fish survey records.";
+          status.textContent = selectedFishYear
+            ? selectedFishSpecies
+              ? `Showing ${selectedFishSpecies} observations from ${selectedFishYear}.`
+              : `Showing all fish observations from ${selectedFishYear}.`
+            : selectedFishSpecies
+              ? `Showing ${selectedFishSpecies} occurrence locations across Alberta.`
+              : "Showing all cleaned FWMIS fish survey records.";
         } else if (showMl) {
-          status.textContent =
-            "Showing Rainbow Trout predicted survey counts with the Alberta river network underneath.";
+          status.textContent = `Showing ${mlMonthSelect.options[mlMonthSelect.selectedIndex].text} Rainbow Trout direct count predictions for all 629,200 river locations.`;
         } else if (showElevation) {
           status.textContent =
             "Click a red stream segment to view elevation details.";
@@ -3412,29 +4555,330 @@
         }
       }
 
+      function getMlNumber(properties, keys) {
+        for (const key of keys) {
+          const value = Number(properties?.[key]);
+          if (Number.isFinite(value)) return value;
+        }
+        return NaN;
+      }
+
+      function updateMlPaint() {
+        ML_LAYER_IDS.forEach((layerId) => {
+          if (!map.getLayer(layerId)) return;
+
+          map.setPaintProperty(layerId, "circle-color", [
+            "interpolate",
+            ["linear"],
+            ["to-number", ["coalesce", ["get", "predicted_count"], 0], 0],
+            0,
+            "#b91c1c",
+            1,
+            "#ef4444",
+            3,
+            "#f97316",
+            5,
+            "#facc15",
+          ]);
+          map.setPaintProperty(layerId, "circle-radius", [
+            "interpolate",
+            ["linear"],
+            ["zoom"],
+            5,
+            [
+              "interpolate",
+              ["linear"],
+              ["to-number", ["coalesce", ["get", "predicted_count"], 0], 0],
+              0,
+              2.6,
+              3,
+              3.3,
+              6,
+              4.2,
+              10,
+              5.3,
+              15,
+              6.5,
+              25,
+              8.0,
+            ],
+            8,
+            [
+              "interpolate",
+              ["linear"],
+              ["to-number", ["coalesce", ["get", "predicted_count"], 0], 0],
+              0,
+              3.2,
+              3,
+              4.0,
+              6,
+              5.1,
+              10,
+              6.4,
+              15,
+              7.8,
+              25,
+              9.8,
+            ],
+            11,
+            [
+              "interpolate",
+              ["linear"],
+              ["to-number", ["coalesce", ["get", "predicted_count"], 0], 0],
+              0,
+              4.0,
+              3,
+              5.0,
+              6,
+              6.2,
+              10,
+              7.9,
+              15,
+              9.8,
+              25,
+              12.2,
+            ],
+            14,
+            [
+              "interpolate",
+              ["linear"],
+              ["to-number", ["coalesce", ["get", "predicted_count"], 0], 0],
+              0,
+              5.0,
+              3,
+              6.3,
+              6,
+              8.0,
+              10,
+              10.2,
+              15,
+              12.5,
+              25,
+              15.5,
+            ],
+          ]);
+          map.setPaintProperty(layerId, "circle-opacity", 0.92);
+          map.setPaintProperty(layerId, "circle-stroke-color", "#ffffff");
+          map.setPaintProperty(layerId, "circle-stroke-width", [
+            "interpolate",
+            ["linear"],
+            ["zoom"],
+            5,
+            0.25,
+            8,
+            0.45,
+            11,
+            0.7,
+            14,
+            1.0,
+          ]);
+        });
+      }
+
+      function changeMlMonth(monthValue) {
+        mlSelectedMonth = monthValue;
+
+        if (activePopup) {
+          activePopup.remove();
+          activePopup = null;
+        }
+
+        ML_LAYER_IDS.forEach((layerId) => {
+          if (map.getLayer(layerId)) map.removeLayer(layerId);
+        });
+
+        ["mlPredictionsPart1", "mlPredictionsPart2"].forEach((sourceId) => {
+          if (map.getSource(sourceId)) map.removeSource(sourceId);
+        });
+
+        map.addSource("mlPredictionsPart1", {
+          type: "vector",
+          url: `pmtiles://${ML_MONTH_FILES[mlSelectedMonth][0]}`,
+        });
+
+        map.addSource("mlPredictionsPart2", {
+          type: "vector",
+          url: `pmtiles://${ML_MONTH_FILES[mlSelectedMonth][1]}`,
+        });
+
+        const sourceIds = ["mlPredictionsPart1", "mlPredictionsPart2"];
+
+        ML_LAYER_IDS.forEach((layerId, index) => {
+          map.addLayer({
+            id: layerId,
+            type: "circle",
+            source: sourceIds[index],
+            "source-layer": ML_SOURCE_LAYER,
+            minzoom: 5,
+            layout: {
+              visibility: isMlSelected() ? "visible" : "none",
+            },
+            paint: {
+              "circle-color": [
+                "interpolate",
+                ["linear"],
+                ["to-number", ["coalesce", ["get", "predicted_count"], 0], 0],
+                0,
+                "#dc2626",
+                2,
+                "#ef4444",
+                4,
+                "#f97316",
+                6,
+                "#facc15",
+                10,
+                "#8dd3c7",
+                15,
+                "#38bdf8",
+                20,
+                "#2563eb",
+                30,
+                "#1e3a8a",
+              ],
+              "circle-radius": [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                5,
+                [
+                  "interpolate",
+                  ["linear"],
+                  ["to-number", ["coalesce", ["get", "predicted_count"], 0], 0],
+                  0,
+                  2.6,
+                  3,
+                  3.3,
+                  6,
+                  4.2,
+                  10,
+                  5.3,
+                  15,
+                  6.5,
+                  25,
+                  8.0,
+                ],
+                8,
+                [
+                  "interpolate",
+                  ["linear"],
+                  ["to-number", ["coalesce", ["get", "predicted_count"], 0], 0],
+                  0,
+                  3.2,
+                  3,
+                  4.0,
+                  6,
+                  5.1,
+                  10,
+                  6.4,
+                  15,
+                  7.8,
+                  25,
+                  9.8,
+                ],
+                11,
+                [
+                  "interpolate",
+                  ["linear"],
+                  ["to-number", ["coalesce", ["get", "predicted_count"], 0], 0],
+                  0,
+                  4.0,
+                  3,
+                  5.0,
+                  6,
+                  6.2,
+                  10,
+                  7.9,
+                  15,
+                  9.8,
+                  25,
+                  12.2,
+                ],
+                14,
+                [
+                  "interpolate",
+                  ["linear"],
+                  ["to-number", ["coalesce", ["get", "predicted_count"], 0], 0],
+                  0,
+                  5.0,
+                  3,
+                  6.3,
+                  6,
+                  8.0,
+                  10,
+                  10.2,
+                  15,
+                  12.5,
+                  25,
+                  15.5,
+                ],
+              ],
+              "circle-opacity": 0.92,
+              "circle-stroke-color": "#ffffff",
+              "circle-stroke-width": [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                5,
+                0.25,
+                8,
+                0.45,
+                11,
+                0.7,
+                14,
+                1.0,
+              ],
+            },
+          });
+        });
+
+        updateMlPaint();
+        updateLegend();
+        updatePointCounter();
+
+        status.textContent =
+          `Showing ${mlMonthSelect.options[mlMonthSelect.selectedIndex].text} ` +
+          `Rainbow Trout direct count predictions for all 629,200 river locations.`;
+      }
+
       function addMlInteractions() {
-        if (mlInteractionsAdded || !map.getLayer(ML_LAYER_ID)) return;
+        if (mlInteractionsAdded) return;
         mlInteractionsAdded = true;
 
-        map.on("click", ML_LAYER_ID, (event) => {
-          if (!isMlSelected() || !event.features?.length) return;
+        map.on("click", (event) => {
+          if (!isMlSelected()) return;
 
-          const properties = event.features[0].properties || {};
-          const predictedCount = Number(properties.predicted_fish_count);
-          const roundedCount = Number(properties.predicted_fish_count_rounded);
-          const abundanceClass = properties.abundance_class || "N/A";
-          const temperature = Number(properties.temperature_c);
-          const precipitation = Number(properties.precipitation_mm_month);
-          const wind = Number(properties.wind_speed_ms);
-          const humidity = Number(properties.relative_humidity_percent);
-          const pressure = Number(properties.surface_pressure_hpa);
-          const predictionYear = properties.prediction_year ?? "N/A";
-          const predictionMonth = Number(properties.prediction_month);
+          const activeLayers = ML_LAYER_IDS.filter((layerId) =>
+            Boolean(map.getLayer(layerId)),
+          );
 
-          const predictionPeriod =
-            Number.isFinite(predictionMonth) && predictionYear !== "N/A"
-              ? `${predictionYear}-${String(predictionMonth).padStart(2, "0")}`
-              : "N/A";
+          const features = map.queryRenderedFeatures(
+            [
+              [event.point.x - 8, event.point.y - 8],
+              [event.point.x + 8, event.point.y + 8],
+            ],
+            { layers: activeLayers },
+          );
+
+          if (!features.length) return;
+
+          const properties = features[0].properties || {};
+          const predictedCount = getMlNumber(properties, ["predicted_count"]);
+          const temperature = getMlNumber(properties, ["temperature_c"]);
+          const precipitation = getMlNumber(properties, [
+            "precipitation_mm_month",
+          ]);
+          const wind = getMlNumber(properties, ["wind_speed_ms"]);
+          const humidity = getMlNumber(properties, [
+            "relative_humidity_percent",
+          ]);
+          const pressure = getMlNumber(properties, ["surface_pressure_hpa"]);
+          const era5Distance = getMlNumber(properties, [
+            "nearest_era5_distance_km",
+          ]);
+
+          const monthName =
+            properties.month_name ||
+            mlMonthSelect.options[mlMonthSelect.selectedIndex].text;
 
           if (activePopup) activePopup.remove();
 
@@ -3450,7 +4894,7 @@
               `
                 <article class="fish-popup-card">
                   <header class="fish-popup-header">
-                    <div class="fish-popup-eyebrow">Machine-learning regression</div>
+                    <div class="fish-popup-eyebrow">FWMIS + ERA5 direct regression</div>
                     <h3 class="fish-popup-title">Rainbow Trout Count Prediction</h3>
                   </header>
 
@@ -3458,25 +4902,15 @@
                     <section class="fish-popup-section">
                       <h4 class="fish-popup-section-title">Prediction</h4>
                       <div class="fish-popup-grid">
+                        <div class="fish-popup-label">Month</div>
+                        <div class="fish-popup-value">${escapeHtml(monthName)}</div>
+
                         <div class="fish-popup-label">Predicted count</div>
                         <div class="fish-popup-value">${
                           Number.isFinite(predictedCount)
-                            ? predictedCount.toFixed(2)
+                            ? Math.round(predictedCount)
                             : "N/A"
                         }</div>
-
-                        <div class="fish-popup-label">Rounded count</div>
-                        <div class="fish-popup-value">${
-                          Number.isFinite(roundedCount)
-                            ? Math.round(roundedCount)
-                            : "N/A"
-                        }</div>
-
-                        <div class="fish-popup-label">Abundance class</div>
-                        <div class="fish-popup-value">${escapeHtml(abundanceClass)}</div>
-
-                        <div class="fish-popup-label">Prediction period</div>
-                        <div class="fish-popup-value">${escapeHtml(predictionPeriod)}</div>
                       </div>
                     </section>
 
@@ -3517,41 +4951,20 @@
                             ? `${pressure.toFixed(2)} hPa`
                             : "N/A"
                         }</div>
+
+                        <div class="fish-popup-label">Nearest ERA5 grid</div>
+                        <div class="fish-popup-value">${
+                          Number.isFinite(era5Distance)
+                            ? `${era5Distance.toFixed(2)} km`
+                            : "N/A"
+                        }</div>
                       </div>
                     </section>
-
-                    <section class="fish-popup-section">
-                      <h4 class="fish-popup-section-title">Coordinates</h4>
-                      <div class="fish-popup-coordinates">
-                        <div class="fish-popup-coordinate">
-                          <span class="fish-popup-coordinate-label">Latitude</span>
-                          <span class="fish-popup-coordinate-value">${event.lngLat.lat.toFixed(5)}</span>
-                        </div>
-                        <div class="fish-popup-coordinate">
-                          <span class="fish-popup-coordinate-label">Longitude</span>
-                          <span class="fish-popup-coordinate-value">${event.lngLat.lng.toFixed(5)}</span>
-                        </div>
-                      </div>
-                    </section>
-
-                   
                   </div>
                 </article>
               `,
             )
             .addTo(map);
-        });
-
-        map.on("mouseenter", ML_LAYER_ID, () => {
-          if (!isSelectionMode && isMlSelected()) {
-            map.getCanvas().style.cursor = "pointer";
-          }
-        });
-
-        map.on("mouseleave", ML_LAYER_ID, () => {
-          if (!isSelectionMode) {
-            map.getCanvas().style.cursor = "";
-          }
         });
       }
 
@@ -3680,6 +5093,7 @@
         const forceDisabled =
           disabled ||
           isElevationSelected() ||
+          isRiverBinarySelected() ||
           isHistorySelected() ||
           isFishSelected() ||
           isMlSelected();
@@ -3812,7 +5226,7 @@
       }
 
       function movePointSelection(direction) {
-        if (isElevationSelected()) return;
+        if (isElevationSelected() || isRiverBinarySelected()) return;
         if (!map.getLayer("environment-circles")) return;
 
         const orderedFeatures = getOrderedLayerFeatures();
@@ -4021,6 +5435,27 @@
         }
       });
 
+      fishYearSelect.addEventListener("change", (event) => {
+        selectedFishYear = event.target.value;
+
+        if (activePopup) {
+          activePopup.remove();
+          activePopup = null;
+        }
+
+        updateFishFilter();
+        updateFishStatistics();
+        updateLegend();
+
+        status.textContent = selectedFishYear
+          ? selectedFishSpecies
+            ? `Showing ${selectedFishSpecies} observations from ${selectedFishYear}.`
+            : `Showing all fish observations from ${selectedFishYear}.`
+          : selectedFishSpecies
+            ? `Showing ${selectedFishSpecies} occurrence locations across Alberta.`
+            : "Showing all cleaned FWMIS fish survey records.";
+      });
+
       fishSpeciesToggle.addEventListener("click", () => {
         if (fishSpeciesMenu.classList.contains("open")) {
           closeFishSpeciesMenu();
@@ -4066,6 +5501,14 @@
         }
       });
 
+      mlMonthSelect.addEventListener("change", () => {
+        changeMlMonth(mlMonthSelect.value);
+      });
+
+      basemapSelect.addEventListener("change", () => {
+        updateBasemap();
+      });
+
       layerSelect.addEventListener("change", async () => {
         updateLegend();
         clearSelectedPoint();
@@ -4092,15 +5535,25 @@
         if (isFishSelected()) {
           await loadFishSpecies();
           await addFishLayer();
+
+          updateFishSpeciesColors();
           updateLayerVisibilityForSelection();
           updateFishFilter();
           updateFishStatistics();
-          status.textContent = selectedFishSpecies
-            ? `Showing ${selectedFishSpecies} occurrence locations across Alberta.`
-            : "Showing all cleaned FWMIS fish survey records.";
+          updateLegend();
+
+          status.textContent = selectedFishYear
+            ? selectedFishSpecies
+              ? `Showing ${selectedFishSpecies} observations from ${selectedFishYear}.`
+              : `Showing all fish observations from ${selectedFishYear}.`
+            : selectedFishSpecies
+              ? `Showing ${selectedFishSpecies} occurrence locations across Alberta.`
+              : "Showing all cleaned FWMIS fish survey records.";
         } else if (isMlSelected()) {
+          status.textContent = `Showing ${mlMonthSelect.options[mlMonthSelect.selectedIndex].text} Rainbow Trout direct count predictions for all 629,200 river locations.`;
+        } else if (isRiverBinarySelected()) {
           status.textContent =
-            "Showing Rainbow Trout predicted survey counts with the Alberta river network underneath.";
+            "Showing the 200 m × 200 m Alberta river binary raster. Cyan cells represent river pixels (1).";
         } else if (!isElevationSelected() && !isHistorySelected()) {
           status.textContent =
             `${layer.label} selected for ${liveWeatherPeriodBadge.textContent}. ` +
@@ -4169,13 +5622,16 @@
       map.on("load", async () => {
         try {
           initialiseLiveWeatherDateControls();
+          initialiseFishYearFilter();
           syncHistoryVariableWithEnvironmentVariable();
           updateLegend();
+          updateBasemap();
 
           status.textContent = "Map loaded. Preparing stream layers...";
 
           addDirectedEdgeInteractions();
           addMlInteractions();
+          updateMlPaint();
           addHistoryLayers();
           await addFishLayer();
 
