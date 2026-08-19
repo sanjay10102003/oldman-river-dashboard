@@ -1,3 +1,4 @@
 node_modules
 package-lock.jsondata/alberta_elevation_grid_200m.pmtiles
 data/alberta_elevation_grid_200m.pmtiles
+.DS_Store
