@@ -1301,55 +1301,121 @@
       const FISH_TOTAL_RECORDS = 423257;
 
       // Monthly Rainbow Trout direct-count prediction points.
-      // Each month uses two PMTiles archives displayed together.
+      // Local development uses files from data/ml/monthly_pmtiles_split/.
+      // Production (GitHub Pages) uses GitHub Release assets so the Pages
+      // deployment stays below the 1 GB artifact limit.
+      const ML_LOCAL_BASE = "data/ml/monthly_pmtiles_split";
+      const ML_RELEASE_BASE =
+        "https://github.com/sanjay10102003/oldman-river-dashboard/releases/download/ml-tiles-v1";
+
+      const IS_LOCAL_ENV =
+        window.location.protocol === "file:" ||
+        window.location.hostname === "localhost" ||
+        window.location.hostname === "127.0.0.1" ||
+        window.location.hostname === "0.0.0.0";
+
+      const ML_BASE_PATH = IS_LOCAL_ENV ? ML_LOCAL_BASE : ML_RELEASE_BASE;
+
+      function mlTilePath(filename) {
+        return `${ML_BASE_PATH}/${filename}`;
+      }
+
       const ML_MONTH_FILES = {
         "01": [
-          "data/ml/monthly_pmtiles_split/rainbow_trout_01_january_direct_count_all_surveys_part1.pmtiles",
-          "data/ml/monthly_pmtiles_split/rainbow_trout_01_january_direct_count_all_surveys_part2.pmtiles",
+          mlTilePath(
+            "rainbow_trout_01_january_direct_count_all_surveys_part1.pmtiles",
+          ),
+          mlTilePath(
+            "rainbow_trout_01_january_direct_count_all_surveys_part2.pmtiles",
+          ),
         ],
         "02": [
-          "data/ml/monthly_pmtiles_split/rainbow_trout_02_february_direct_count_all_surveys_part1.pmtiles",
-          "data/ml/monthly_pmtiles_split/rainbow_trout_02_february_direct_count_all_surveys_part2.pmtiles",
+          mlTilePath(
+            "rainbow_trout_02_february_direct_count_all_surveys_part1.pmtiles",
+          ),
+          mlTilePath(
+            "rainbow_trout_02_february_direct_count_all_surveys_part2.pmtiles",
+          ),
         ],
         "03": [
-          "data/ml/monthly_pmtiles_split/rainbow_trout_03_march_direct_count_all_surveys_part1.pmtiles",
-          "data/ml/monthly_pmtiles_split/rainbow_trout_03_march_direct_count_all_surveys_part2.pmtiles",
+          mlTilePath(
+            "rainbow_trout_03_march_direct_count_all_surveys_part1.pmtiles",
+          ),
+          mlTilePath(
+            "rainbow_trout_03_march_direct_count_all_surveys_part2.pmtiles",
+          ),
         ],
         "04": [
-          "data/ml/monthly_pmtiles_split/rainbow_trout_04_april_direct_count_all_surveys_part1.pmtiles",
-          "data/ml/monthly_pmtiles_split/rainbow_trout_04_april_direct_count_all_surveys_part2.pmtiles",
+          mlTilePath(
+            "rainbow_trout_04_april_direct_count_all_surveys_part1.pmtiles",
+          ),
+          mlTilePath(
+            "rainbow_trout_04_april_direct_count_all_surveys_part2.pmtiles",
+          ),
         ],
         "05": [
-          "data/ml/monthly_pmtiles_split/rainbow_trout_05_may_direct_count_all_surveys_part1.pmtiles",
-          "data/ml/monthly_pmtiles_split/rainbow_trout_05_may_direct_count_all_surveys_part2.pmtiles",
+          mlTilePath(
+            "rainbow_trout_05_may_direct_count_all_surveys_part1.pmtiles",
+          ),
+          mlTilePath(
+            "rainbow_trout_05_may_direct_count_all_surveys_part2.pmtiles",
+          ),
         ],
         "06": [
-          "data/ml/monthly_pmtiles_split/rainbow_trout_06_june_direct_count_all_surveys_part1.pmtiles",
-          "data/ml/monthly_pmtiles_split/rainbow_trout_06_june_direct_count_all_surveys_part2.pmtiles",
+          mlTilePath(
+            "rainbow_trout_06_june_direct_count_all_surveys_part1.pmtiles",
+          ),
+          mlTilePath(
+            "rainbow_trout_06_june_direct_count_all_surveys_part2.pmtiles",
+          ),
         ],
         "07": [
-          "data/ml/monthly_pmtiles_split/rainbow_trout_07_july_direct_count_all_surveys_part1.pmtiles",
-          "data/ml/monthly_pmtiles_split/rainbow_trout_07_july_direct_count_all_surveys_part2.pmtiles",
+          mlTilePath(
+            "rainbow_trout_07_july_direct_count_all_surveys_part1.pmtiles",
+          ),
+          mlTilePath(
+            "rainbow_trout_07_july_direct_count_all_surveys_part2.pmtiles",
+          ),
         ],
         "08": [
-          "data/ml/monthly_pmtiles_split/rainbow_trout_08_august_direct_count_all_surveys_part1.pmtiles",
-          "data/ml/monthly_pmtiles_split/rainbow_trout_08_august_direct_count_all_surveys_part2.pmtiles",
+          mlTilePath(
+            "rainbow_trout_08_august_direct_count_all_surveys_part1.pmtiles",
+          ),
+          mlTilePath(
+            "rainbow_trout_08_august_direct_count_all_surveys_part2.pmtiles",
+          ),
         ],
         "09": [
-          "data/ml/monthly_pmtiles_split/rainbow_trout_09_september_direct_count_all_surveys_part1.pmtiles",
-          "data/ml/monthly_pmtiles_split/rainbow_trout_09_september_direct_count_all_surveys_part2.pmtiles",
+          mlTilePath(
+            "rainbow_trout_09_september_direct_count_all_surveys_part1.pmtiles",
+          ),
+          mlTilePath(
+            "rainbow_trout_09_september_direct_count_all_surveys_part2.pmtiles",
+          ),
         ],
         10: [
-          "data/ml/monthly_pmtiles_split/rainbow_trout_10_october_direct_count_all_surveys_part1.pmtiles",
-          "data/ml/monthly_pmtiles_split/rainbow_trout_10_october_direct_count_all_surveys_part2.pmtiles",
+          mlTilePath(
+            "rainbow_trout_10_october_direct_count_all_surveys_part1.pmtiles",
+          ),
+          mlTilePath(
+            "rainbow_trout_10_october_direct_count_all_surveys_part2.pmtiles",
+          ),
         ],
         11: [
-          "data/ml/monthly_pmtiles_split/rainbow_trout_11_november_direct_count_all_surveys_part1.pmtiles",
-          "data/ml/monthly_pmtiles_split/rainbow_trout_11_november_direct_count_all_surveys_part2.pmtiles",
+          mlTilePath(
+            "rainbow_trout_11_november_direct_count_all_surveys_part1.pmtiles",
+          ),
+          mlTilePath(
+            "rainbow_trout_11_november_direct_count_all_surveys_part2.pmtiles",
+          ),
         ],
         12: [
-          "data/ml/monthly_pmtiles_split/rainbow_trout_12_december_direct_count_all_surveys_part1.pmtiles",
-          "data/ml/monthly_pmtiles_split/rainbow_trout_12_december_direct_count_all_surveys_part2.pmtiles",
+          mlTilePath(
+            "rainbow_trout_12_december_direct_count_all_surveys_part1.pmtiles",
+          ),
+          mlTilePath(
+            "rainbow_trout_12_december_direct_count_all_surveys_part2.pmtiles",
+          ),
         ],
       };
 
