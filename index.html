@@ -1031,6 +1031,7 @@
 
           <label class="field-label" for="historyMonth">Month</label>
           <select id="historyMonth">
+            <option value="">All Months (Year Only)</option>
             <option value="1">January</option>
             <option value="2">February</option>
             <option value="3">March</option>
@@ -1046,8 +1047,9 @@
           </select>
 
           <div class="help-text">
-            Monthly ERA5-Land values from 2020 to 2025 are applied directly to
-            the Alberta river network.
+            Select All Months for a year-only view. Temperature, wind, humidity,
+            and pressure are shown as annual averages; precipitation is shown as
+            the annual total. Monthly ERA5-Land values cover 2020 to 2025.
           </div>
         </div>
       </div>
@@ -1160,24 +1162,26 @@
 
           <div class="fish-stats-grid">
             <div class="fish-stat-box">
+              <span class="fish-stat-label">Total Fish</span>
+              <span class="fish-stat-value" id="fishTotalCount">0</span>
+            </div>
+
+            <div class="fish-stat-box">
               <span class="fish-stat-label">Observations</span>
               <span class="fish-stat-value" id="fishObservationCount">0</span>
             </div>
 
             <div class="fish-stat-box">
-              <span class="fish-stat-label">Unique localities</span>
-              <span class="fish-stat-value" id="fishLocalityCount">0</span>
+              <span class="fish-stat-label">Survey Year</span>
+              <span class="fish-stat-value" id="fishSelectedYear"
+                >All years</span
+              >
             </div>
 
             <div class="fish-stat-box">
-              <span class="fish-stat-label">First observation</span>
-              <span class="fish-stat-value" id="fishFirstObservation">N/A</span>
-            </div>
-
-            <div class="fish-stat-box">
-              <span class="fish-stat-label">Latest observation</span>
-              <span class="fish-stat-value" id="fishLatestObservation"
-                >N/A</span
+              <span class="fish-stat-label">Survey Month</span>
+              <span class="fish-stat-value" id="fishSelectedMonth"
+                >All months</span
               >
             </div>
 
@@ -2060,7 +2064,7 @@
       let historyLoaded = false;
       let historyIsLoading = false;
       let historySelectedYear = 2020;
-      let historySelectedMonth = 1;
+      let historySelectedMonth = null;
       let historySelectedVariable = "temperature_c";
 
       let liveWeatherSelectedDate = "";
@@ -2138,16 +2142,12 @@
       const fishMonthSelect = document.getElementById("fishMonthSelect");
       const fishStats = document.getElementById("fishStats");
       const fishStatsTitle = document.getElementById("fishStatsTitle");
+      const fishTotalCount = document.getElementById("fishTotalCount");
       const fishObservationCount = document.getElementById(
         "fishObservationCount",
       );
-      const fishLocalityCount = document.getElementById("fishLocalityCount");
-      const fishFirstObservation = document.getElementById(
-        "fishFirstObservation",
-      );
-      const fishLatestObservation = document.getElementById(
-        "fishLatestObservation",
-      );
+      const fishSelectedYear = document.getElementById("fishSelectedYear");
+      const fishSelectedMonth = document.getElementById("fishSelectedMonth");
       const fishFamily = document.getElementById("fishFamily");
       const elevationInfoCard = document.getElementById("elevationInfoCard");
       const selectionBox = document.getElementById("selectionBox");
@@ -2966,7 +2966,68 @@
       }
 
       function getSelectedHistoryVariableConfig() {
-        return HISTORY_VARIABLES[historySelectedVariable];
+        const config = HISTORY_VARIABLES[historySelectedVariable];
+
+        if (
+          historySelectedMonth === null &&
+          historySelectedVariable === "precipitation_mm_month"
+        ) {
+          return {
+            ...config,
+            label: "Annual Precipitation",
+            unit: "mm/year",
+          };
+        }
+
+        return config;
+      }
+
+      function getSelectedHistoryPeriodLabel() {
+        if (historySelectedMonth === null) {
+          return String(historySelectedYear);
+        }
+
+        const option = Array.from(historyMonth.options).find(
+          (item) => Number(item.value) === historySelectedMonth,
+        );
+
+        const monthName = option ? option.text : String(historySelectedMonth);
+        return `${monthName} ${historySelectedYear}`;
+      }
+
+      function getActiveHistoryDisplayRange() {
+        const config = HISTORY_VARIABLES[historySelectedVariable];
+
+        if (
+          historySelectedMonth !== null ||
+          activeHistoryValueLookup.size === 0
+        ) {
+          return {
+            min: Number(config.gradientMin),
+            max: Number(config.gradientMax),
+          };
+        }
+
+        const values = Array.from(activeHistoryValueLookup.values()).filter(
+          Number.isFinite,
+        );
+
+        if (values.length === 0) {
+          return {
+            min: Number(config.gradientMin),
+            max: Number(config.gradientMax),
+          };
+        }
+
+        let min = Math.min(...values);
+        let max = Math.max(...values);
+
+        if (min === max) {
+          min -= 1;
+          max += 1;
+        }
+
+        return { min, max };
       }
 
       function getHistoryVariableFromEnvironmentVariable(variableKey) {
@@ -3022,7 +3083,7 @@
         if (isHistorySelected()) {
           summaryPrimaryLabel.textContent = "River Network";
           summarySecondaryLabel.textContent = "Time Period";
-          summarySecondaryValue.textContent = `${historySelectedMonth}/${historySelectedYear}`;
+          summarySecondaryValue.textContent = getSelectedHistoryPeriodLabel();
           pointCount.textContent = "Alberta";
           return;
         }
@@ -3037,49 +3098,18 @@
         }
 
         if (isFishSelected()) {
-          summaryPrimaryLabel.textContent =
-            selectedFishSpecies || selectedFishYear || selectedFishMonth
-              ? "Filtered Fish Records"
-              : "Fish Records";
+          // Use global precomputed statistics rather than rendered/loaded
+          // vector-tile features, so the summary never changes with zoom/pan.
+          const totalFish = getGlobalFilteredTotalFish();
+          const recordCount = getGlobalFilteredFishCount();
 
-          summarySecondaryLabel.textContent = selectedFishMonth
-            ? "Survey Month"
-            : selectedFishYear
-              ? "Survey Year"
-              : selectedFishSpecies
-                ? "Species Selected"
-                : "Species in Dataset";
+          summaryPrimaryLabel.textContent = "Total Fish";
+          summarySecondaryLabel.textContent = "Fish Records";
 
-          let recordCount;
-
-          if (!selectedFishYear && !selectedFishMonth && selectedFishSpecies) {
-            const selectedStats = fishSpeciesStats[selectedFishSpecies] || {};
-            recordCount = Number(selectedStats.observations || 0);
-          } else if (
-            !selectedFishYear &&
-            !selectedFishMonth &&
-            !selectedFishSpecies
-          ) {
-            recordCount = FISH_TOTAL_RECORDS;
-          } else {
-            const globalFilteredCount = getGlobalFilteredFishCount();
-            recordCount =
-              globalFilteredCount !== null
-                ? globalFilteredCount
-                : Number(loadedFilteredFishRecordCount || 0);
-          }
-
-          pointCount.textContent = Number(recordCount).toLocaleString();
-
-          summarySecondaryValue.textContent = selectedFishMonth
-            ? fishMonthSelect.options[fishMonthSelect.selectedIndex].text
-            : selectedFishYear
-              ? selectedFishYear
-              : selectedFishSpecies
-                ? "1"
-                : (
-                    fishSpeciesNames.length || FISH_TOTAL_SPECIES
-                  ).toLocaleString();
+          pointCount.textContent =
+            totalFish !== null ? Number(totalFish).toLocaleString() : "0";
+          summarySecondaryValue.textContent =
+            recordCount !== null ? Number(recordCount).toLocaleString() : "0";
           return;
         }
 
@@ -3176,8 +3206,9 @@
         // Historical environment uses ONE continuous colour bar instead of
         // named classes such as cold / mild / warm.
         if (isHistorySelected()) {
-          const minValue = Number(layer.gradientMin);
-          const maxValue = Number(layer.gradientMax);
+          const historyRange = getActiveHistoryDisplayRange();
+          const minValue = historyRange.min;
+          const maxValue = historyRange.max;
           const midValue = (minValue + maxValue) / 2;
 
           const wrapper = document.createElement("div");
@@ -3288,12 +3319,7 @@
               getFishSpeciesColor(selectedFishSpecies),
               `${selectedFishSpecies} captured`,
             );
-            addLegendRow(
-              getFishSpeciesColor(selectedFishSpecies),
-              `${selectedFishSpecies} count = 0`,
-              "cross",
-            );
-            addLegendRow("#94a3b8", "Circle size increases with count");
+            addLegendRow("#111827", `Zero count / no fish captured`, "cross");
             return;
           }
 
@@ -3576,28 +3602,58 @@
         activeHistoryValueLookup = new Map();
         activeHistoryColorLookup = new Map();
 
-        for (const row of historyRows) {
-          if (
-            row.year !== historySelectedYear ||
-            row.month !== historySelectedMonth
-          ) {
-            continue;
+        // Monthly mode: use the selected month directly.
+        if (historySelectedMonth !== null) {
+          for (const row of historyRows) {
+            if (
+              row.year !== historySelectedYear ||
+              row.month !== historySelectedMonth
+            ) {
+              continue;
+            }
+
+            const gridId = String(row.era5_grid_id);
+            const value = Number(row[historySelectedVariable]);
+
+            if (!Number.isFinite(value)) continue;
+            activeHistoryValueLookup.set(gridId, value);
+          }
+        } else {
+          // Year-only mode:
+          // - precipitation is summed across the available months
+          // - temperature, wind, humidity, and pressure are averaged
+          const aggregates = new Map();
+
+          for (const row of historyRows) {
+            if (row.year !== historySelectedYear) continue;
+
+            const gridId = String(row.era5_grid_id);
+            const value = Number(row[historySelectedVariable]);
+            if (!Number.isFinite(value)) continue;
+
+            const current = aggregates.get(gridId) || { sum: 0, count: 0 };
+            current.sum += value;
+            current.count += 1;
+            aggregates.set(gridId, current);
           }
 
-          const gridId = String(row.era5_grid_id);
-          const value = Number(row[historySelectedVariable]);
+          aggregates.forEach((aggregate, gridId) => {
+            if (aggregate.count === 0) return;
 
-          if (!Number.isFinite(value)) continue;
+            const value =
+              historySelectedVariable === "precipitation_mm_month"
+                ? aggregate.sum
+                : aggregate.sum / aggregate.count;
 
-          // Keep the real numeric ERA5 value for each grid cell.
-          // The line colour is interpolated continuously from this value,
-          // instead of converting values into five hard colour classes.
-          activeHistoryValueLookup.set(gridId, value);
+            activeHistoryValueLookup.set(gridId, value);
+          });
         }
 
         console.log(
           "Historical ERA5 cells loaded:",
           activeHistoryValueLookup.size,
+          "period:",
+          getSelectedHistoryPeriodLabel(),
         );
       }
 
@@ -3645,6 +3701,15 @@
 
       function buildHistoryColorExpression() {
         const valueExpression = buildHistoryValueExpression();
+
+        if (historySelectedMonth === null) {
+          const range = getActiveHistoryDisplayRange();
+          return buildSensitiveGradientExpression(
+            valueExpression,
+            range.min,
+            range.max,
+          );
+        }
 
         // More colour stops are used than before so even relatively small
         // changes in the underlying value produce a more noticeable colour
@@ -3806,12 +3871,9 @@
 
           updatePointCounter();
 
-          const monthName =
-            historyMonth.options[historyMonth.selectedIndex].text;
-
           status.textContent =
             `Showing ${getSelectedHistoryVariableConfig().label} directly on ` +
-            `the Alberta river network for ${monthName} ${historySelectedYear}.`;
+            `the Alberta river network for ${getSelectedHistoryPeriodLabel()}.`;
         } catch (error) {
           console.error(error);
           setHistoryLayersVisibility(false);
@@ -3828,7 +3890,7 @@
         const gridId = String(props.era5_grid_id);
         const value = activeHistoryValueLookup.get(gridId);
         const config = getSelectedHistoryVariableConfig();
-        const monthName = historyMonth.options[historyMonth.selectedIndex].text;
+        const periodLabel = getSelectedHistoryPeriodLabel();
 
         if (activePopup) activePopup.remove();
 
@@ -3838,7 +3900,7 @@
             `
                   <div style="font-family: Arial; min-width: 240px;">
                     <h3 style="margin:0 0 8px;">Historical River Environment</h3>
-                    <strong>Period:</strong> ${monthName} ${historySelectedYear}<br>
+                    <strong>Period:</strong> ${periodLabel}<br>
                     <strong>${config.label}:</strong>
                     ${Number.isFinite(value) ? value.toFixed(2) : "N/A"} ${config.unit}<br>
                     <strong>ERA5 grid ID:</strong> ${escapeHtml(gridId)}<br>
@@ -4384,29 +4446,45 @@
           return;
         }
 
-        const stats = fishSpeciesStats[selectedFishSpecies] || {};
+        // Read the global precomputed optimized statistics. These values are
+        // independent of the current map zoom, viewport, and loaded tiles.
+        const stats = getOptimizedFishStatsRecord(
+          selectedFishSpecies,
+          selectedFishYear,
+          selectedFishMonth,
+        );
 
-        const activePeriod = [
-          selectedFishMonth
-            ? fishMonthSelect.options[fishMonthSelect.selectedIndex].text
-            : "",
-          selectedFishYear || "",
-        ]
-          .filter(Boolean)
-          .join(" ");
+        const speciesId = fishSpeciesIdByName.get(selectedFishSpecies);
+        const speciesInfo = Number.isFinite(speciesId)
+          ? fishSpeciesLookupById.get(speciesId)
+          : null;
 
-        fishStatsTitle.textContent = activePeriod
-          ? `${selectedFishSpecies} · overall species statistics`
-          : selectedFishSpecies;
-        fishObservationCount.textContent = Number(
-          stats.observations || 0,
-        ).toLocaleString();
-        fishLocalityCount.textContent = Number(
-          stats.unique_waterbodies || 0,
-        ).toLocaleString();
-        fishFirstObservation.textContent = stats.first_observation || "N/A";
-        fishLatestObservation.textContent = stats.latest_observation || "N/A";
-        fishFamily.textContent = stats.species_code || "N/A";
+        const monthLabel = selectedFishMonth
+          ? fishMonthSelect.options[fishMonthSelect.selectedIndex].text
+          : "All months";
+
+        fishStatsTitle.textContent = selectedFishSpecies;
+
+        const totalFish = readFishStatNumber(stats, [
+          "total_fish",
+          "fish_count",
+          "sum_count",
+          "total_count",
+          "count",
+        ]);
+        const observations = readFishStatNumber(stats, [
+          "positive_records",
+          "observations",
+          "records",
+        ]);
+
+        fishTotalCount.textContent =
+          totalFish !== null ? totalFish.toLocaleString() : "0";
+        fishObservationCount.textContent =
+          observations !== null ? observations.toLocaleString() : "0";
+        fishSelectedYear.textContent = selectedFishYear || "All years";
+        fishSelectedMonth.textContent = monthLabel;
+        fishFamily.textContent = speciesInfo?.code || "N/A";
 
         fishStats.classList.add("visible");
       }
@@ -6113,7 +6191,8 @@
       });
 
       historyMonth.addEventListener("change", async (e) => {
-        historySelectedMonth = Number(e.target.value);
+        historySelectedMonth =
+          e.target.value === "" ? null : Number(e.target.value);
         await updateHistoryLayer();
       });
 
