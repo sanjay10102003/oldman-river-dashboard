@@ -52,6 +52,59 @@
         padding: 20px;
         box-shadow: 0 20px 50px rgba(15, 23, 42, 0.25);
         backdrop-filter: blur(12px);
+        transform: translateX(0);
+        opacity: 1;
+        transition:
+          transform 0.36s cubic-bezier(0.22, 1, 0.36, 1),
+          opacity 0.24s ease;
+      }
+
+      #sidebar.collapsed {
+        transform: translateX(calc(-100% - 36px));
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .sidebar-toggle {
+        position: absolute;
+        top: 24px;
+        left: 384px;
+        z-index: 12;
+        width: 42px;
+        height: 42px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid rgba(203, 213, 225, 0.95);
+        border-radius: 13px;
+        background: rgba(255, 255, 255, 0.97);
+        color: #0f172a;
+        box-shadow: 0 10px 28px rgba(15, 23, 42, 0.18);
+        backdrop-filter: blur(10px);
+        cursor: pointer;
+        transition:
+          left 0.36s cubic-bezier(0.22, 1, 0.36, 1),
+          transform 0.18s ease,
+          background 0.18s ease;
+      }
+
+      .sidebar-toggle:hover {
+        background: #f8fafc;
+        transform: translateY(-1px);
+      }
+
+      .sidebar-toggle.sidebar-collapsed {
+        left: 18px;
+      }
+
+      .sidebar-toggle svg {
+        width: 20px;
+        height: 20px;
+        transition: transform 0.3s ease;
+      }
+
+      .sidebar-toggle.sidebar-collapsed svg {
+        transform: rotate(180deg);
       }
 
       .title h1 {
@@ -236,20 +289,96 @@
         right: 18px;
         bottom: 24px;
         z-index: 10;
+        width: min(390px, calc(100vw - 36px));
+        max-height: calc(100vh - 170px);
+        display: flex;
+        flex-direction: column;
         background: rgba(255, 255, 255, 0.97);
         border: 1px solid #cdd8cf;
-        padding: 15px;
-        border-radius: 16px;
+        border-radius: 18px;
         font-size: 15px;
-        box-shadow: 0 12px 35px rgba(15, 23, 42, 0.18);
-        min-width: 300px;
+        box-shadow: 0 14px 40px rgba(15, 23, 42, 0.2);
+        backdrop-filter: blur(10px);
+        overflow: hidden;
+        transition:
+          max-height 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+          box-shadow 0.22s ease,
+          transform 0.22s ease;
+      }
+
+      #legend.legend-collapsed {
+        max-height: 58px;
+      }
+
+      .legend-header {
+        min-height: 58px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        padding: 14px 15px;
+        border-bottom: 1px solid rgba(226, 232, 240, 0.92);
+        flex: 0 0 auto;
+      }
+
+      #legend.legend-collapsed .legend-header {
+        border-bottom-color: transparent;
       }
 
       #legend strong {
         display: block;
-        margin-bottom: 8px;
+        margin: 0;
         color: #0f172a;
         font-size: 19px;
+      }
+
+      .legend-toggle {
+        width: 30px;
+        height: 30px;
+        flex: 0 0 30px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #dbe4dc;
+        border-radius: 9px;
+        background: #f8fafc;
+        color: #475569;
+        cursor: pointer;
+        transition:
+          transform 0.28s ease,
+          background 0.18s ease,
+          color 0.18s ease;
+      }
+
+      .legend-toggle:hover {
+        background: #eef4ef;
+        color: #0f172a;
+      }
+
+      .legend-toggle svg {
+        width: 17px;
+        height: 17px;
+        transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      #legend.legend-collapsed .legend-toggle svg {
+        transform: rotate(180deg);
+      }
+
+      #legendBody {
+        min-height: 0;
+        padding: 0 15px 15px;
+        opacity: 1;
+        transform: translateY(0);
+        transition:
+          opacity 0.2s ease,
+          transform 0.28s ease;
+      }
+
+      #legend.legend-collapsed #legendBody {
+        opacity: 0;
+        transform: translateY(8px);
+        pointer-events: none;
       }
 
       .legend-row {
@@ -271,10 +400,23 @@
         border: 1px solid rgba(15, 23, 42, 0.2);
       }
 
+      .legend-cross {
+        display: inline-flex;
+        width: 18px;
+        height: 18px;
+        align-items: center;
+        justify-content: center;
+        color: #111827;
+        font-size: 21px;
+        font-weight: 900;
+        line-height: 1;
+      }
+
       .legend-label {
         display: block;
         min-width: 0;
-        white-space: nowrap;
+        white-space: normal;
+        overflow-wrap: anywhere;
       }
 
       .history-gradient-legend {
@@ -322,11 +464,12 @@
 
       /* Scrollable species list for the Fish Distribution legend */
       #legendRows.fish-scroll {
-        max-height: 280px;
+        max-height: calc(100vh - 270px);
         overflow-y: auto;
         overflow-x: hidden;
-        padding-right: 6px;
+        padding-right: 7px;
         scrollbar-width: thin;
+        overscroll-behavior: contain;
       }
 
       #legendRows.fish-scroll .legend-row {
@@ -818,6 +961,42 @@
         border-color: #0f4c5c;
         box-shadow: 0 0 0 3px rgba(15, 76, 92, 0.12);
       }
+
+      @media (max-width: 700px) {
+        #sidebar {
+          top: 10px;
+          left: 10px;
+          width: min(350px, calc(100vw - 20px));
+          max-height: calc(100vh - 20px);
+        }
+
+        .sidebar-toggle {
+          top: 16px;
+          left: auto;
+          right: 16px;
+        }
+
+        .sidebar-toggle.sidebar-collapsed {
+          left: 12px;
+          right: auto;
+        }
+
+        .basemap-map-control {
+          top: 66px;
+          right: 12px;
+        }
+
+        #legend {
+          right: 12px;
+          bottom: 12px;
+          width: min(360px, calc(100vw - 24px));
+          max-height: calc(100vh - 190px);
+        }
+
+        #legendRows.fish-scroll {
+          max-height: calc(100vh - 290px);
+        }
+      }
     </style>
   </head>
 
@@ -830,6 +1009,7 @@
       <div class="card">
         <div class="card-title">Layer Selection</div>
         <select id="layerSelect">
+          <option value="river" selected>River Network</option>
           <option value="environment">Environment</option>
           <option value="fish">Fish Distribution</option>
           <option value="ml">Rainbow Trout Monthly Prediction</option>
@@ -998,6 +1178,23 @@
         <label class="field-label" for="fishYearSelect">Survey Year</label>
         <select id="fishYearSelect">
           <option value="">All years</option>
+        </select>
+
+        <label class="field-label" for="fishMonthSelect">Survey Month</label>
+        <select id="fishMonthSelect">
+          <option value="">All months</option>
+          <option value="1">January</option>
+          <option value="2">February</option>
+          <option value="3">March</option>
+          <option value="4">April</option>
+          <option value="5">May</option>
+          <option value="6">June</option>
+          <option value="7">July</option>
+          <option value="8">August</option>
+          <option value="9">September</option>
+          <option value="10">October</option>
+          <option value="11">November</option>
+          <option value="12">December</option>
         </select>
 
         <div class="fish-stats" id="fishStats">
@@ -1252,6 +1449,26 @@
       <div id="status">Loading map...</div>
     </div>
 
+    <button
+      id="sidebarToggle"
+      class="sidebar-toggle"
+      type="button"
+      aria-label="Hide dashboard menu"
+      aria-expanded="true"
+      title="Hide menu"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path
+          d="M15 6l-6 6 6 6"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </button>
+
     <div id="map"></div>
     <div class="basemap-map-control">
       <label for="basemapSelect">Basemap</label>
@@ -1266,8 +1483,31 @@
     <div id="selectionBox"></div>
 
     <div id="legend">
-      <strong id="legendTitle">Temperature</strong>
-      <div id="legendRows"></div>
+      <div class="legend-header">
+        <strong id="legendTitle">River Network</strong>
+        <button
+          id="legendToggle"
+          class="legend-toggle"
+          type="button"
+          aria-label="Hide legend"
+          aria-expanded="true"
+          title="Hide legend"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M6 9l6 6 6-6"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </button>
+      </div>
+      <div id="legendBody">
+        <div id="legendRows"></div>
+      </div>
     </div>
 
     <script>
@@ -1290,15 +1530,30 @@
 
       const HISTORY_STREAM_LAYER_IDS = [];
 
-      const FISH_PMTILES_PATH = "data/fish/fwmis_fish_surveys_clean.pmtiles";
+      const FISH_PMTILES_PATH = "data/fish/fwmis_dashboard_clean.pmtiles";
 
       const FISH_SOURCE_LAYER = "fwmis_fish";
 
-      const FISH_SPECIES_PATH = "data/fish/fwmis_clean_fish_species.txt";
+      const FISH_SPECIES_PATH = "data/fish/fwmis_dashboard_species.txt";
 
-      const FISH_STATS_PATH = "data/fish/fwmis_fish_species_stats.json";
+      const FISH_STATS_PATH = "data/fish/fwmis_dashboard_species_stats.json";
 
-      const FISH_TOTAL_RECORDS = 423257;
+      const FISH_TOTAL_RECORDS = 463822;
+      const FISH_TOTAL_SPECIES = 82;
+      const FISH_ZERO_RECORDS = 72177;
+      const FISH_NO_FISH_RECORDS = 71310;
+
+      const FISH_CAPTURE_LAYER_ID = "fish-captures";
+      const FISH_ZERO_LAYER_ID = "fish-zero-crosses";
+      const FISH_LAYER_IDS = [FISH_CAPTURE_LAYER_ID, FISH_ZERO_LAYER_ID];
+
+      const FISH_SPECIES_FIELD = "COMMON_NM";
+      const FISH_SPECIES_CODE_FIELD = "SPECIES_CODE";
+      const FISH_COUNT_FIELD = "DISPLAY_COUNT";
+      const FISH_YEAR_FIELD = "YEAR";
+      const FISH_MONTH_FIELD = "MONTH";
+      const FISH_DATE_FIELD = "SURVEY_DATE_ISO";
+      const FISH_RECORD_TYPE_FIELD = "RECORD_TYPE";
 
       // Monthly Rainbow Trout direct-count prediction points.
       // Load the slim GeoJSON files directly so every prediction point is
@@ -1646,9 +1901,17 @@
         label: "Historical Environment",
       };
 
+      const RIVER_LAYER = {
+        label: "River Network",
+        legend: [
+          ["#087ea4", "Alberta stream network"],
+          ["#0f2233", "Flow direction"],
+        ],
+      };
+
       const FISH_LAYER = {
         label: "Fish Distribution",
-        legend: [["#64748b", "Colour represents fish species"]],
+        legend: [["#111827", "Zero count / no fish captured"]],
       };
 
       // Distinct, reusable palette for fish species.
@@ -1675,6 +1938,46 @@
         "#ca8a04",
         "#0369a1",
         "#c2410c",
+        "#1d4ed8",
+        "#b91c1c",
+        "#059669",
+        "#7e22ce",
+        "#f97316",
+        "#0e7490",
+        "#9f1239",
+        "#4338ca",
+        "#4d7c0f",
+        "#a21caf",
+        "#0d9488",
+        "#92400e",
+        "#6d28d9",
+        "#0ea5e9",
+        "#f43f5e",
+        "#166534",
+        "#86198f",
+        "#d97706",
+        "#075985",
+        "#9a3412",
+        "#60a5fa",
+        "#fb7185",
+        "#34d399",
+        "#a78bfa",
+        "#fb923c",
+        "#22d3ee",
+        "#f472b6",
+        "#818cf8",
+        "#84cc16",
+        "#e879f9",
+        "#2dd4bf",
+        "#f59e0b",
+        "#8b5cf6",
+        "#38bdf8",
+        "#e11d48",
+        "#22c55e",
+        "#d946ef",
+        "#eab308",
+        "#0ea5e9",
+        "#f97316",
       ];
 
       let fishSpeciesColorLookup = new Map();
@@ -1694,28 +1997,42 @@
         return fishSpeciesColorLookup.get(speciesName) || "#64748b";
       }
 
-      function updateFishSpeciesColors() {
-        if (
-          !map.getLayer("fish-occurrences") ||
-          fishSpeciesNames.length === 0
-        ) {
-          return;
-        }
-
-        const colorExpression = ["match", ["get", "SPEC_NAME"]];
+      function buildFishSpeciesColorExpression() {
+        const colorExpression = ["match", ["get", FISH_SPECIES_FIELD]];
 
         fishSpeciesNames.forEach((speciesName) => {
           colorExpression.push(speciesName, getFishSpeciesColor(speciesName));
         });
 
-        // Fallback colour for missing / unexpected species names.
+        // Fixed colour for explicit no-fish surveys and fallback colour for
+        // missing / unexpected species names.
+        colorExpression.push("NO FISH CAPTURED", "#111827");
         colorExpression.push("#64748b");
 
-        map.setPaintProperty(
-          "fish-occurrences",
-          "circle-color",
-          colorExpression,
-        );
+        return colorExpression;
+      }
+
+      function updateFishSpeciesColors() {
+        if (fishSpeciesNames.length === 0) return;
+
+        const colorExpression = buildFishSpeciesColorExpression();
+
+        if (map.getLayer(FISH_CAPTURE_LAYER_ID)) {
+          map.setPaintProperty(
+            FISH_CAPTURE_LAYER_ID,
+            "circle-color",
+            colorExpression,
+          );
+        }
+
+        if (map.getLayer(FISH_ZERO_LAYER_ID)) {
+          map.setPaintProperty(FISH_ZERO_LAYER_ID, "text-color", [
+            "case",
+            ["==", ["get", FISH_RECORD_TYPE_FIELD], "NO_FISH"],
+            "#111827",
+            colorExpression,
+          ]);
+        }
       }
 
       const ML_LAYER = {
@@ -1766,6 +2083,10 @@
         );
       }
 
+      function isRiverSelected() {
+        return getSelectedLayerKey() === "river";
+      }
+
       function isFishSelected() {
         return getSelectedLayerKey() === "fish";
       }
@@ -1801,6 +2122,8 @@
       let fishSpeciesLoaded = false;
       let selectedFishSpecies = "";
       let selectedFishYear = "";
+      let selectedFishMonth = "";
+      let loadedFilteredFishRecordCount = null;
       let fishSpeciesNames = [];
       let fishSpeciesStats = {};
       let mlSelectedMonth = "07";
@@ -1861,6 +2184,7 @@
       const fishSpeciesToggle = document.getElementById("fishSpeciesToggle");
       const fishSpeciesMenu = document.getElementById("fishSpeciesMenu");
       const fishYearSelect = document.getElementById("fishYearSelect");
+      const fishMonthSelect = document.getElementById("fishMonthSelect");
       const fishStats = document.getElementById("fishStats");
       const fishStatsTitle = document.getElementById("fishStatsTitle");
       const fishObservationCount = document.getElementById(
@@ -1876,8 +2200,12 @@
       const fishFamily = document.getElementById("fishFamily");
       const elevationInfoCard = document.getElementById("elevationInfoCard");
       const selectionBox = document.getElementById("selectionBox");
+      const legend = document.getElementById("legend");
       const legendTitle = document.getElementById("legendTitle");
       const legendRows = document.getElementById("legendRows");
+      const legendToggle = document.getElementById("legendToggle");
+      const sidebar = document.getElementById("sidebar");
+      const sidebarToggle = document.getElementById("sidebarToggle");
 
       const map = new maplibregl.Map({
         container: "map",
@@ -1889,9 +2217,9 @@
             basemapVoyager: {
               type: "raster",
               tiles: [
-                "https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png",
-                "https://b.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png",
-                "https://c.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png",
+                "https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png?key=cb1_32i5_1_0bc4fe722186d1a262fb82d7",
+                "https://b.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png?key=cb1_32i5_1_0bc4fe722186d1a262fb82d7",
+                "https://c.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png?key=cb1_32i5_1_0bc4fe722186d1a262fb82d7",
               ],
               tileSize: 256,
               attribution:
@@ -1901,9 +2229,9 @@
             basemapPositron: {
               type: "raster",
               tiles: [
-                "https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
-                "https://b.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
-                "https://c.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
+                "https://a.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png?key=cb1_32i5_1_0bc4fe722186d1a262fb82d7",
+                "https://b.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png?key=cb1_32i5_1_0bc4fe722186d1a262fb82d7",
+                "https://c.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png?key=cb1_32i5_1_0bc4fe722186d1a262fb82d7",
               ],
               tileSize: 256,
               attribution:
@@ -1913,9 +2241,9 @@
             basemapDark: {
               type: "raster",
               tiles: [
-                "https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png",
-                "https://b.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png",
-                "https://c.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png",
+                "https://a.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}.png?key=cb1_32i5_1_0bc4fe722186d1a262fb82d7",
+                "https://b.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}.png?key=cb1_32i5_1_0bc4fe722186d1a262fb82d7",
+                "https://c.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}.png?key=cb1_32i5_1_0bc4fe722186d1a262fb82d7",
               ],
               tileSize: 256,
               attribution:
@@ -2690,6 +3018,7 @@
       }
 
       function getSelectedLayer() {
+        if (isRiverSelected()) return RIVER_LAYER;
         if (isElevationSelected()) return ELEVATION_LAYER;
         if (isRiverBinarySelected()) return RIVER_BINARY_LAYER;
         if (isHistorySelected()) return HISTORY_LAYER;
@@ -2774,33 +3103,52 @@
 
         if (isFishSelected()) {
           summaryPrimaryLabel.textContent =
-            selectedFishSpecies || selectedFishYear
+            selectedFishSpecies || selectedFishYear || selectedFishMonth
               ? "Filtered Fish Records"
               : "Fish Records";
 
-          summarySecondaryLabel.textContent = selectedFishYear
-            ? "Survey Year"
-            : selectedFishSpecies
-              ? "Species Selected"
-              : "Species in Dataset";
+          summarySecondaryLabel.textContent = selectedFishMonth
+            ? "Survey Month"
+            : selectedFishYear
+              ? "Survey Year"
+              : selectedFishSpecies
+                ? "Species Selected"
+                : "Species in Dataset";
 
-          const selectedStats = selectedFishSpecies
-            ? fishSpeciesStats[selectedFishSpecies]
-            : null;
+          let recordCount;
 
-          const recordCount = selectedFishSpecies
-            ? Number(selectedStats?.observations || 0)
-            : FISH_TOTAL_RECORDS;
+          if (!selectedFishYear && !selectedFishMonth && selectedFishSpecies) {
+            const selectedStats = fishSpeciesStats[selectedFishSpecies] || {};
+            recordCount = Number(selectedStats.observations || 0);
+          } else if (
+            !selectedFishYear &&
+            !selectedFishMonth &&
+            !selectedFishSpecies
+          ) {
+            recordCount = FISH_TOTAL_RECORDS;
+          } else {
+            recordCount = Number(loadedFilteredFishRecordCount || 0);
+          }
 
-          pointCount.textContent = selectedFishYear
-            ? "Filtered"
-            : recordCount.toLocaleString();
+          pointCount.textContent = Number(recordCount).toLocaleString();
 
-          summarySecondaryValue.textContent = selectedFishYear
-            ? selectedFishYear
-            : selectedFishSpecies
-              ? "1"
-              : fishSpeciesNames.length.toLocaleString();
+          summarySecondaryValue.textContent = selectedFishMonth
+            ? fishMonthSelect.options[fishMonthSelect.selectedIndex].text
+            : selectedFishYear
+              ? selectedFishYear
+              : selectedFishSpecies
+                ? "1"
+                : (
+                    fishSpeciesNames.length || FISH_TOTAL_SPECIES
+                  ).toLocaleString();
+          return;
+        }
+
+        if (isRiverSelected()) {
+          summaryPrimaryLabel.textContent = "River Network";
+          summarySecondaryLabel.textContent = "Coverage";
+          pointCount.textContent = "Alberta";
+          summarySecondaryValue.textContent = "Province-wide";
           return;
         }
 
@@ -2857,6 +3205,28 @@
 
         legendRows.innerHTML = "";
         legendRows.classList.remove("fish-scroll");
+
+        if (isRiverSelected()) {
+          legendTitle.textContent = RIVER_LAYER.label;
+
+          [].forEach(([color, text]) => {
+            const row = document.createElement("div");
+            row.className = "legend-row";
+
+            const dot = document.createElement("span");
+            dot.className = "legend-dot";
+            dot.style.backgroundColor = color;
+
+            const label = document.createElement("span");
+            label.className = "legend-label";
+            label.textContent = text;
+
+            row.appendChild(dot);
+            row.appendChild(label);
+            legendRows.appendChild(row);
+          });
+          return;
+        }
 
         // Historical environment uses ONE continuous colour bar instead of
         // named classes such as cold / mild / warm.
@@ -2942,20 +3312,55 @@
         }
 
         if (isFishSelected()) {
-          if (selectedFishSpecies) {
-            legendItems = [
-              [getFishSpeciesColor(selectedFishSpecies), selectedFishSpecies],
-              ["#94a3b8", "Circle size = fish count"],
-            ];
-          } else {
-            legendRows.classList.add("fish-scroll");
-            legendItems = fishSpeciesNames.map((speciesName) => [
-              getFishSpeciesColor(speciesName),
-              speciesName,
-            ]);
+          legendTitle.textContent = "Fish Distribution";
 
-            legendItems.push(["#94a3b8", "Circle size = fish count"]);
+          const addLegendRow = (color, text, shape = "dot") => {
+            const row = document.createElement("div");
+            row.className = "legend-row";
+
+            const marker = document.createElement("span");
+            marker.className =
+              shape === "cross" ? "legend-cross" : "legend-dot";
+
+            if (shape === "cross") {
+              marker.textContent = "×";
+              marker.style.color = color;
+            } else {
+              marker.style.backgroundColor = color;
+            }
+
+            const label = document.createElement("span");
+            label.className = "legend-label";
+            label.textContent = text;
+
+            row.appendChild(marker);
+            row.appendChild(label);
+            legendRows.appendChild(row);
+          };
+
+          if (selectedFishSpecies) {
+            addLegendRow(
+              getFishSpeciesColor(selectedFishSpecies),
+              `${selectedFishSpecies} captured`,
+            );
+            addLegendRow(
+              getFishSpeciesColor(selectedFishSpecies),
+              `${selectedFishSpecies} count = 0`,
+              "cross",
+            );
+            addLegendRow("#94a3b8", "Circle size increases with count");
+            return;
           }
+
+          addLegendRow("#111827", "Zero count / no fish captured", "cross");
+
+          legendRows.classList.add("fish-scroll");
+
+          fishSpeciesNames.forEach((speciesName) => {
+            addLegendRow(getFishSpeciesColor(speciesName), speciesName);
+          });
+
+          return;
         }
 
         legendItems.forEach(([color, text]) => {
@@ -3547,23 +3952,25 @@
           map.addSource("fishOccurrences", {
             type: "vector",
             url: `pmtiles://${FISH_PMTILES_PATH}`,
-            promoteId: "OBJECTID",
           });
 
           map.addLayer({
-            id: "fish-occurrences",
+            id: FISH_CAPTURE_LAYER_ID,
             type: "circle",
             source: "fishOccurrences",
             "source-layer": FISH_SOURCE_LAYER,
             minzoom: 0,
+            filter: ["==", ["get", FISH_RECORD_TYPE_FIELD], "FISH_CAPTURE"],
             layout: {
               visibility: "none",
             },
             paint: {
               // Species-specific colour is applied after the species list loads.
-              "circle-color": "#64748b",
+              "circle-color": "#2563eb",
 
-              // Radius is driven by fish count and still increases slightly with zoom.
+              // Radius uses DISPLAY_COUNT from the new cleaned dashboard dataset.
+              // It stays small at low zoom so all records are visible without
+              // turning the map into one dark block.
               "circle-radius": [
                 "interpolate",
                 ["linear"],
@@ -3572,64 +3979,152 @@
                 [
                   "interpolate",
                   ["linear"],
-                  ["to-number", ["coalesce", ["get", "SPEC_SUM"], 0]],
+                  ["to-number", ["coalesce", ["get", FISH_COUNT_FIELD], 0], 0],
                   0,
-                  2,
+                  1.05,
+                  1,
+                  1.15,
                   5,
-                  2.8,
+                  1.35,
                   20,
-                  4,
-                  50,
-                  5,
+                  1.65,
                   100,
-                  6,
+                  2.1,
                 ],
-                8,
+                5,
                 [
                   "interpolate",
                   ["linear"],
-                  ["to-number", ["coalesce", ["get", "SPEC_SUM"], 0]],
+                  ["to-number", ["coalesce", ["get", FISH_COUNT_FIELD], 0], 0],
                   0,
-                  3,
+                  1.4,
+                  1,
+                  1.7,
                   5,
-                  4,
+                  2.2,
                   20,
-                  5.5,
-                  50,
-                  7,
+                  3.0,
                   100,
-                  9,
+                  4.2,
+                ],
+                9,
+                [
+                  "interpolate",
+                  ["linear"],
+                  ["to-number", ["coalesce", ["get", FISH_COUNT_FIELD], 0], 0],
+                  0,
+                  2.3,
+                  1,
+                  2.8,
+                  5,
+                  3.7,
+                  20,
+                  5.2,
+                  100,
+                  7.2,
                 ],
                 14,
                 [
                   "interpolate",
                   ["linear"],
-                  ["to-number", ["coalesce", ["get", "SPEC_SUM"], 0]],
+                  ["to-number", ["coalesce", ["get", FISH_COUNT_FIELD], 0], 0],
                   0,
-                  4,
+                  3.4,
+                  1,
+                  4.1,
                   5,
-                  5.5,
+                  5.4,
                   20,
-                  7.5,
-                  50,
-                  10,
+                  7.6,
                   100,
-                  13,
+                  10.5,
                 ],
               ],
-
-              "circle-opacity": 0.9,
-              "circle-stroke-color": "#17364a",
+              "circle-opacity": [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                0,
+                0.62,
+                5,
+                0.72,
+                9,
+                0.86,
+                14,
+                0.94,
+              ],
+              "circle-stroke-color": "#ffffff",
               "circle-stroke-width": [
                 "interpolate",
                 ["linear"],
                 ["zoom"],
                 0,
+                0,
+                5,
+                0.15,
+                9,
+                0.35,
+                14,
+                0.75,
+              ],
+            },
+          });
+
+          map.addLayer({
+            id: FISH_ZERO_LAYER_ID,
+            type: "symbol",
+            source: "fishOccurrences",
+            "source-layer": FISH_SOURCE_LAYER,
+            minzoom: 0,
+            filter: [
+              "any",
+              ["==", ["get", FISH_RECORD_TYPE_FIELD], "SPECIES_ZERO"],
+              ["==", ["get", FISH_RECORD_TYPE_FIELD], "NO_FISH"],
+            ],
+            layout: {
+              visibility: "none",
+              "text-field": "×",
+              "text-font": ["Noto Sans Regular"],
+              "text-size": [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                0,
+                8,
+                5,
+                10,
+                9,
+                14,
+                14,
+                20,
+              ],
+              "text-allow-overlap": true,
+              "text-ignore-placement": true,
+            },
+            paint: {
+              "text-color": "#111827",
+              "text-halo-color": "rgba(255,255,255,0.96)",
+              "text-halo-width": [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                0,
                 0.4,
-                7,
+                5,
                 0.8,
-                11,
+                10,
                 1.2,
+              ],
+              "text-opacity": [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                0,
+                0.55,
+                5,
+                0.75,
+                10,
+                0.95,
               ],
             },
           });
@@ -3638,11 +4133,12 @@
 
           if (fishSpeciesLoaded) {
             updateFishSpeciesColors();
+            updateFishFilter();
           }
         } catch (error) {
           console.error("Could not add FWMIS fish layer:", error);
           status.textContent =
-            "The FWMIS fish PMTiles layer could not be loaded. Check data/fish/fwmis_fish_surveys_clean.pmtiles.";
+            "The FWMIS fish PMTiles layer could not be loaded. Check data/fish/fwmis_dashboard_clean.pmtiles.";
         }
       }
 
@@ -3694,6 +4190,7 @@
             .split(/\r?\n/)
             .map((name) => name.trim())
             .filter(Boolean)
+            .filter((name) => name !== "NO FISH CAPTURED")
             .sort((a, b) => a.localeCompare(b));
 
           buildFishSpeciesColorLookup();
@@ -3704,13 +4201,14 @@
 
           if (isFishSelected()) {
             updateFishSpeciesColors();
+            updateFishFilter();
             updateLegend();
             updatePointCounter();
           }
         } catch (error) {
           console.error(error);
           status.textContent =
-            "The cleaned FWMIS fish species list could not be loaded.";
+            "The new FWMIS species files could not be loaded. Run the species-stat command and check data/fish/fwmis_dashboard_species.txt.";
         }
       }
 
@@ -3732,9 +4230,7 @@
         updateFishFilter();
         updateLegend();
 
-        status.textContent = selectedFishSpecies
-          ? `Showing ${selectedFishSpecies} occurrence locations across Alberta.`
-          : "Showing all cleaned FWMIS fish survey records.";
+        status.textContent = getFishFilterStatusText();
       }
 
       function renderFishSpeciesOptions(searchText) {
@@ -3826,8 +4322,17 @@
 
         const stats = fishSpeciesStats[selectedFishSpecies] || {};
 
-        fishStatsTitle.textContent = selectedFishYear
-          ? `${selectedFishSpecies} · all-year statistics`
+        const activePeriod = [
+          selectedFishMonth
+            ? fishMonthSelect.options[fishMonthSelect.selectedIndex].text
+            : "",
+          selectedFishYear || "",
+        ]
+          .filter(Boolean)
+          .join(" ");
+
+        fishStatsTitle.textContent = activePeriod
+          ? `${selectedFishSpecies} · overall species statistics`
           : selectedFishSpecies;
         fishObservationCount.textContent = Number(
           stats.observations || 0,
@@ -3842,81 +4347,158 @@
         fishStats.classList.add("visible");
       }
 
-      function updateFishFilter() {
-        if (!map.getLayer("fish-occurrences")) return;
+      function asFishNumber(value) {
+        const numberValue = Number(value);
+        return Number.isFinite(numberValue) ? numberValue : null;
+      }
 
-        const filters = [];
+      function fishFeatureMatchesCurrentFilter(feature) {
+        const properties = feature?.properties || {};
 
-        // Species filter
-        if (selectedFishSpecies) {
-          filters.push(["==", ["get", "SPEC_NAME"], selectedFishSpecies]);
+        if (
+          selectedFishSpecies &&
+          properties[FISH_SPECIES_FIELD] !== selectedFishSpecies
+        ) {
+          return false;
         }
 
-        // Survey year filter.
-        // TERMINATION_DATE may be stored as:
-        //   1) ISO date text, e.g. "2014-07-15"
-        //   2) Unix timestamp in milliseconds
-        //   3) Unix timestamp in seconds
+        const featureYear = asFishNumber(properties[FISH_YEAR_FIELD]);
+        const featureMonth = asFishNumber(properties[FISH_MONTH_FIELD]);
+
+        if (selectedFishYear && featureYear !== Number(selectedFishYear)) {
+          return false;
+        }
+
+        if (selectedFishMonth && featureMonth !== Number(selectedFishMonth)) {
+          return false;
+        }
+
+        return true;
+      }
+
+      function updateLoadedFilteredFishRecordCount() {
+        if (!isFishSelected() || !map.getSource("fishOccurrences")) {
+          return;
+        }
+
+        // For unfiltered data and species-only filtering, exact dataset totals
+        // are available from the generated statistics file.
+        if (!selectedFishYear && !selectedFishMonth) {
+          loadedFilteredFishRecordCount = null;
+          updatePointCounter();
+          return;
+        }
+
+        const features = map.querySourceFeatures("fishOccurrences", {
+          sourceLayer: FISH_SOURCE_LAYER,
+        });
+
+        const seen = new Set();
+        let count = 0;
+
+        features.forEach((feature, index) => {
+          if (!fishFeatureMatchesCurrentFilter(feature)) return;
+
+          const properties = feature.properties || {};
+          const coords = feature.geometry?.coordinates || [];
+          const key = [
+            properties.INV_SURVEY_ID ?? "",
+            properties.INV_PROJ_ID ?? "",
+            properties[FISH_SPECIES_CODE_FIELD] ?? "",
+            properties[FISH_SPECIES_FIELD] ?? "",
+            properties[FISH_DATE_FIELD] ?? "",
+            properties[FISH_COUNT_FIELD] ?? "",
+            Array.isArray(coords) ? coords.join(",") : "",
+            index,
+          ].join("|");
+
+          if (seen.has(String(key))) return;
+
+          seen.add(String(key));
+          count += 1;
+        });
+
+        loadedFilteredFishRecordCount = count;
+        updatePointCounter();
+      }
+
+      function buildFishDateFilterExpression() {
+        const filters = [];
+
         if (selectedFishYear) {
-          const year = Number(selectedFishYear);
-
-          const startDateMs = Date.UTC(year, 0, 1, 0, 0, 0);
-          const endDateMs = Date.UTC(year + 1, 0, 1, 0, 0, 0);
-
-          const startDateSeconds = Math.floor(startDateMs / 1000);
-          const endDateSeconds = Math.floor(endDateMs / 1000);
-
           filters.push([
-            "any",
-
-            // ISO / text date such as "2014-07-15"
-            [
-              "==",
-              ["slice", ["to-string", ["get", "TERMINATION_DATE"]], 0, 4],
-              String(year),
-            ],
-
-            // Unix timestamp stored in milliseconds
-            [
-              "all",
-              [
-                ">=",
-                ["to-number", ["get", "TERMINATION_DATE"], -1],
-                startDateMs,
-              ],
-              ["<", ["to-number", ["get", "TERMINATION_DATE"], -1], endDateMs],
-            ],
-
-            // Unix timestamp stored in seconds
-            [
-              "all",
-              [
-                ">=",
-                ["to-number", ["get", "TERMINATION_DATE"], -1],
-                startDateSeconds,
-              ],
-              [
-                "<",
-                ["to-number", ["get", "TERMINATION_DATE"], -1],
-                endDateSeconds,
-              ],
-            ],
+            "==",
+            ["to-number", ["get", FISH_YEAR_FIELD], -1],
+            Number(selectedFishYear),
           ]);
         }
 
-        let filter = null;
-
-        if (filters.length === 1) {
-          filter = filters[0];
-        } else if (filters.length > 1) {
-          filter = ["all", ...filters];
+        if (selectedFishMonth) {
+          filters.push([
+            "==",
+            ["to-number", ["get", FISH_MONTH_FIELD], -1],
+            Number(selectedFishMonth),
+          ]);
         }
 
-        console.log("Fish filter:", filter);
+        if (filters.length === 0) return null;
+        if (filters.length === 1) return filters[0];
+        return ["all", ...filters];
+      }
 
-        map.setFilter("fish-occurrences", filter);
+      function buildFishSpeciesFilterExpression() {
+        if (!selectedFishSpecies) return null;
+
+        return ["==", ["get", FISH_SPECIES_FIELD], selectedFishSpecies];
+      }
+
+      function combineMapLibreFilters(filters) {
+        const activeFilters = filters.filter(Boolean);
+
+        if (activeFilters.length === 0) return null;
+        if (activeFilters.length === 1) return activeFilters[0];
+        return ["all", ...activeFilters];
+      }
+
+      function updateFishFilter() {
+        const dateFilter = buildFishDateFilterExpression();
+        const speciesFilter = buildFishSpeciesFilterExpression();
+
+        const captureFilter = combineMapLibreFilters([
+          ["==", ["get", FISH_RECORD_TYPE_FIELD], "FISH_CAPTURE"],
+          speciesFilter,
+          dateFilter,
+        ]);
+
+        const zeroFilter = combineMapLibreFilters([
+          [
+            "any",
+            ["==", ["get", FISH_RECORD_TYPE_FIELD], "SPECIES_ZERO"],
+            // Explicit no-fish surveys are only shown when All species is selected.
+            // They mean no fish were captured in the survey, not a species-specific count.
+            selectedFishSpecies
+              ? ["==", ["get", FISH_RECORD_TYPE_FIELD], "SPECIES_ZERO"]
+              : ["==", ["get", FISH_RECORD_TYPE_FIELD], "NO_FISH"],
+          ],
+          speciesFilter,
+          dateFilter,
+        ]);
+
+        if (map.getLayer(FISH_CAPTURE_LAYER_ID)) {
+          map.setFilter(FISH_CAPTURE_LAYER_ID, captureFilter);
+        }
+
+        if (map.getLayer(FISH_ZERO_LAYER_ID)) {
+          map.setFilter(FISH_ZERO_LAYER_ID, zeroFilter);
+        }
+
+        loadedFilteredFishRecordCount = null;
         updatePointCounter();
         updateFishStatistics();
+
+        requestAnimationFrame(() => {
+          updateLoadedFilteredFishRecordCount();
+        });
       }
 
       function getFishFeatureCoordinates(feature, fallbackLngLat) {
@@ -3942,17 +4524,21 @@
           event.lngLat,
         );
 
-        // Query a small screen area so overlapping rendered fish points are all
-        // collected, then retain only records at essentially the same location.
+        // Query both rendered fish layers so stacked circles and × markers
+        // at the same location can be browsed with popup navigation.
         const tolerance = 0.000001;
-        const padding = 6;
+        const padding = 7;
         const point = event.point;
+        const availableFishLayers = FISH_LAYER_IDS.filter((layerId) =>
+          Boolean(map.getLayer(layerId)),
+        );
+
         const nearbyFeatures = map.queryRenderedFeatures(
           [
             [point.x - padding, point.y - padding],
             [point.x + padding, point.y + padding],
           ],
-          { layers: ["fish-occurrences"] },
+          { layers: availableFishLayers },
         );
 
         const sameLocation = nearbyFeatures.filter((feature) => {
@@ -3963,8 +4549,6 @@
           );
         });
 
-        // Vector tiles can occasionally return the same feature more than once
-        // near tile boundaries. Remove duplicates while preserving real records.
         const unique = [];
         const seen = new Set();
 
@@ -3974,12 +4558,14 @@
           const key = [
             props.INV_SURVEY_ID ?? "",
             props.INV_PROJ_ID ?? "",
-            props.SPEC_CODE ?? "",
-            props.SPEC_NAME ?? "",
-            props.TERMINATION_DATE ?? "",
-            props.SPEC_SUM ?? props.FEATURE_COUNT ?? "",
+            props[FISH_SPECIES_CODE_FIELD] ?? "",
+            props[FISH_SPECIES_FIELD] ?? "",
+            props[FISH_DATE_FIELD] ?? "",
+            props[FISH_COUNT_FIELD] ?? "",
+            props[FISH_RECORD_TYPE_FIELD] ?? "",
             lng.toFixed(7),
             lat.toFixed(7),
+            index,
           ].join("|");
 
           if (!seen.has(key)) {
@@ -3993,22 +4579,51 @@
 
       function buildFishPopupHtml(feature, coordinates, currentIndex, total) {
         const properties = feature.properties || {};
-        const species = properties.SPEC_NAME || "Unknown fish";
-        const speciesCode = properties.SPEC_CODE || "Not recorded";
+        const recordType = properties[FISH_RECORD_TYPE_FIELD] || "FISH_CAPTURE";
+        const isNoFishSurvey = recordType === "NO_FISH";
+        const isZeroCount =
+          recordType === "NO_FISH" || recordType === "SPECIES_ZERO";
+
+        const species = isNoFishSurvey
+          ? "No fish captured"
+          : properties[FISH_SPECIES_FIELD] || "Unknown fish";
+
+        const speciesCode = isNoFishSurvey
+          ? "N/A"
+          : properties[FISH_SPECIES_CODE_FIELD] || "Not recorded";
+
         const waterbody =
-          properties.WTB_OFFICIAL_NAME ||
-          properties.WTB_COMMON_NAME ||
-          "Not recorded";
-        const surveyDate = formatFwmisDate(properties.TERMINATION_DATE);
+          properties.WB_OFF_NM || properties.WB_COMM_NM || "Not recorded";
+
+        const surveyDate =
+          properties[FISH_DATE_FIELD] ||
+          formatFwmisDate(properties.END_DATE) ||
+          "N/A";
+
         const surveyType = properties.SURVEY_TYPE || "Not recorded";
+        const equipmentType = properties.EQUIP_TYPE || "Not recorded";
         const surveyId = properties.INV_SURVEY_ID || "Not recorded";
         const projectId = properties.INV_PROJ_ID || "Not recorded";
-        const speciesCount =
-          properties.SPEC_SUM ?? properties.FEATURE_COUNT ?? "Not recorded";
+        const projectLocationId = properties.PROJ_LOC_ID || "Not recorded";
+        const huc = properties.HUC || "Not recorded";
+        const countValue = properties[FISH_COUNT_FIELD];
+        const speciesCount = Number.isFinite(Number(countValue))
+          ? Number(countValue).toLocaleString()
+          : "Not recorded";
         const comments =
-          properties.SURVEY_COMMENTS ||
-          properties.PROJ_LOC_COMMENTS ||
-          "Not recorded";
+          properties.SURV_COMMENT || properties.LOC_COMMENT || "Not recorded";
+
+        const eyebrow = isNoFishSurvey
+          ? "FWMIS no-fish survey"
+          : isZeroCount
+            ? "FWMIS zero-count record"
+            : "FWMIS fish observation";
+
+        const countLabel = isNoFishSurvey
+          ? "Survey result"
+          : "Individuals recorded";
+
+        const countText = isNoFishSurvey ? "No fish captured" : speciesCount;
 
         const navigation =
           total > 1
@@ -4034,7 +4649,7 @@
         return `
           <article class="fish-popup-card">
             <header class="fish-popup-header">
-              <div class="fish-popup-eyebrow">FWMIS fish observation</div>
+              <div class="fish-popup-eyebrow">${escapeHtml(eyebrow)}</div>
               <h3 class="fish-popup-title">${escapeHtml(species)}</h3>
               ${navigation}
             </header>
@@ -4055,14 +4670,26 @@
                   <div class="fish-popup-label">Survey type</div>
                   <div class="fish-popup-value">${escapeHtml(surveyType)}</div>
 
-                  <div class="fish-popup-label">Individuals recorded</div>
-                  <div class="fish-popup-value">${escapeHtml(speciesCount)}</div>
+                  <div class="fish-popup-label">Equipment</div>
+                  <div class="fish-popup-value">${escapeHtml(equipmentType)}</div>
+
+                  <div class="fish-popup-label">${escapeHtml(countLabel)}</div>
+                  <div class="fish-popup-value">${escapeHtml(countText)}</div>
+
+                  <div class="fish-popup-label">Record type</div>
+                  <div class="fish-popup-value">${escapeHtml(recordType)}</div>
 
                   <div class="fish-popup-label">Survey ID</div>
                   <div class="fish-popup-value">${escapeHtml(surveyId)}</div>
 
                   <div class="fish-popup-label">Project ID</div>
                   <div class="fish-popup-value">${escapeHtml(projectId)}</div>
+
+                  <div class="fish-popup-label">Project location ID</div>
+                  <div class="fish-popup-value">${escapeHtml(projectLocationId)}</div>
+
+                  <div class="fish-popup-label">HUC</div>
+                  <div class="fish-popup-value">${escapeHtml(huc)}</div>
                 </div>
               </section>
 
@@ -4094,7 +4721,7 @@
         if (fishInteractionsAdded) return;
         fishInteractionsAdded = true;
 
-        map.on("click", "fish-occurrences", (event) => {
+        const showFishPopup = (event) => {
           if (!isFishSelected() || !event.features?.length) return;
 
           const fishFeatures = getFishFeaturesAtSameLocation(event);
@@ -4148,18 +4775,22 @@
           };
 
           renderObservation();
-        });
+        };
 
-        map.on("mouseenter", "fish-occurrences", () => {
-          if (!isSelectionMode) {
-            map.getCanvas().style.cursor = "pointer";
-          }
-        });
+        FISH_LAYER_IDS.forEach((layerId) => {
+          map.on("click", layerId, showFishPopup);
 
-        map.on("mouseleave", "fish-occurrences", () => {
-          if (!isSelectionMode) {
-            map.getCanvas().style.cursor = "";
-          }
+          map.on("mouseenter", layerId, () => {
+            if (!isSelectionMode) {
+              map.getCanvas().style.cursor = "pointer";
+            }
+          });
+
+          map.on("mouseleave", layerId, () => {
+            if (!isSelectionMode) {
+              map.getCanvas().style.cursor = "";
+            }
+          });
         });
       }
 
@@ -4315,6 +4946,7 @@
         const selectedVariableKey = environmentVariable.value;
 
         if (
+          isRiverSelected() ||
           isElevationSelected() ||
           isRiverBinarySelected() ||
           isHistorySelected() ||
@@ -4384,6 +5016,7 @@
       }
 
       function updateLayerVisibilityForSelection() {
+        const showRiver = isRiverSelected();
         const showElevation = isElevationSelected();
         const showRiverBinary = isRiverBinarySelected();
         const showHistory = isHistorySelected();
@@ -4396,6 +5029,7 @@
 
         if (addDataCard) {
           addDataCard.style.display =
+            showRiver ||
             showElevation ||
             showRiverBinary ||
             showHistory ||
@@ -4553,28 +5187,33 @@
 
         setHistoryLayersVisibility(showHistory);
 
-        if (map.getLayer("fish-occurrences")) {
-          map.setLayoutProperty(
-            "fish-occurrences",
-            "visibility",
-            showFish ? "visible" : "none",
-          );
-        }
+        FISH_LAYER_IDS.forEach((layerId) => {
+          if (map.getLayer(layerId)) {
+            map.setLayoutProperty(
+              layerId,
+              "visibility",
+              showFish ? "visible" : "none",
+            );
+          }
+        });
 
         if (!isFetching) {
           addVisibleBtn.disabled =
+            showRiver ||
             showElevation ||
             showRiverBinary ||
             showHistory ||
             showFish ||
             showMl;
           selectAreaBtn.disabled =
+            showRiver ||
             showElevation ||
             showRiverBinary ||
             showHistory ||
             showFish ||
             showMl;
           clearLayerBtn.disabled =
+            showRiver ||
             showElevation ||
             showRiverBinary ||
             showHistory ||
@@ -4582,20 +5221,17 @@
             showMl;
         }
 
-        if (showRiverBinary) {
+        if (showRiver) {
+          status.textContent =
+            "Showing the Alberta river network. Repeated > symbols indicate stream-flow direction.";
+        } else if (showRiverBinary) {
           status.textContent =
             "Showing the 200 m × 200 m Alberta river binary raster. Cyan cells represent river pixels (1); transparent cells represent non-river pixels (0).";
         } else if (showHistory) {
           status.textContent =
             "Historical environment selected. Climate values are shown directly on the river network.";
         } else if (showFish) {
-          status.textContent = selectedFishYear
-            ? selectedFishSpecies
-              ? `Showing ${selectedFishSpecies} observations from ${selectedFishYear}.`
-              : `Showing all fish observations from ${selectedFishYear}.`
-            : selectedFishSpecies
-              ? `Showing ${selectedFishSpecies} occurrence locations across Alberta.`
-              : "Showing all cleaned FWMIS fish survey records.";
+          status.textContent = getFishFilterStatusText();
         } else if (showMl) {
           status.textContent = `Showing ${mlMonthSelect.options[mlMonthSelect.selectedIndex].text} Rainbow Trout direct count predictions for all 629,200 river locations.`;
         } else if (showElevation) {
@@ -5142,6 +5778,7 @@
       function setButtonsDisabled(disabled) {
         const forceDisabled =
           disabled ||
+          isRiverSelected() ||
           isElevationSelected() ||
           isRiverBinarySelected() ||
           isHistorySelected() ||
@@ -5485,6 +6122,30 @@
         }
       });
 
+      function getFishFilterStatusText() {
+        const monthName = selectedFishMonth
+          ? fishMonthSelect.options[fishMonthSelect.selectedIndex].text
+          : "";
+
+        const periodText = [monthName, selectedFishYear]
+          .filter(Boolean)
+          .join(" ");
+
+        if (selectedFishSpecies && periodText) {
+          return `Showing ${selectedFishSpecies} records from ${periodText}. Crosses show zero-count records for the selected species.`;
+        }
+
+        if (periodText) {
+          return `Showing fish captures and explicit no-fish surveys from ${periodText}.`;
+        }
+
+        if (selectedFishSpecies) {
+          return `Showing ${selectedFishSpecies} records across Alberta. Crosses show zero-count records for this species.`;
+        }
+
+        return "Showing all cleaned FWMIS fish captures plus explicit no-fish survey crosses.";
+      }
+
       fishYearSelect.addEventListener("change", (event) => {
         selectedFishYear = event.target.value;
 
@@ -5496,14 +6157,21 @@
         updateFishFilter();
         updateFishStatistics();
         updateLegend();
+        status.textContent = getFishFilterStatusText();
+      });
 
-        status.textContent = selectedFishYear
-          ? selectedFishSpecies
-            ? `Showing ${selectedFishSpecies} observations from ${selectedFishYear}.`
-            : `Showing all fish observations from ${selectedFishYear}.`
-          : selectedFishSpecies
-            ? `Showing ${selectedFishSpecies} occurrence locations across Alberta.`
-            : "Showing all cleaned FWMIS fish survey records.";
+      fishMonthSelect.addEventListener("change", (event) => {
+        selectedFishMonth = event.target.value;
+
+        if (activePopup) {
+          activePopup.remove();
+          activePopup = null;
+        }
+
+        updateFishFilter();
+        updateFishStatistics();
+        updateLegend();
+        status.textContent = getFishFilterStatusText();
       });
 
       fishSpeciesToggle.addEventListener("click", () => {
@@ -5555,6 +6223,29 @@
         changeMlMonth(mlMonthSelect.value);
       });
 
+      sidebarToggle.addEventListener("click", () => {
+        const isCollapsed = sidebar.classList.toggle("collapsed");
+        sidebarToggle.classList.toggle("sidebar-collapsed", isCollapsed);
+        sidebarToggle.setAttribute("aria-expanded", String(!isCollapsed));
+        sidebarToggle.setAttribute(
+          "aria-label",
+          isCollapsed ? "Show dashboard menu" : "Hide dashboard menu",
+        );
+        sidebarToggle.title = isCollapsed ? "Show menu" : "Hide menu";
+
+        window.setTimeout(() => map.resize(), 380);
+      });
+
+      legendToggle.addEventListener("click", () => {
+        const isCollapsed = legend.classList.toggle("legend-collapsed");
+        legendToggle.setAttribute("aria-expanded", String(!isCollapsed));
+        legendToggle.setAttribute(
+          "aria-label",
+          isCollapsed ? "Show legend" : "Hide legend",
+        );
+        legendToggle.title = isCollapsed ? "Show legend" : "Hide legend";
+      });
+
       basemapSelect.addEventListener("change", () => {
         updateBasemap();
       });
@@ -5582,9 +6273,12 @@
 
         const layer = getSelectedLayer();
 
-        if (isFishSelected()) {
-          await loadFishSpecies();
+        if (isRiverSelected()) {
+          status.textContent =
+            "Showing the Alberta river network. Repeated > symbols indicate stream-flow direction.";
+        } else if (isFishSelected()) {
           await addFishLayer();
+          await loadFishSpecies();
 
           updateFishSpeciesColors();
           updateLayerVisibilityForSelection();
@@ -5592,13 +6286,7 @@
           updateFishStatistics();
           updateLegend();
 
-          status.textContent = selectedFishYear
-            ? selectedFishSpecies
-              ? `Showing ${selectedFishSpecies} observations from ${selectedFishYear}.`
-              : `Showing all fish observations from ${selectedFishYear}.`
-            : selectedFishSpecies
-              ? `Showing ${selectedFishSpecies} occurrence locations across Alberta.`
-              : "Showing all cleaned FWMIS fish survey records.";
+          status.textContent = getFishFilterStatusText();
         } else if (isMlSelected()) {
           status.textContent = `Showing ${mlMonthSelect.options[mlMonthSelect.selectedIndex].text} Rainbow Trout direct count predictions for all 629,200 river locations.`;
         } else if (isRiverBinarySelected()) {
@@ -5667,6 +6355,12 @@
         disableSelectionMode();
 
         await addPointsFromBounds(selectedBounds, "the selected box");
+      });
+
+      map.on("idle", () => {
+        if (isFishSelected() && (selectedFishYear || selectedFishMonth)) {
+          updateLoadedFilteredFishRecordCount();
+        }
       });
 
       map.on("load", async () => {
