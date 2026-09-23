@@ -551,6 +551,100 @@
         color: #64748b;
       }
 
+      /* Fish timeline playback */
+      .fish-timeline {
+        margin-top: 14px;
+        padding: 14px;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+      }
+      .fish-timeline-head {
+        min-height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+      .fish-timeline-title {
+        min-width: 0;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.055em;
+        text-transform: uppercase;
+        color: #334155;
+        white-space: nowrap;
+      }
+      .fish-timeline-period {
+        flex: 0 0 auto;
+        min-width: 66px;
+        max-width: 118px;
+        height: 28px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 10px;
+        border: 1px solid #d8e1ea;
+        border-radius: 999px;
+        background: #eef2f7;
+        color: #334155;
+        font-size: 11px;
+        font-weight: 800;
+        line-height: 1;
+        text-align: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .fish-timeline-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 9px;
+      }
+      .fish-timeline .field-label {
+        margin-top: 0;
+      }
+      .fish-timeline-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 12px;
+      }
+      .fish-timeline-button {
+        flex: 1;
+        min-height: 42px;
+        border: 0;
+        border-radius: 11px;
+        font-size: 14px;
+        font-weight: 800;
+        cursor: pointer;
+        background: #0f172a;
+        color: white;
+      }
+      .fish-timeline-button.secondary {
+        flex: 0 0 46px;
+        background: #e2e8f0;
+        color: #0f172a;
+      }
+      .fish-timeline-button:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+      .fish-timeline-progress {
+        height: 4px;
+        margin-top: 12px;
+        overflow: hidden;
+        border-radius: 999px;
+        background: #e2e8f0;
+      }
+      .fish-timeline-progress > span {
+        display: block;
+        height: 100%;
+        width: 0;
+        background: #0f172a;
+        transition: width 0.25s ease;
+      }
+
       .fish-stats {
         display: none;
         margin-top: 14px;
@@ -903,6 +997,53 @@
         overflow-wrap: anywhere;
       }
 
+      /* Final Rainbow Trout ML evaluation controls */
+      .ml-results-toggle-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-top: 10px;
+      }
+      .ml-results-toggle {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 10px;
+        border: 1px solid #e2e8f0;
+        border-radius: 11px;
+        background: #fff;
+        font-size: 12px;
+        font-weight: 750;
+        color: #334155;
+        cursor: pointer;
+      }
+      .ml-results-toggle input {
+        accent-color: #0f4c5c;
+      }
+      .ml-results-metrics {
+        margin-top: 12px;
+        display: grid;
+        gap: 8px;
+      }
+      .ml-results-model {
+        padding: 10px;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        background: #fff;
+      }
+      .ml-results-model strong {
+        display: block;
+        font-size: 12px;
+        color: #0f172a;
+        margin-bottom: 5px;
+      }
+      .ml-results-model span {
+        display: block;
+        font-size: 11px;
+        color: #64748b;
+        line-height: 1.45;
+      }
+
       @media (max-width: 520px) {
         .fish-popup .maplibregl-popup-content {
           width: calc(100vw - 24px);
@@ -968,9 +1109,16 @@
           <option value="river" selected>River Network</option>
           <option value="environment">Environment</option>
           <option value="fish">Fish Distribution</option>
-          <option value="ml">Rainbow Trout Monthly Prediction</option>
-          <option value="riverBinary">River Binary Grid</option>
-          <option value="elevation">Elevation Tiles</option>
+          <option value="mlResults">Rainbow Trout ML Results</option>
+        </select>
+      </div>
+
+      <div class="card" id="riverControlCard">
+        <div class="card-title">River Network Controls</div>
+        <label class="field-label" for="riverDisplayMode">Display</label>
+        <select id="riverDisplayMode">
+          <option value="network" selected>River Network</option>
+          <option value="binary">River Binary Grid</option>
         </select>
       </div>
 
@@ -990,6 +1138,7 @@
           <option value="wind">Wind Speed</option>
           <option value="humidity">Humidity</option>
           <option value="pressure">Pressure</option>
+          <option value="elevation">Elevation</option>
         </select>
 
         <div id="liveEnvironmentControls">
@@ -1155,6 +1304,60 @@
           <option value="12">December</option>
         </select>
 
+        <div class="fish-timeline" id="fishTimeline">
+          <div class="fish-timeline-head">
+            <span class="fish-timeline-title">Timeline playback</span>
+            <span class="fish-timeline-period" id="fishTimelinePeriod"
+              >Ready</span
+            >
+          </div>
+          <div class="fish-timeline-grid">
+            <div>
+              <label class="field-label" for="fishTimelineMode">Play by</label>
+              <select id="fishTimelineMode">
+                <option value="month">Month</option>
+                <option value="year">Year</option>
+                <option value="both" selected>Year + Month</option>
+              </select>
+            </div>
+            <div>
+              <label class="field-label" for="fishTimelineDelay">Delay</label>
+              <select id="fishTimelineDelay">
+                <option value="1" selected>1 second</option>
+                <option value="2">2 seconds</option>
+                <option value="3">3 seconds</option>
+                <option value="4">4 seconds</option>
+                <option value="5">5 seconds</option>
+                <option value="6">6 seconds</option>
+                <option value="7">7 seconds</option>
+                <option value="8">8 seconds</option>
+                <option value="9">9 seconds</option>
+                <option value="10">10 seconds</option>
+              </select>
+            </div>
+          </div>
+          <div class="fish-timeline-actions">
+            <button
+              class="fish-timeline-button"
+              id="fishTimelinePlay"
+              type="button"
+            >
+              ▶ Play timeline
+            </button>
+            <button
+              class="fish-timeline-button secondary"
+              id="fishTimelineReset"
+              type="button"
+              title="Reset timeline"
+            >
+              ↺
+            </button>
+          </div>
+          <div class="fish-timeline-progress" aria-hidden="true">
+            <span id="fishTimelineProgress"></span>
+          </div>
+        </div>
+
         <div class="fish-stats" id="fishStats">
           <div class="fish-stats-title" id="fishStatsTitle">
             Species Statistics
@@ -1198,28 +1401,66 @@
         </div>
       </div>
 
-      <div class="card" id="mlControlCard" style="display: none">
-        <div class="card-title">Rainbow Trout Prediction</div>
+      <div class="card" id="mlResultsControlCard" style="display: none">
+        <div class="card-title">Rainbow Trout ML Results</div>
 
-        <label class="field-label" for="mlMonthSelect">Month</label>
-        <select id="mlMonthSelect">
-          <option value="01">January</option>
-          <option value="02">February</option>
-          <option value="03">March</option>
-          <option value="04">April</option>
-          <option value="05">May</option>
-          <option value="06">June</option>
-          <option value="07" selected>July</option>
-          <option value="08">August</option>
-          <option value="09">September</option>
+        <label class="field-label" for="mlResultsYear">Year</label>
+        <select id="mlResultsYear">
+          <option value="all" selected>All years</option>
+          <option value="2020">2020</option>
+          <option value="2021">2021</option>
+          <option value="2022">2022</option>
+          <option value="2023">2023</option>
+          <option value="2024">2024</option>
+          <option value="2025">2025</option>
+        </select>
+
+        <label class="field-label" for="mlResultsMonth">Month</label>
+        <select id="mlResultsMonth">
+          <option value="all" selected>All months</option>
+          <option value="1">January</option>
+          <option value="2">February</option>
+          <option value="3">March</option>
+          <option value="4">April</option>
+          <option value="5">May</option>
+          <option value="6">June</option>
+          <option value="7">July</option>
+          <option value="8">August</option>
+          <option value="9">September</option>
           <option value="10">October</option>
           <option value="11">November</option>
           <option value="12">December</option>
         </select>
 
-        <div class="help-text">
-          Select a month to view direct Rainbow Trout count predictions for all
-          629,200 river prediction locations.
+        <div class="ml-results-toggle-grid">
+          <label class="ml-results-toggle"
+            ><input id="mlShowTrain" type="checkbox" checked /> Train</label
+          >
+          <label class="ml-results-toggle"
+            ><input id="mlShowTest" type="checkbox" checked /> Test</label
+          >
+          <label class="ml-results-toggle"
+            ><input id="mlShowPresence" type="checkbox" checked />
+            Presence</label
+          >
+          <label class="ml-results-toggle"
+            ><input id="mlShowCount" type="checkbox" checked /> Count</label
+          >
+          <label class="ml-results-toggle" style="grid-column: 1/-1"
+            ><input id="mlShowNeighbor" type="checkbox" /> Neighbour data
+            ring</label
+          >
+        </div>
+
+        <div class="ml-results-metrics">
+          <div class="ml-results-model">
+            <strong>Presence · XGBoost + 5-step neighbour</strong
+            ><span>ROC-AUC 0.923 · PR-AUC 0.664 · Balanced accuracy 0.825</span>
+          </div>
+          <div class="ml-results-model">
+            <strong>Count · Extra Trees without neighbour</strong
+            ><span>MAE 1.013 · RMSE 9.288 · R² 0.084 · Log RMSE 0.448</span>
+          </div>
         </div>
       </div>
 
@@ -1506,118 +1747,15 @@
       const FISH_DATE_FIELD = "y";
       const FISH_RECORD_TYPE_FIELD = "z";
 
-      // Monthly Rainbow Trout direct-count prediction points.
-      // Load the slim GeoJSON files directly so every prediction point is
-      // available to MapLibre at every zoom level.
-      const ML_BASE_PATH = "data/ml/monthly_points_split_slim";
-
-      function mlGeoJsonPath(filename) {
-        return `${ML_BASE_PATH}/${filename}`;
-      }
-
-      const ML_MONTH_FILES = {
-        "01": [
-          mlGeoJsonPath(
-            "rainbow_trout_01_january_direct_count_all_surveys_part1.geojson",
-          ),
-          mlGeoJsonPath(
-            "rainbow_trout_01_january_direct_count_all_surveys_part2.geojson",
-          ),
-        ],
-        "02": [
-          mlGeoJsonPath(
-            "rainbow_trout_02_february_direct_count_all_surveys_part1.geojson",
-          ),
-          mlGeoJsonPath(
-            "rainbow_trout_02_february_direct_count_all_surveys_part2.geojson",
-          ),
-        ],
-        "03": [
-          mlGeoJsonPath(
-            "rainbow_trout_03_march_direct_count_all_surveys_part1.geojson",
-          ),
-          mlGeoJsonPath(
-            "rainbow_trout_03_march_direct_count_all_surveys_part2.geojson",
-          ),
-        ],
-        "04": [
-          mlGeoJsonPath(
-            "rainbow_trout_04_april_direct_count_all_surveys_part1.geojson",
-          ),
-          mlGeoJsonPath(
-            "rainbow_trout_04_april_direct_count_all_surveys_part2.geojson",
-          ),
-        ],
-        "05": [
-          mlGeoJsonPath(
-            "rainbow_trout_05_may_direct_count_all_surveys_part1.geojson",
-          ),
-          mlGeoJsonPath(
-            "rainbow_trout_05_may_direct_count_all_surveys_part2.geojson",
-          ),
-        ],
-        "06": [
-          mlGeoJsonPath(
-            "rainbow_trout_06_june_direct_count_all_surveys_part1.geojson",
-          ),
-          mlGeoJsonPath(
-            "rainbow_trout_06_june_direct_count_all_surveys_part2.geojson",
-          ),
-        ],
-        "07": [
-          mlGeoJsonPath(
-            "rainbow_trout_07_july_direct_count_all_surveys_part1.geojson",
-          ),
-          mlGeoJsonPath(
-            "rainbow_trout_07_july_direct_count_all_surveys_part2.geojson",
-          ),
-        ],
-        "08": [
-          mlGeoJsonPath(
-            "rainbow_trout_08_august_direct_count_all_surveys_part1.geojson",
-          ),
-          mlGeoJsonPath(
-            "rainbow_trout_08_august_direct_count_all_surveys_part2.geojson",
-          ),
-        ],
-        "09": [
-          mlGeoJsonPath(
-            "rainbow_trout_09_september_direct_count_all_surveys_part1.geojson",
-          ),
-          mlGeoJsonPath(
-            "rainbow_trout_09_september_direct_count_all_surveys_part2.geojson",
-          ),
-        ],
-        10: [
-          mlGeoJsonPath(
-            "rainbow_trout_10_october_direct_count_all_surveys_part1.geojson",
-          ),
-          mlGeoJsonPath(
-            "rainbow_trout_10_october_direct_count_all_surveys_part2.geojson",
-          ),
-        ],
-        11: [
-          mlGeoJsonPath(
-            "rainbow_trout_11_november_direct_count_all_surveys_part1.geojson",
-          ),
-          mlGeoJsonPath(
-            "rainbow_trout_11_november_direct_count_all_surveys_part2.geojson",
-          ),
-        ],
-        12: [
-          mlGeoJsonPath(
-            "rainbow_trout_12_december_direct_count_all_surveys_part1.geojson",
-          ),
-          mlGeoJsonPath(
-            "rainbow_trout_12_december_direct_count_all_surveys_part2.geojson",
-          ),
-        ],
+      const ML_RESULTS_BASE_PATH = "data/ml";
+      const ML_RESULTS_LAYER_IDS = {
+        train: "ml-results-train",
+        test: "ml-results-test",
+        presence: "ml-results-presence",
+        count: "ml-results-count",
+        neighbor: "ml-results-neighbor",
       };
-      const ML_LAYER_IDS = [
-        "ml-rainbow-trout-monthly-points-part1",
-        "ml-rainbow-trout-monthly-points-part2",
-      ];
-      const ML_TOTAL_PREDICTION_POINTS = 629200;
+      const ML_RESULTS_LAYER = { label: "Rainbow Trout ML Results" };
 
       const WEATHER_LAYERS = {
         temperature: {
@@ -1987,11 +2125,6 @@
           ]);
         }
       }
-
-      const ML_LAYER = {
-        label: "Rainbow Trout Predicted Count",
-      };
-
       const ELEVATION_LAYER = {
         label: "Elevation Tiles",
         unit: "m",
@@ -2015,16 +2148,23 @@
       };
 
       function isElevationSelected() {
-        return getSelectedLayerKey() === "elevation";
+        return (
+          getSelectedLayerKey() === "environment" &&
+          environmentVariable.value === "elevation"
+        );
       }
 
       function isRiverBinarySelected() {
-        return getSelectedLayerKey() === "riverBinary";
+        return (
+          getSelectedLayerKey() === "river" &&
+          riverDisplayMode.value === "binary"
+        );
       }
 
       function isHistorySelected() {
         return (
           getSelectedLayerKey() === "environment" &&
+          environmentVariable.value !== "elevation" &&
           environmentMode.value === "history"
         );
       }
@@ -2032,20 +2172,23 @@
       function isLiveEnvironmentSelected() {
         return (
           getSelectedLayerKey() === "environment" &&
+          environmentVariable.value !== "elevation" &&
           environmentMode.value === "live"
         );
       }
 
       function isRiverSelected() {
-        return getSelectedLayerKey() === "river";
+        return (
+          getSelectedLayerKey() === "river" &&
+          riverDisplayMode.value === "network"
+        );
       }
 
       function isFishSelected() {
         return getSelectedLayerKey() === "fish";
       }
-
-      function isMlSelected() {
-        return getSelectedLayerKey() === "ml";
+      function isMlResultsSelected() {
+        return getSelectedLayerKey() === "mlResults";
       }
 
       let allStreamPoints = [];
@@ -2057,7 +2200,6 @@
       let pointInteractionsAdded = false;
       let historyInteractionsAdded = false;
       let fishInteractionsAdded = false;
-      let mlInteractionsAdded = false;
       let activePopup = null;
 
       let historyRows = [];
@@ -2074,15 +2216,18 @@
 
       let fishSpeciesLoaded = false;
       let selectedFishSpecies = "";
-      let selectedFishYear = "";
+      let selectedFishYear = "2020";
       let selectedFishMonth = "";
       let loadedFilteredFishRecordCount = null;
+      let fishTimelineTimer = null;
+      let fishTimelineRunning = false;
+      let fishTimelineStep = 0;
+      let fishTimelineFrames = [];
       let fishSpeciesNames = [];
       let fishSpeciesStats = {};
       let fishSpeciesIdByName = new Map();
       let fishSpeciesNameById = new Map();
       let fishSpeciesLookupById = new Map();
-      let mlSelectedMonth = "07";
 
       let isSelectionMode = false;
       let isDraggingSelection = false;
@@ -2100,6 +2245,8 @@
         "summarySecondaryValue",
       );
       const layerSelect = document.getElementById("layerSelect");
+      const riverControlCard = document.getElementById("riverControlCard");
+      const riverDisplayMode = document.getElementById("riverDisplayMode");
       const addVisibleBtn = document.getElementById("addVisibleBtn");
       const selectAreaBtn = document.getElementById("selectAreaBtn");
       const cancelSelectBtn = document.getElementById("cancelSelectBtn");
@@ -2127,8 +2274,16 @@
         "liveWeatherPeriodBadge",
       );
       const fishControlCard = document.getElementById("fishControlCard");
-      const mlControlCard = document.getElementById("mlControlCard");
-      const mlMonthSelect = document.getElementById("mlMonthSelect");
+      const mlResultsControlCard = document.getElementById(
+        "mlResultsControlCard",
+      );
+      const mlResultsYear = document.getElementById("mlResultsYear");
+      const mlResultsMonth = document.getElementById("mlResultsMonth");
+      const mlShowTrain = document.getElementById("mlShowTrain");
+      const mlShowTest = document.getElementById("mlShowTest");
+      const mlShowPresence = document.getElementById("mlShowPresence");
+      const mlShowCount = document.getElementById("mlShowCount");
+      const mlShowNeighbor = document.getElementById("mlShowNeighbor");
       const historyYear = document.getElementById("historyYear");
       const historyMonth = document.getElementById("historyMonth");
       const historyVariable = document.getElementById("historyVariable");
@@ -2140,6 +2295,15 @@
       const fishSpeciesMenu = document.getElementById("fishSpeciesMenu");
       const fishYearSelect = document.getElementById("fishYearSelect");
       const fishMonthSelect = document.getElementById("fishMonthSelect");
+
+      const fishTimelineMode = document.getElementById("fishTimelineMode");
+      const fishTimelineDelay = document.getElementById("fishTimelineDelay");
+      const fishTimelinePlay = document.getElementById("fishTimelinePlay");
+      const fishTimelineReset = document.getElementById("fishTimelineReset");
+      const fishTimelinePeriod = document.getElementById("fishTimelinePeriod");
+      const fishTimelineProgress = document.getElementById(
+        "fishTimelineProgress",
+      );
       const fishStats = document.getElementById("fishStats");
       const fishStatsTitle = document.getElementById("fishStatsTitle");
       const fishTotalCount = document.getElementById("fishTotalCount");
@@ -2227,16 +2391,6 @@
             directedArrowHeads: {
               type: "vector",
               url: "pmtiles://data/alberta_directed_arrowheads.pmtiles",
-            },
-            mlPredictionsPart1: {
-              type: "geojson",
-              data: ML_MONTH_FILES["07"][0],
-              generateId: true,
-            },
-            mlPredictionsPart2: {
-              type: "geojson",
-              data: ML_MONTH_FILES["07"][1],
-              generateId: true,
             },
             elevationTiles: {
               type: "raster",
@@ -2396,287 +2550,6 @@
                 "text-color": "#0f2233",
                 "text-halo-color": "rgba(255,255,255,0.9)",
                 "text-halo-width": 1,
-              },
-            },
-
-            {
-              id: ML_LAYER_IDS[0],
-              type: "circle",
-              source: "mlPredictionsPart1",
-              minzoom: 0,
-              layout: { visibility: "none" },
-              paint: {
-                "circle-color": [
-                  "interpolate",
-                  ["linear"],
-                  ["to-number", ["coalesce", ["get", "predicted_count"], 0], 0],
-                  0,
-                  "#b91c1c",
-                  1,
-                  "#dc2626",
-                  2,
-                  "#ef4444",
-                  3,
-                  "#f97316",
-                  4,
-                  "#fb923c",
-                  5,
-                  "#f59e0b",
-                  6,
-                  "#fbbf24",
-                  7,
-                  "#facc15",
-                  8,
-                  "#fde047",
-                  10,
-                  "#fef08a",
-                ],
-                "circle-radius": [
-                  "interpolate",
-                  ["linear"],
-                  ["zoom"],
-                  5,
-                  [
-                    "interpolate",
-                    ["linear"],
-                    [
-                      "to-number",
-                      ["coalesce", ["get", "predicted_count"], 0],
-                      0,
-                    ],
-                    0,
-                    2.6,
-                    3,
-                    3.3,
-                    6,
-                    4.2,
-                    10,
-                    5.3,
-                    15,
-                    6.5,
-                    25,
-                    8.0,
-                  ],
-                  8,
-                  [
-                    "interpolate",
-                    ["linear"],
-                    [
-                      "to-number",
-                      ["coalesce", ["get", "predicted_count"], 0],
-                      0,
-                    ],
-                    0,
-                    3.2,
-                    3,
-                    4.0,
-                    6,
-                    5.1,
-                    10,
-                    6.4,
-                    15,
-                    7.8,
-                    25,
-                    9.8,
-                  ],
-                  11,
-                  [
-                    "interpolate",
-                    ["linear"],
-                    [
-                      "to-number",
-                      ["coalesce", ["get", "predicted_count"], 0],
-                      0,
-                    ],
-                    0,
-                    4.0,
-                    3,
-                    5.0,
-                    6,
-                    6.2,
-                    10,
-                    7.9,
-                    15,
-                    9.8,
-                    25,
-                    12.2,
-                  ],
-                  14,
-                  [
-                    "interpolate",
-                    ["linear"],
-                    [
-                      "to-number",
-                      ["coalesce", ["get", "predicted_count"], 0],
-                      0,
-                    ],
-                    0,
-                    5.0,
-                    3,
-                    6.3,
-                    6,
-                    8.0,
-                    10,
-                    10.2,
-                    15,
-                    12.5,
-                    25,
-                    15.5,
-                  ],
-                ],
-                "circle-opacity": 0.92,
-                "circle-stroke-color": "#ffffff",
-                "circle-stroke-width": [
-                  "interpolate",
-                  ["linear"],
-                  ["zoom"],
-                  5,
-                  0.25,
-                  8,
-                  0.45,
-                  11,
-                  0.7,
-                  14,
-                  1.0,
-                ],
-              },
-            },
-            {
-              id: ML_LAYER_IDS[1],
-              type: "circle",
-              source: "mlPredictionsPart2",
-              minzoom: 0,
-              layout: { visibility: "none" },
-              paint: {
-                "circle-color": [
-                  "interpolate",
-                  ["linear"],
-                  ["to-number", ["coalesce", ["get", "predicted_count"], 0], 0],
-                  0,
-                  "#dc2626",
-                  2,
-                  "#ef4444",
-                  4,
-                  "#f97316",
-                  6,
-                  "#facc15",
-                  10,
-                  "#8dd3c7",
-                  15,
-                  "#38bdf8",
-                  20,
-                  "#2563eb",
-                  30,
-                  "#1e3a8a",
-                ],
-                "circle-radius": [
-                  "interpolate",
-                  ["linear"],
-                  ["zoom"],
-                  5,
-                  [
-                    "interpolate",
-                    ["linear"],
-                    [
-                      "to-number",
-                      ["coalesce", ["get", "predicted_count"], 0],
-                      0,
-                    ],
-                    0,
-                    2.6,
-                    3,
-                    3.3,
-                    6,
-                    4.2,
-                    10,
-                    5.3,
-                    15,
-                    6.5,
-                    25,
-                    8.0,
-                  ],
-                  8,
-                  [
-                    "interpolate",
-                    ["linear"],
-                    [
-                      "to-number",
-                      ["coalesce", ["get", "predicted_count"], 0],
-                      0,
-                    ],
-                    0,
-                    3.2,
-                    3,
-                    4.0,
-                    6,
-                    5.1,
-                    10,
-                    6.4,
-                    15,
-                    7.8,
-                    25,
-                    9.8,
-                  ],
-                  11,
-                  [
-                    "interpolate",
-                    ["linear"],
-                    [
-                      "to-number",
-                      ["coalesce", ["get", "predicted_count"], 0],
-                      0,
-                    ],
-                    0,
-                    4.0,
-                    3,
-                    5.0,
-                    6,
-                    6.2,
-                    10,
-                    7.9,
-                    15,
-                    9.8,
-                    25,
-                    12.2,
-                  ],
-                  14,
-                  [
-                    "interpolate",
-                    ["linear"],
-                    [
-                      "to-number",
-                      ["coalesce", ["get", "predicted_count"], 0],
-                      0,
-                    ],
-                    0,
-                    5.0,
-                    3,
-                    6.3,
-                    6,
-                    8.0,
-                    10,
-                    10.2,
-                    15,
-                    12.5,
-                    25,
-                    15.5,
-                  ],
-                ],
-                "circle-opacity": 0.92,
-                "circle-stroke-color": "#ffffff",
-                "circle-stroke-width": [
-                  "interpolate",
-                  ["linear"],
-                  ["zoom"],
-                  5,
-                  0.25,
-                  8,
-                  0.45,
-                  11,
-                  0.7,
-                  14,
-                  1.0,
-                ],
               },
             },
 
@@ -2958,7 +2831,7 @@
         if (isRiverBinarySelected()) return RIVER_BINARY_LAYER;
         if (isHistorySelected()) return HISTORY_LAYER;
         if (isFishSelected()) return FISH_LAYER;
-        if (isMlSelected()) return ML_LAYER;
+        if (isMlResultsSelected()) return ML_RESULTS_LAYER;
         if (isLiveEnvironmentSelected()) {
           return WEATHER_LAYERS[environmentVariable.value];
         }
@@ -3088,12 +2961,11 @@
           return;
         }
 
-        if (isMlSelected()) {
-          summaryPrimaryLabel.textContent = "Prediction Points";
-          summarySecondaryLabel.textContent = "Prediction Month";
-          pointCount.textContent = ML_TOTAL_PREDICTION_POINTS.toLocaleString();
-          summarySecondaryValue.textContent =
-            mlMonthSelect.options[mlMonthSelect.selectedIndex].text;
+        if (isMlResultsSelected()) {
+          summaryPrimaryLabel.textContent = "Test Predictions";
+          summarySecondaryLabel.textContent = "Training Rows";
+          pointCount.textContent = "3,447";
+          summarySecondaryValue.textContent = "12,214";
           return;
         }
 
@@ -3250,39 +3122,32 @@
 
         let legendItems = layer.legend;
 
-        if (isMlSelected()) {
-          legendTitle.textContent = "Rainbow Trout Predicted Count";
-
-          const wrapper = document.createElement("div");
-          wrapper.className = "history-gradient-legend";
-
-          const bar = document.createElement("div");
-          bar.className = "history-gradient-bar";
-          bar.style.background =
-            "linear-gradient(90deg, #ef4444 0%, #f97316 50%, #facc15 100%)";
-          const scale = document.createElement("div");
-          scale.className = "history-gradient-scale";
-
-          const low = document.createElement("span");
-          low.textContent = "0";
-
-          const mid = document.createElement("span");
-          mid.textContent = "3";
-
-          const high = document.createElement("span");
-          high.textContent = "5+";
-
-          scale.appendChild(low);
-          scale.appendChild(mid);
-          scale.appendChild(high);
-          wrapper.appendChild(bar);
-          wrapper.appendChild(scale);
-          legendRows.appendChild(wrapper);
-
+        if (isMlResultsSelected()) {
+          legendTitle.textContent = "Rainbow Trout ML Results";
+          const items = [
+            ["#2563eb", "Train observations"],
+            ["#111827", "Held-out test observations"],
+            ["#fb923c", "Presence probability"],
+            ["#facc15", "Predicted count"],
+            ["#7c3aed", "Neighbour data available"],
+          ];
+          items.forEach(([color, text]) => {
+            const row = document.createElement("div");
+            row.className = "legend-row";
+            const dot = document.createElement("span");
+            dot.className = "legend-dot";
+            dot.style.background = color;
+            const label = document.createElement("span");
+            label.className = "legend-label";
+            label.textContent = text;
+            row.append(dot, label);
+            legendRows.appendChild(row);
+          });
           const note = document.createElement("div");
           note.className = "help-text";
           note.style.marginTop = "9px";
-          note.textContent = `${mlMonthSelect.options[mlMonthSelect.selectedIndex].text} · direct predicted survey count`;
+          note.textContent =
+            "Presence: XGBoost + neighbour · Count: Extra Trees without neighbour";
           legendRows.appendChild(note);
           return;
         }
@@ -5069,8 +4934,7 @@
           isElevationSelected() ||
           isRiverBinarySelected() ||
           isHistorySelected() ||
-          isFishSelected() ||
-          isMlSelected()
+          isFishSelected()
         ) {
           if (map.getSource("environment-points")) {
             map.getSource("environment-points").setData({
@@ -5134,13 +4998,288 @@
         addPointInteractions();
       }
 
+      function mlResultsFilter() {
+        const parts = [];
+        if (mlResultsYear && mlResultsYear.value !== "all")
+          parts.push([
+            "==",
+            ["to-number", ["get", "YEAR"]],
+            Number(mlResultsYear.value),
+          ]);
+        if (mlResultsMonth && mlResultsMonth.value !== "all")
+          parts.push([
+            "==",
+            ["to-number", ["get", "MONTH"]],
+            Number(mlResultsMonth.value),
+          ]);
+        return parts.length === 0
+          ? null
+          : parts.length === 1
+            ? parts[0]
+            : ["all", ...parts];
+      }
+
+      function applyMlResultsState() {
+        const selected = isMlResultsSelected();
+        const filter = mlResultsFilter();
+        const vis = (id, enabled) => {
+          if (!map.getLayer(id)) return;
+          map.setLayoutProperty(
+            id,
+            "visibility",
+            selected && enabled ? "visible" : "none",
+          );
+          map.setFilter(id, filter);
+        };
+        vis(ML_RESULTS_LAYER_IDS.train, mlShowTrain?.checked);
+        vis(ML_RESULTS_LAYER_IDS.test, mlShowTest?.checked);
+        vis(ML_RESULTS_LAYER_IDS.presence, mlShowPresence?.checked);
+        vis(ML_RESULTS_LAYER_IDS.count, mlShowCount?.checked);
+        vis(ML_RESULTS_LAYER_IDS.neighbor, mlShowNeighbor?.checked);
+      }
+
+      function addMlResultsLayers() {
+        if (!map.getSource("mlResultsTrain"))
+          map.addSource("mlResultsTrain", {
+            type: "geojson",
+            data: `${ML_RESULTS_BASE_PATH}/rainbow_trout_train.geojson`,
+            generateId: true,
+          });
+        if (!map.getSource("mlResultsTest"))
+          map.addSource("mlResultsTest", {
+            type: "geojson",
+            data: `${ML_RESULTS_BASE_PATH}/rainbow_trout_test.geojson`,
+            generateId: true,
+          });
+        if (!map.getSource("mlResultsPred"))
+          map.addSource("mlResultsPred", {
+            type: "geojson",
+            data: `${ML_RESULTS_BASE_PATH}/rainbow_trout_predictions.geojson`,
+            generateId: true,
+          });
+
+        if (!map.getLayer(ML_RESULTS_LAYER_IDS.train))
+          map.addLayer({
+            id: ML_RESULTS_LAYER_IDS.train,
+            type: "circle",
+            source: "mlResultsTrain",
+            layout: { visibility: "none" },
+            paint: {
+              "circle-radius": [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                4,
+                2.2,
+                8,
+                3.2,
+                12,
+                5,
+              ],
+              "circle-color": "rgba(37,99,235,0.18)",
+              "circle-stroke-color": "#2563eb",
+              "circle-stroke-width": 1.3,
+            },
+          });
+        if (!map.getLayer(ML_RESULTS_LAYER_IDS.test))
+          map.addLayer({
+            id: ML_RESULTS_LAYER_IDS.test,
+            type: "circle",
+            source: "mlResultsTest",
+            layout: { visibility: "none" },
+            paint: {
+              "circle-radius": [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                4,
+                2.6,
+                8,
+                3.8,
+                12,
+                5.8,
+              ],
+              "circle-color": "#ffffff",
+              "circle-opacity": 0.72,
+              "circle-stroke-color": "#111827",
+              "circle-stroke-width": 1.5,
+            },
+          });
+        if (!map.getLayer(ML_RESULTS_LAYER_IDS.presence))
+          map.addLayer({
+            id: ML_RESULTS_LAYER_IDS.presence,
+            type: "circle",
+            source: "mlResultsPred",
+            layout: { visibility: "none" },
+            paint: {
+              "circle-radius": [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                4,
+                3,
+                8,
+                4.5,
+                12,
+                7,
+              ],
+              "circle-color": [
+                "interpolate",
+                ["linear"],
+                ["to-number", ["coalesce", ["get", "PRESENCE_PROBABILITY"], 0]],
+                0,
+                "#fee2e2",
+                0.5,
+                "#fb923c",
+                1,
+                "#7f1d1d",
+              ],
+              "circle-opacity": 0.62,
+              "circle-stroke-color": "rgba(127,29,29,0.55)",
+              "circle-stroke-width": 0.8,
+            },
+          });
+        if (!map.getLayer(ML_RESULTS_LAYER_IDS.count))
+          map.addLayer({
+            id: ML_RESULTS_LAYER_IDS.count,
+            type: "circle",
+            source: "mlResultsPred",
+            layout: { visibility: "none" },
+            paint: {
+              "circle-radius": [
+                "interpolate",
+                ["linear"],
+                ["to-number", ["coalesce", ["get", "PREDICTED_COUNT"], 0]],
+                0,
+                2.5,
+                1,
+                3.5,
+                3,
+                5,
+                5,
+                6.5,
+                10,
+                8,
+              ],
+              "circle-color": [
+                "interpolate",
+                ["linear"],
+                ["to-number", ["coalesce", ["get", "PREDICTED_COUNT"], 0]],
+                0,
+                "#b91c1c",
+                1,
+                "#ef4444",
+                3,
+                "#f97316",
+                5,
+                "#facc15",
+                10,
+                "#fde047",
+              ],
+              "circle-opacity": 0.82,
+              "circle-stroke-color": "#7c2d12",
+              "circle-stroke-width": 0.7,
+            },
+          });
+        if (!map.getLayer(ML_RESULTS_LAYER_IDS.neighbor))
+          map.addLayer({
+            id: ML_RESULTS_LAYER_IDS.neighbor,
+            type: "circle",
+            source: "mlResultsPred",
+            filter: [
+              "==",
+              [
+                "to-number",
+                ["coalesce", ["get", "NEIGHBOR_DATA_AVAILABLE_T"], 0],
+              ],
+              1,
+            ],
+            layout: { visibility: "none" },
+            paint: {
+              "circle-radius": [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                4,
+                5,
+                8,
+                7,
+                12,
+                10,
+              ],
+              "circle-color": "rgba(0,0,0,0)",
+              "circle-stroke-color": "#7c3aed",
+              "circle-stroke-width": 2,
+            },
+          });
+        applyMlResultsState();
+      }
+
+      function addMlResultsInteractions() {
+        const ids = Object.values(ML_RESULTS_LAYER_IDS);
+        map.on("click", (e) => {
+          if (!isMlResultsSelected()) return;
+          const active = ids.filter(
+            (id) =>
+              map.getLayer(id) &&
+              map.getLayoutProperty(id, "visibility") !== "none",
+          );
+          if (!active.length) return;
+          const fs = map.queryRenderedFeatures(e.point, { layers: active });
+          if (!fs.length) return;
+          const p = fs[0].properties || {};
+          const fmt = (v, d = 2) => {
+            const n = Number(v);
+            return Number.isFinite(n) ? n.toFixed(d) : "N/A";
+          };
+          const yesno = (v) =>
+            Number(v) === 1 ? "Yes" : Number(v) === 0 ? "No" : "N/A";
+          const html = `<div class="fish-popup-card"><div class="fish-popup-header"><div class="fish-popup-eyebrow">Rainbow Trout ML</div><h3 class="fish-popup-title">${p.MAP_DATASET || "Model result"}</h3></div><div class="fish-popup-body">
+          <div class="fish-popup-section"><div class="fish-popup-section-title">Observation & prediction</div><div class="fish-popup-grid">
+          <div class="fish-popup-label">Period</div><div class="fish-popup-value">${p.YEAR || "N/A"} · ${p.MONTH_NAME || p.MONTH || "N/A"}</div>
+          <div class="fish-popup-label">Observed presence</div><div class="fish-popup-value">${yesno(p.OBSERVED_PRESENCE)}</div>
+          <div class="fish-popup-label">Predicted presence</div><div class="fish-popup-value">${yesno(p.PREDICTED_PRESENCE)}</div>
+          <div class="fish-popup-label">Presence probability</div><div class="fish-popup-value">${Number.isFinite(Number(p.PRESENCE_PROBABILITY)) ? (Number(p.PRESENCE_PROBABILITY) * 100).toFixed(1) + "%" : "N/A"}</div>
+          <div class="fish-popup-label">Observed count</div><div class="fish-popup-value">${fmt(p.OBSERVED_COUNT, 0)}</div>
+          <div class="fish-popup-label">Predicted count</div><div class="fish-popup-value">${fmt(p.PREDICTED_COUNT, 2)}</div>
+          <div class="fish-popup-label">Absolute error</div><div class="fish-popup-value">${fmt(p.COUNT_ABSOLUTE_ERROR, 2)}</div></div></div>
+          <div class="fish-popup-section"><div class="fish-popup-section-title">Neighbour information</div><div class="fish-popup-grid">
+          <div class="fish-popup-label">Available</div><div class="fish-popup-value">${yesno(p.NEIGHBOR_DATA_AVAILABLE_T)}</div>
+          <div class="fish-popup-label">Mean fish count</div><div class="fish-popup-value">${fmt(p.NEIGHBOR_FISH_MEAN_T, 2)}</div>
+          <div class="fish-popup-label">Observed pixels</div><div class="fish-popup-value">${fmt(p.NEIGHBOR_OBSERVED_PIXELS_T, 0)}</div></div></div>
+          <div class="fish-popup-section"><div class="fish-popup-section-title">Environment</div><div class="fish-popup-grid">
+          <div class="fish-popup-label">Elevation</div><div class="fish-popup-value">${fmt(p.ELEVATION_M, 1)} m</div>
+          <div class="fish-popup-label">Temperature</div><div class="fish-popup-value">${fmt(p.TEMPERATURE_C, 1)} °C</div>
+          <div class="fish-popup-label">Precipitation</div><div class="fish-popup-value">${fmt(p.PRECIPITATION_MM_MONTH, 1)} mm/month</div>
+          <div class="fish-popup-label">Wind</div><div class="fish-popup-value">${fmt(p.WIND_SPEED_MS, 2)} m/s</div>
+          <div class="fish-popup-label">Humidity</div><div class="fish-popup-value">${fmt(p.RELATIVE_HUMIDITY_PERCENT, 1)}%</div></div></div>
+          <div class="fish-popup-section"><div class="fish-popup-section-title">Models</div><div class="fish-popup-grid"><div class="fish-popup-label">Presence</div><div class="fish-popup-value">XGBoost + 5-step neighbour</div><div class="fish-popup-label">Count</div><div class="fish-popup-value">Extra Trees · without neighbour</div></div></div></div></div>`;
+          if (activePopup) activePopup.remove();
+          activePopup = new maplibregl.Popup({
+            className: "fish-popup",
+            maxWidth: "420px",
+          })
+            .setLngLat(e.lngLat)
+            .setHTML(html)
+            .addTo(map);
+        });
+        ids.forEach((id) => {
+          map.on("mouseenter", id, () => {
+            if (isMlResultsSelected()) map.getCanvas().style.cursor = "pointer";
+          });
+          map.on("mouseleave", id, () => {
+            map.getCanvas().style.cursor = "";
+          });
+        });
+      }
+
       function updateLayerVisibilityForSelection() {
         const showRiver = isRiverSelected();
         const showElevation = isElevationSelected();
         const showRiverBinary = isRiverBinarySelected();
         const showHistory = isHistorySelected();
         const showFish = isFishSelected();
-        const showMl = isMlSelected();
+        const showMlResults = isMlResultsSelected();
 
         if (summaryCard) {
           summaryCard.style.display = showElevation ? "none" : "block";
@@ -5153,13 +5292,18 @@
             showRiverBinary ||
             showHistory ||
             showFish ||
-            showMl
+            showMlResults
               ? "none"
               : "block";
         }
 
         if (historyControlCard) {
           historyControlCard.style.display = "none";
+        }
+
+        if (riverControlCard) {
+          riverControlCard.style.display =
+            getSelectedLayerKey() === "river" ? "block" : "none";
         }
 
         if (liveWeatherControlCard) {
@@ -5182,9 +5326,8 @@
         if (fishControlCard) {
           fishControlCard.style.display = showFish ? "block" : "none";
         }
-
-        if (mlControlCard) {
-          mlControlCard.style.display = showMl ? "block" : "none";
+        if (mlResultsControlCard) {
+          mlResultsControlCard.style.display = showMlResults ? "block" : "none";
         }
 
         if (elevationInfoCard) {
@@ -5211,7 +5354,6 @@
         // including Elevation Tiles, so the arrows have visible river lines behind them.
         if (map.getLayer("streams-line")) {
           // Historical Environment uses its own coloured river layers.
-          // Keep the main blue river network visible underneath the ML prediction points.
           map.setLayoutProperty(
             "streams-line",
             "visibility",
@@ -5224,11 +5366,7 @@
             showElevation ? "#ef4444" : "#087ea4",
           );
 
-          map.setPaintProperty(
-            "streams-line",
-            "line-opacity",
-            showMl ? 0.62 : 0.95,
-          );
+          map.setPaintProperty("streams-line", "line-opacity", 0.95);
 
           map.setPaintProperty("streams-line", "line-width", [
             "interpolate",
@@ -5251,18 +5389,9 @@
           map.setLayoutProperty("streams-points", "visibility", "none");
         }
 
-        ML_LAYER_IDS.forEach((layerId) => {
-          if (map.getLayer(layerId)) {
-            map.setLayoutProperty(
-              layerId,
-              "visibility",
-              showMl ? "visible" : "none",
-            );
-          }
-        });
+        applyMlResultsState();
 
         // Hide the default blue flow lines and arrowheads for Historical Environment.
-        // The ML layer now uses the predicted river segments themselves.
         // Weather layers use blue flow lines; Elevation uses red flow lines.
         if (map.getLayer("directed-arrow-lines")) {
           // Legacy directional line overlay hidden. Chevron symbols now show
@@ -5278,11 +5407,11 @@
 
         if (map.getLayer("river-chevron-arrows")) {
           // Show flow chevrons for Daily Environment, Historical Environment,
-          // Fish Distribution, and Elevation. Hide only on the ML layer.
+          // Fish Distribution, and Elevation.
           map.setLayoutProperty(
             "river-chevron-arrows",
             "visibility",
-            showMl || showRiverBinary ? "none" : "visible",
+            showMlResults || showRiverBinary ? "none" : "visible",
           );
 
           const darkBasemap = false;
@@ -5323,21 +5452,21 @@
             showRiverBinary ||
             showHistory ||
             showFish ||
-            showMl;
+            showMlResults;
           selectAreaBtn.disabled =
             showRiver ||
             showElevation ||
             showRiverBinary ||
             showHistory ||
             showFish ||
-            showMl;
+            showMlResults;
           clearLayerBtn.disabled =
             showRiver ||
             showElevation ||
             showRiverBinary ||
             showHistory ||
             showFish ||
-            showMl;
+            showMlResults;
         }
 
         if (showRiver) {
@@ -5351,8 +5480,9 @@
             "Historical environment selected. Climate values are shown directly on the river network.";
         } else if (showFish) {
           status.textContent = getFishFilterStatusText();
-        } else if (showMl) {
-          status.textContent = `Showing ${mlMonthSelect.options[mlMonthSelect.selectedIndex].text} Rainbow Trout direct count predictions for all 629,200 river locations.`;
+        } else if (showMlResults) {
+          status.textContent =
+            "Showing final Rainbow Trout ML evaluation: training observations, held-out test observations, presence probability, predicted count and optional neighbour information.";
         } else if (showElevation) {
           status.textContent =
             "Click a red stream segment to view elevation details.";
@@ -5362,417 +5492,6 @@
             `${liveWeatherPeriodBadge.textContent}. Blue arrows show stream-flow direction.`;
         }
       }
-
-      function getMlNumber(properties, keys) {
-        for (const key of keys) {
-          const value = Number(properties?.[key]);
-          if (Number.isFinite(value)) return value;
-        }
-        return NaN;
-      }
-
-      function updateMlPaint() {
-        ML_LAYER_IDS.forEach((layerId) => {
-          if (!map.getLayer(layerId)) return;
-
-          map.setPaintProperty(layerId, "circle-color", [
-            "interpolate",
-            ["linear"],
-            ["to-number", ["coalesce", ["get", "predicted_count"], 0], 0],
-            0,
-            "#b91c1c",
-            1,
-            "#ef4444",
-            3,
-            "#f97316",
-            5,
-            "#facc15",
-          ]);
-
-          // Keep ML points clearly visible at every zoom level.
-          // Radius is deliberately larger at low zooms.
-          map.setPaintProperty(layerId, "circle-radius", [
-            "interpolate",
-            ["linear"],
-            ["zoom"],
-
-            0,
-            [
-              "interpolate",
-              ["linear"],
-              ["to-number", ["coalesce", ["get", "predicted_count"], 0], 0],
-              0,
-              2.2,
-              1,
-              2.6,
-              3,
-              3.2,
-              5,
-              3.8,
-            ],
-
-            2,
-            [
-              "interpolate",
-              ["linear"],
-              ["to-number", ["coalesce", ["get", "predicted_count"], 0], 0],
-              0,
-              2.5,
-              1,
-              3.0,
-              3,
-              3.7,
-              5,
-              4.4,
-            ],
-
-            4,
-            [
-              "interpolate",
-              ["linear"],
-              ["to-number", ["coalesce", ["get", "predicted_count"], 0], 0],
-              0,
-              3.0,
-              1,
-              3.6,
-              3,
-              4.5,
-              5,
-              5.4,
-            ],
-
-            6,
-            [
-              "interpolate",
-              ["linear"],
-              ["to-number", ["coalesce", ["get", "predicted_count"], 0], 0],
-              0,
-              3.6,
-              1,
-              4.3,
-              3,
-              5.4,
-              5,
-              6.5,
-            ],
-
-            8,
-            [
-              "interpolate",
-              ["linear"],
-              ["to-number", ["coalesce", ["get", "predicted_count"], 0], 0],
-              0,
-              4.2,
-              1,
-              5.0,
-              3,
-              6.3,
-              5,
-              7.6,
-            ],
-
-            11,
-            [
-              "interpolate",
-              ["linear"],
-              ["to-number", ["coalesce", ["get", "predicted_count"], 0], 0],
-              0,
-              5.0,
-              1,
-              6.0,
-              3,
-              7.5,
-              5,
-              9.0,
-            ],
-
-            14,
-            [
-              "interpolate",
-              ["linear"],
-              ["to-number", ["coalesce", ["get", "predicted_count"], 0], 0],
-              0,
-              6.0,
-              1,
-              7.2,
-              3,
-              9.0,
-              5,
-              11.0,
-            ],
-          ]);
-
-          map.setPaintProperty(layerId, "circle-opacity", [
-            "interpolate",
-            ["linear"],
-            ["zoom"],
-            0,
-            0.88,
-            3,
-            0.9,
-            6,
-            0.92,
-            10,
-            0.95,
-          ]);
-
-          map.setPaintProperty(layerId, "circle-stroke-color", "#ffffff");
-          map.setPaintProperty(layerId, "circle-stroke-width", [
-            "interpolate",
-            ["linear"],
-            ["zoom"],
-            0,
-            0.15,
-            3,
-            0.25,
-            6,
-            0.4,
-            9,
-            0.6,
-            12,
-            0.8,
-            14,
-            1.0,
-          ]);
-        });
-      }
-
-      function changeMlMonth(monthValue) {
-        mlSelectedMonth = monthValue;
-
-        if (activePopup) {
-          activePopup.remove();
-          activePopup = null;
-        }
-
-        ML_LAYER_IDS.forEach((layerId) => {
-          if (map.getLayer(layerId)) map.removeLayer(layerId);
-        });
-
-        ["mlPredictionsPart1", "mlPredictionsPart2"].forEach((sourceId) => {
-          if (map.getSource(sourceId)) map.removeSource(sourceId);
-        });
-
-        map.addSource("mlPredictionsPart1", {
-          type: "geojson",
-          data: ML_MONTH_FILES[mlSelectedMonth][0],
-          generateId: true,
-        });
-
-        map.addSource("mlPredictionsPart2", {
-          type: "geojson",
-          data: ML_MONTH_FILES[mlSelectedMonth][1],
-          generateId: true,
-        });
-
-        const sourceIds = ["mlPredictionsPart1", "mlPredictionsPart2"];
-
-        ML_LAYER_IDS.forEach((layerId, index) => {
-          map.addLayer({
-            id: layerId,
-            type: "circle",
-            source: sourceIds[index],
-            minzoom: 0,
-            layout: {
-              visibility: isMlSelected() ? "visible" : "none",
-            },
-            paint: {
-              "circle-color": [
-                "interpolate",
-                ["linear"],
-                ["to-number", ["coalesce", ["get", "predicted_count"], 0], 0],
-                0,
-                "#dc2626",
-                2,
-                "#ef4444",
-                4,
-                "#f97316",
-                6,
-                "#facc15",
-                10,
-                "#8dd3c7",
-                15,
-                "#38bdf8",
-                20,
-                "#2563eb",
-                30,
-                "#1e3a8a",
-              ],
-              "circle-radius": [
-                "interpolate",
-                ["linear"],
-                ["zoom"],
-                5,
-                [
-                  "interpolate",
-                  ["linear"],
-                  ["to-number", ["coalesce", ["get", "predicted_count"], 0], 0],
-                  0,
-                  2.6,
-                  3,
-                  3.3,
-                  6,
-                  4.2,
-                  10,
-                  5.3,
-                  15,
-                  6.5,
-                  25,
-                  8.0,
-                ],
-                8,
-                [
-                  "interpolate",
-                  ["linear"],
-                  ["to-number", ["coalesce", ["get", "predicted_count"], 0], 0],
-                  0,
-                  3.2,
-                  3,
-                  4.0,
-                  6,
-                  5.1,
-                  10,
-                  6.4,
-                  15,
-                  7.8,
-                  25,
-                  9.8,
-                ],
-                11,
-                [
-                  "interpolate",
-                  ["linear"],
-                  ["to-number", ["coalesce", ["get", "predicted_count"], 0], 0],
-                  0,
-                  4.0,
-                  3,
-                  5.0,
-                  6,
-                  6.2,
-                  10,
-                  7.9,
-                  15,
-                  9.8,
-                  25,
-                  12.2,
-                ],
-                14,
-                [
-                  "interpolate",
-                  ["linear"],
-                  ["to-number", ["coalesce", ["get", "predicted_count"], 0], 0],
-                  0,
-                  5.0,
-                  3,
-                  6.3,
-                  6,
-                  8.0,
-                  10,
-                  10.2,
-                  15,
-                  12.5,
-                  25,
-                  15.5,
-                ],
-              ],
-              "circle-opacity": 0.92,
-              "circle-stroke-color": "#ffffff",
-              "circle-stroke-width": [
-                "interpolate",
-                ["linear"],
-                ["zoom"],
-                5,
-                0.25,
-                8,
-                0.45,
-                11,
-                0.7,
-                14,
-                1.0,
-              ],
-            },
-          });
-        });
-
-        updateMlPaint();
-        updateLegend();
-        updatePointCounter();
-
-        status.textContent =
-          `Showing ${mlMonthSelect.options[mlMonthSelect.selectedIndex].text} ` +
-          `Rainbow Trout direct count predictions for all 629,200 river locations.`;
-      }
-
-      function addMlInteractions() {
-        if (mlInteractionsAdded) return;
-        mlInteractionsAdded = true;
-
-        map.on("click", (event) => {
-          if (!isMlSelected()) return;
-
-          const activeLayers = ML_LAYER_IDS.filter((layerId) =>
-            Boolean(map.getLayer(layerId)),
-          );
-
-          const features = map.queryRenderedFeatures(
-            [
-              [event.point.x - 8, event.point.y - 8],
-              [event.point.x + 8, event.point.y + 8],
-            ],
-            { layers: activeLayers },
-          );
-
-          if (!features.length) return;
-
-          const properties = features[0].properties || {};
-          const predictedCount = getMlNumber(properties, ["predicted_count"]);
-
-          const monthName =
-            properties.month_name ||
-            mlMonthSelect.options[mlMonthSelect.selectedIndex].text;
-
-          if (activePopup) activePopup.remove();
-
-          activePopup = new maplibregl.Popup({
-            className: "fish-popup",
-            maxWidth: "420px",
-            closeButton: true,
-            closeOnClick: true,
-            offset: 14,
-          })
-            .setLngLat(event.lngLat)
-            .setHTML(
-              `
-                <article class="fish-popup-card">
-                  <header class="fish-popup-header">
-                    <div class="fish-popup-eyebrow">FWMIS + ERA5 direct regression</div>
-                    <h3 class="fish-popup-title">Rainbow Trout Count Prediction</h3>
-                  </header>
-
-                  <div class="fish-popup-body">
-                    <section class="fish-popup-section">
-                      <h4 class="fish-popup-section-title">Prediction</h4>
-                      <div class="fish-popup-grid">
-                        <div class="fish-popup-label">Month</div>
-                        <div class="fish-popup-value">${escapeHtml(monthName)}</div>
-
-                        <div class="fish-popup-label">Predicted count</div>
-                        <div class="fish-popup-value">${
-                          Number.isFinite(predictedCount)
-                            ? Math.round(predictedCount)
-                            : "N/A"
-                        }</div>
-                      </div>
-                    </section>
-
-                  </div>
-                </article>
-              `,
-            )
-            .addTo(map);
-        });
-      }
-
       function addDirectedEdgeInteractions() {
         map.on("click", "directed-arrow-lines", (e) => {
           if (!isElevationSelected()) return;
@@ -5901,8 +5620,7 @@
           isElevationSelected() ||
           isRiverBinarySelected() ||
           isHistorySelected() ||
-          isFishSelected() ||
-          isMlSelected();
+          isFishSelected();
 
         addVisibleBtn.disabled = forceDisabled;
         selectAreaBtn.disabled = forceDisabled;
@@ -6266,7 +5984,157 @@
         return "Showing all cleaned FWMIS fish captures plus explicit no-fish survey crosses.";
       }
 
+      function applyFishTimelineSelection(year, month) {
+        selectedFishYear = year ? String(year) : "";
+        selectedFishMonth = month ? String(month) : "";
+        fishYearSelect.value = selectedFishYear;
+        fishMonthSelect.value = selectedFishMonth;
+        if (activePopup) {
+          activePopup.remove();
+          activePopup = null;
+        }
+        updateFishFilter();
+        updateFishStatistics();
+        updateLegend();
+        status.textContent = getFishFilterStatusText();
+      }
+
+      function getFishTimelineFrames() {
+        const mode = fishTimelineMode.value;
+
+        // Ignore the empty "All years" option before Number conversion.
+        const years = Array.from(fishYearSelect.options)
+          .map((option) => option.value)
+          .filter((value) => value !== "")
+          .map((value) => Number(value))
+          .filter((value) => Number.isFinite(value) && value > 0)
+          .sort((a, b) => a - b);
+
+        const months = Array.from({ length: 12 }, (_, i) => i + 1);
+        const selectedYearNumber = Number(selectedFishYear);
+        const selectedMonthNumber = Number(selectedFishMonth);
+
+        if (mode === "year") {
+          const startYear =
+            Number.isFinite(selectedYearNumber) && selectedYearNumber > 0
+              ? selectedYearNumber
+              : 2020;
+
+          return years
+            .filter((year) => year >= startYear)
+            .map((year) => ({
+              year,
+              month: "",
+              label: String(year),
+            }));
+        }
+
+        if (mode === "month") {
+          const startMonth =
+            Number.isFinite(selectedMonthNumber) && selectedMonthNumber >= 1
+              ? selectedMonthNumber
+              : 1;
+
+          return months
+            .filter((month) => month >= startMonth)
+            .map((month) => ({
+              year: "",
+              month,
+              label: fishMonthSelect.options[month].text,
+            }));
+        }
+
+        // Year + Month starts exactly from the current filters.
+        // Default is January 2020 because the default filters are
+        // Survey Year = 2020 and Survey Month = All months.
+        const startYear =
+          Number.isFinite(selectedYearNumber) && selectedYearNumber > 0
+            ? selectedYearNumber
+            : 2020;
+        const startMonth =
+          Number.isFinite(selectedMonthNumber) && selectedMonthNumber >= 1
+            ? selectedMonthNumber
+            : 1;
+
+        return years
+          .filter((year) => year >= startYear)
+          .flatMap((year) =>
+            months
+              .filter((month) => year > startYear || month >= startMonth)
+              .map((month) => ({
+                year,
+                month,
+                label: `${fishMonthSelect.options[month].text} ${year}`,
+              })),
+          );
+      }
+
+      function stopFishTimeline() {
+        if (fishTimelineTimer) clearTimeout(fishTimelineTimer);
+        fishTimelineTimer = null;
+        fishTimelineRunning = false;
+        fishTimelinePlay.textContent = "▶ Play timeline";
+      }
+
+      function runFishTimelineStep() {
+        if (!fishTimelineRunning) return;
+        const frames = fishTimelineFrames;
+        if (!frames.length) {
+          stopFishTimeline();
+          return;
+        }
+        if (fishTimelineStep >= frames.length) {
+          stopFishTimeline();
+          fishTimelineStep = 0;
+          fishTimelineProgress.style.width = "100%";
+          fishTimelinePeriod.textContent = "Complete";
+          return;
+        }
+        const frame = frames[fishTimelineStep];
+        applyFishTimelineSelection(frame.year, frame.month);
+        fishTimelinePeriod.textContent = frame.label;
+        fishTimelineProgress.style.width = `${((fishTimelineStep + 1) / frames.length) * 100}%`;
+        fishTimelineStep += 1;
+        fishTimelineTimer = setTimeout(
+          runFishTimelineStep,
+          Number(fishTimelineDelay.value) * 1000,
+        );
+      }
+
+      fishTimelinePlay.addEventListener("click", () => {
+        if (fishTimelineRunning) {
+          stopFishTimeline();
+          return;
+        }
+        fishTimelineFrames = getFishTimelineFrames();
+        if (!fishTimelineFrames.length) return;
+        if (fishTimelineStep >= fishTimelineFrames.length) fishTimelineStep = 0;
+        fishTimelineRunning = true;
+        fishTimelinePlay.textContent = "Ⅱ Pause";
+        runFishTimelineStep();
+      });
+      fishTimelineReset.addEventListener("click", () => {
+        stopFishTimeline();
+        fishTimelineStep = 0;
+        fishTimelineProgress.style.width = "0%";
+        fishTimelinePeriod.textContent = "Ready";
+        fishTimelineFrames = [];
+        applyFishTimelineSelection("2020", "");
+      });
+      fishTimelineMode.addEventListener("change", () => {
+        stopFishTimeline();
+        fishTimelineStep = 0;
+        fishTimelineFrames = [];
+        fishTimelineProgress.style.width = "0%";
+        fishTimelinePeriod.textContent = "Ready";
+      });
+
       fishYearSelect.addEventListener("change", (event) => {
+        stopFishTimeline();
+        fishTimelineStep = 0;
+        fishTimelineFrames = [];
+        fishTimelineProgress.style.width = "0%";
+        fishTimelinePeriod.textContent = "Ready";
         selectedFishYear = event.target.value;
 
         if (activePopup) {
@@ -6281,6 +6149,11 @@
       });
 
       fishMonthSelect.addEventListener("change", (event) => {
+        stopFishTimeline();
+        fishTimelineStep = 0;
+        fishTimelineFrames = [];
+        fishTimelineProgress.style.width = "0%";
+        fishTimelinePeriod.textContent = "Ready";
         selectedFishMonth = event.target.value;
 
         if (activePopup) {
@@ -6329,6 +6202,7 @@
       environmentVariable.addEventListener("change", async () => {
         syncHistoryVariableWithEnvironmentVariable();
         updateLegend();
+        updateLayerVisibilityForSelection();
         updateEnvironmentLayer();
         updatePointCounter();
 
@@ -6339,8 +6213,20 @@
         }
       });
 
-      mlMonthSelect.addEventListener("change", () => {
-        changeMlMonth(mlMonthSelect.value);
+      [
+        mlResultsYear,
+        mlResultsMonth,
+        mlShowTrain,
+        mlShowTest,
+        mlShowPresence,
+        mlShowCount,
+        mlShowNeighbor,
+      ].forEach((el) => {
+        if (el)
+          el.addEventListener("change", () => {
+            applyMlResultsState();
+            updatePointCounter();
+          });
       });
 
       sidebarToggle.addEventListener("click", () => {
@@ -6364,6 +6250,18 @@
           isCollapsed ? "Show legend" : "Hide legend",
         );
         legendToggle.title = isCollapsed ? "Show legend" : "Hide legend";
+      });
+
+      riverDisplayMode.addEventListener("change", () => {
+        clearSelectedPoint();
+        selectedEnvironmentPointId = null;
+        selectedEnvironmentPointIndex = -1;
+        if (activePopup) {
+          activePopup.remove();
+          activePopup = null;
+        }
+        updateLayerVisibilityForSelection();
+        updateLegend();
       });
 
       layerSelect.addEventListener("change", async () => {
@@ -6403,8 +6301,11 @@
           updateLegend();
 
           status.textContent = getFishFilterStatusText();
-        } else if (isMlSelected()) {
-          status.textContent = `Showing ${mlMonthSelect.options[mlMonthSelect.selectedIndex].text} Rainbow Trout direct count predictions for all 629,200 river locations.`;
+        } else if (isMlResultsSelected()) {
+          addMlResultsLayers();
+          applyMlResultsState();
+          status.textContent =
+            "Showing final Rainbow Trout ML evaluation. Toggle Train, Test, Presence, Count and neighbour information independently.";
         } else if (isRiverBinarySelected()) {
           status.textContent =
             "Showing the 200 m × 200 m Alberta river binary raster. Cyan cells represent river pixels (1).";
@@ -6490,8 +6391,8 @@
           status.textContent = "Map loaded. Preparing stream layers...";
 
           addDirectedEdgeInteractions();
-          addMlInteractions();
-          updateMlPaint();
+          addMlResultsLayers();
+          addMlResultsInteractions();
           addHistoryLayers();
           await addFishLayer();
 
