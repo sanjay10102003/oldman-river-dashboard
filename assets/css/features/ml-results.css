@@ -1,0 +1,48 @@
+/* Rainbow Trout ML results controls */
+
+/* Final Rainbow Trout ML evaluation controls */
+.ml-results-toggle-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 10px;
+}
+.ml-results-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 11px;
+  background: #fff;
+  font-size: 12px;
+  font-weight: 750;
+  color: #334155;
+  cursor: pointer;
+}
+.ml-results-toggle input {
+  accent-color: #0f4c5c;
+}
+.ml-results-metrics {
+  margin-top: 12px;
+  display: grid;
+  gap: 8px;
+}
+.ml-results-model {
+  padding: 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #fff;
+}
+.ml-results-model strong {
+  display: block;
+  font-size: 12px;
+  color: #0f172a;
+  margin-bottom: 5px;
+}
+.ml-results-model span {
+  display: block;
+  font-size: 11px;
+  color: #64748b;
+  line-height: 1.45;
+}

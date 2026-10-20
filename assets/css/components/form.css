@@ -1,0 +1,55 @@
+/* Form fields, labels and the date badge */
+
+select,
+input[type="date"],
+input[type="text"] {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid #bac8b8;
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 14px;
+  font-weight: 600;
+  outline: none;
+}
+
+.field-label {
+  display: block;
+  margin: 12px 0 6px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #475569;
+}
+
+#liveEnvironmentControls,
+#historicalEnvironmentControls {
+  margin-top: 12px;
+}
+
+#liveEnvironmentControls > .field-label:first-child,
+#historicalEnvironmentControls > .field-label:first-child {
+  margin-top: 0;
+}
+
+.date-filter-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 11px;
+  padding: 7px 10px;
+  border: 1px solid #bfdbfe;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.date-filter-badge::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #2563eb;
+}

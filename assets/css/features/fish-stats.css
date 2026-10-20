@@ -1,0 +1,47 @@
+/* Fish species statistics */
+
+.fish-stats {
+  display: none;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.fish-stats.visible {
+  display: block;
+}
+
+.fish-stats-title {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.fish-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+}
+
+.fish-stat-box {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 10px;
+}
+
+.fish-stat-label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 11px;
+  color: #64748b;
+}
+
+.fish-stat-value {
+  display: block;
+  font-size: 14px;
+  font-weight: 800;
+  color: #0f172a;
+  overflow-wrap: anywhere;
+}

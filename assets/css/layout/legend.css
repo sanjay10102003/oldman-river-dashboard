@@ -1,0 +1,193 @@
+/* Map legend panel */
+
+#legend {
+  position: absolute;
+  right: 18px;
+  bottom: 24px;
+  z-index: 10;
+  width: min(390px, calc(100vw - 36px));
+  max-height: calc(100vh - 170px);
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.97);
+  border: 1px solid #cdd8cf;
+  border-radius: 18px;
+  font-size: 15px;
+  box-shadow: 0 14px 40px rgba(15, 23, 42, 0.2);
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+  transition:
+    max-height 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.22s ease,
+    transform 0.22s ease;
+}
+
+#legend.legend-collapsed {
+  max-height: 58px;
+}
+
+.legend-header {
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 15px;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.92);
+  flex: 0 0 auto;
+}
+
+#legend.legend-collapsed .legend-header {
+  border-bottom-color: transparent;
+}
+
+#legend strong {
+  display: block;
+  margin: 0;
+  color: #0f172a;
+  font-size: 19px;
+}
+
+.legend-toggle {
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #dbe4dc;
+  border-radius: 9px;
+  background: #f8fafc;
+  color: #475569;
+  cursor: pointer;
+  transition:
+    transform 0.28s ease,
+    background 0.18s ease,
+    color 0.18s ease;
+}
+
+.legend-toggle:hover {
+  background: #eef4ef;
+  color: #0f172a;
+}
+
+.legend-toggle svg {
+  width: 17px;
+  height: 17px;
+  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+#legend.legend-collapsed .legend-toggle svg {
+  transform: rotate(180deg);
+}
+
+#legendBody {
+  min-height: 0;
+  padding: 0 15px 15px;
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 0.2s ease,
+    transform 0.28s ease;
+}
+
+#legend.legend-collapsed #legendBody {
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+}
+
+.legend-row {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  align-items: center;
+  column-gap: 12px;
+  margin-top: 10px;
+  color: #334155;
+  font-size: 15px;
+  line-height: 1.3;
+}
+
+.legend-dot {
+  display: block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid rgba(15, 23, 42, 0.2);
+}
+
+.legend-cross {
+  display: inline-flex;
+  width: 18px;
+  height: 18px;
+  align-items: center;
+  justify-content: center;
+  color: #111827;
+  font-size: 21px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.legend-label {
+  display: block;
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.history-gradient-legend {
+  margin-top: 10px;
+  width: 100%;
+}
+
+.history-gradient-bar {
+  width: 100%;
+  height: 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(15, 23, 42, 0.18);
+  background: linear-gradient(
+    90deg,
+    #7f1d1d 0%,
+    #991b1b 10%,
+    #b91c1c 20%,
+    #dc2626 30%,
+    #ef4444 40%,
+    #f97316 55%,
+    #fb923c 65%,
+    #f59e0b 75%,
+    #facc15 88%,
+    #fde047 100%
+  );
+}
+
+.history-gradient-scale {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 6px;
+  color: #475569;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.history-gradient-scale span:nth-child(2) {
+  text-align: center;
+}
+
+.history-gradient-scale span:last-child {
+  text-align: right;
+}
+
+/* Scrollable species list for the Fish Distribution legend */
+#legendRows.fish-scroll {
+  max-height: calc(100vh - 270px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 7px;
+  scrollbar-width: thin;
+  overscroll-behavior: contain;
+}
+
+#legendRows.fish-scroll .legend-row {
+  margin-top: 8px;
+}

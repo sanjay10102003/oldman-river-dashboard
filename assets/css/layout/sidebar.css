@@ -1,0 +1,70 @@
+/* Sidebar panel and its collapse toggle */
+
+#sidebar {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  width: 350px;
+  max-height: calc(100vh - 36px);
+  overflow-y: auto;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.97);
+  border: 1px solid rgba(203, 213, 225, 0.95);
+  border-radius: 22px;
+  padding: 20px;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.25);
+  backdrop-filter: blur(12px);
+  transform: translateX(0);
+  opacity: 1;
+  transition:
+    transform 0.36s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.24s ease;
+}
+
+#sidebar.collapsed {
+  transform: translateX(calc(-100% - 36px));
+  opacity: 0;
+  pointer-events: none;
+}
+
+.sidebar-toggle {
+  position: absolute;
+  top: 24px;
+  left: 384px;
+  z-index: 12;
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(203, 213, 225, 0.95);
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.97);
+  color: #0f172a;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.18);
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+  transition:
+    left 0.36s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.18s ease,
+    background 0.18s ease;
+}
+
+.sidebar-toggle:hover {
+  background: #f8fafc;
+  transform: translateY(-1px);
+}
+
+.sidebar-toggle.sidebar-collapsed {
+  left: 18px;
+}
+
+.sidebar-toggle svg {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.3s ease;
+}
+
+.sidebar-toggle.sidebar-collapsed svg {
+  transform: rotate(180deg);
+}

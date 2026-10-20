@@ -1,0 +1,33 @@
+/* Box selection overlay and MapLibre control overrides */
+
+#selectionBox {
+  position: absolute;
+  border: 2px dashed #2563eb;
+  background: rgba(37, 99, 235, 0.16);
+  display: none;
+  z-index: 20;
+  pointer-events: none;
+}
+
+.selecting-mode {
+  cursor: crosshair !important;
+}
+
+.maplibregl-ctrl-logo {
+  display: none !important;
+}
+
+.maplibregl-ctrl-group {
+  border: 1px solid #c7d3ca !important;
+  border-radius: 10px !important;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(23, 54, 74, 0.12) !important;
+}
+
+.maplibregl-ctrl-group button {
+  background-color: rgba(255, 255, 255, 0.96) !important;
+}
+
+.maplibregl-ctrl-group button:hover {
+  background-color: #edf5f0 !important;
+}
